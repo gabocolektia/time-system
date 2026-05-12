@@ -3379,6 +3379,12 @@ function formatDateChip(dateStr) {
   const mm = d.getMinutes().toString().padStart(2,'0');
   return `${dayName} ${day} · ${hh}:${mm}`;
 }
+const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+function monthLabelEs(yyyymm) {
+  const [y, m] = yyyymm.split('-');
+  return `${MONTHS_ES[parseInt(m, 10) - 1]} ${y}`;
+}
+
 function formatDateInput(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr);
@@ -3486,8 +3492,25 @@ function sortByPriority(arr) {
 // Group activities — only used in tabs that benefit from grouping.
 // For mydesk/live we now return a flat list (single group) sorted by priority.
 function groupActivities(list) {
-  if (state.currentTab === 'mydesk' || state.currentTab === 'live') {
+  if (state.currentTab === 'mydesk') {
     return [{ key: 'flat', label: null, items: sortByPriority(list) }];
+  } else if (state.currentTab === 'live') {
+    // Group by month of the activity date. Newest month first, undated at the bottom.
+    const groups = {};
+    list.forEach(a => {
+      const k = a.date ? a.date.slice(0, 7) : '__nodate__'; // YYYY-MM
+      (groups[k] = groups[k] || []).push(a);
+    });
+    const keys = Object.keys(groups).sort((a, b) => {
+      if (a === '__nodate__') return 1;
+      if (b === '__nodate__') return -1;
+      return b.localeCompare(a);
+    });
+    return keys.map(k => ({
+      key: k,
+      label: k === '__nodate__' ? 'Sin fecha' : monthLabelEs(k),
+      items: groups[k].slice().sort((x, y) => (y.date || '').localeCompare(x.date || ''))
+    }));
   } else if (state.currentTab === 'delegated') {
     const groups = {};
     list.forEach(a => {
@@ -3575,16 +3598,13 @@ function renderKpis() {
       ['Teams', new Set(list.map(a => a.team).filter(Boolean)).size, '']
     ];
   } else if (tab === 'live') {
-    cards = [
-      ['Total live', list.length, 'green'],
-      ['', '', ''],
-      ['', '', ''],
-      ['', '', '']
-    ];
+    cards = [];
   } else {
     cards = state.stages.slice(0,4).map(s => [s.name, list.filter(a => a.stage === s.name).length, '']);
   }
-  document.getElementById('kpi-row').innerHTML = cards.map(([l, v, color]) => {
+  const row = document.getElementById('kpi-row');
+  row.style.display = cards.length ? '' : 'none';
+  row.innerHTML = cards.map(([l, v, color]) => {
     if (!l) return `<div class="kpi" style="visibility:hidden"></div>`;
     return `<div class="kpi"><div class="kpi-lbl">${l}</div><div class="kpi-val ${color}">${v}</div></div>`;
   }).join('');
