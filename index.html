@@ -2777,7 +2777,8 @@ const state = {
  *
  * Schema:
  *   - Constraints, Teams, Activities, Weekly Rituals, Hats, Stages
- *   - Field IDs hardcoded in MAP below. If schema changes, update MAP.
+ *   - Table/field NAMES hardcoded in MAP below. If schema is renamed in
+ *     Airtable, update MAP. Names (not IDs) so duplicated bases work.
  *
  * Sync strategy:
  *   - Manual only. Click "Refresh" in topbar to reload from Airtable.
@@ -2791,97 +2792,99 @@ const state = {
 
 const AIRTABLE_API = 'https://api.airtable.com/v0';
 
-// Schema map: table & field IDs for the entire app.
-// Each user's Airtable base must follow this exact schema.
+// Schema map: table & field NAMES (portable across duplicated bases).
+// Airtable preserves names — not IDs — when a base is duplicated, so naming
+// the schema lets every leader use their own base without code changes.
+// Tradeoff: renaming a table/field in Airtable breaks the app until updated here.
 const MAP = {
   // Base ID is dynamic — set at login
 
   constraints: {
-    tableId: 'tblt3h6upLFzCmU0j',
+    tableId: 'Constraints',
     fields: {
-      code: 'fldhVNT5jgUQepYhj',
-      name: 'fldqNN8knZDVP7lnu',
-      description: 'fldzNKyrbUtYo2AV4',
-      defaultHat: 'fldP7oY9dEeB1LVFx',     // link to Hats table
-      archived: 'fldy4smZgIkNSH7e6'
+      code: 'Code',
+      name: 'Name',
+      description: 'Description',
+      defaultHat: 'Default Hat',           // link to Hats table
+      archived: 'Archived'
     }
   },
 
   teams: {
-    tableId: 'tbl9JGs6P5kMAhHDS',
+    tableId: 'Teams',
     fields: {
-      teamId: 'fld38qEJTz6IKKpcL',
-      name: 'fldYOK2S0Kh4izDQp',
-      role: 'fld171YfeIMIvVEVn',
-      color: 'fldrolOvZ3CjoFHZ5',
-      archived: 'fldnsnrYFgBvcSHoD'
+      teamId: 'Team ID',
+      name: 'Name',
+      role: 'Role',
+      color: 'Color',
+      archived: 'Archived'
     }
   },
 
   stages: {
-    tableId: 'tbl7bhpDd5QsQoxWN',
+    tableId: 'Stages',
     fields: {
-      stage: 'fldqgrxlohbrUE9uD',
-      order: 'fldHYwliDRwcQkAdj',
-      description: 'fldK8Mnf7LhVLkpUg'
+      stage: 'Stage',
+      order: 'Order',
+      description: 'Description'
     }
   },
 
   hats: {
-    tableId: 'tbl3IGGYcX5kBQnvP',
+    tableId: 'Hats',
     fields: {
-      hat: 'fld1nxue7Ao9uBxBU',
-      order: 'fldlgoAJca5pOWN4p',
-      summary: 'fldxlGVHeMmVmxMox',
-      whatYouDo: 'fldghENrkntPIG7yY',
-      whatYouDont: 'flda3r0G7amd7i6qS',
-      signals: 'fldHTHzDnlyhFEr7N',
-      examples: 'fldRdyfv8MQD1mnYv',
-      whenToSwitch: 'fldg0prjJPfZHJ0Zu',
-      archived: 'fldAmlOo2b3f1IkK2'
+      hat: 'Hat',
+      order: 'Order',
+      summary: 'Summary',
+      whatYouDo: 'What You Do',
+      whatYouDont: "What You Don't Do",
+      signals: 'Signals',
+      examples: 'Examples',
+      whenToSwitch: 'When To Switch',
+      archived: 'Archived'
     }
   },
 
   activities: {
-    tableId: 'tblc8zOA5vJGii49S',
+    tableId: 'Activities',
     fields: {
-      name: 'fldCCqkGBaeFFLDQI',
-      constraint: 'fldfFBhfdzP1zUvpd',
-      hat: 'fldzIMshetnCR020G',            // link to Hats table
-      team: 'fldPaLRy2rrTqLNqr',
-      stage: 'fldUyYJ5kDpclotZx',
-      delegated: 'fldvsBCMShHZKXjcA',
-      completed: 'fldorC99qHj6dTt8i',
-      priority: 'fldAghs9vsNRXav3T',
-      priorityWeek: 'fld0hKIc2iSYoqXch',
-      date: 'fldBegpzOM4u2BW2e',
-      duration: 'fldAEgMOXwADHgGbx',
-      source: 'fldC6enlMD2Shomon',
-      syncStatus: 'fldISvfF9gFpbeD3O',
-      calendarEventId: 'fldv0TygnE1kFwMRw',
-      lastSyncedAt: 'fldDqjvmPDB8Jw02d',
-      description: 'fldULOx2cOA0MsurM',
-      archived: 'fldhhVpkel1SFoIOi',
-      log: 'fldBcniq4YRieTNYJ'
+      name: 'Name',
+      constraint: 'Constraint',
+      hat: 'Hat',                          // link to Hats table
+      team: 'Team',
+      stage: 'Stage',
+      delegated: 'Delegated',
+      completed: 'Completed',
+      priority: 'Priority',
+      priorityWeek: 'Priority Week',
+      date: 'Date',
+      duration: 'Duration (min)',
+      source: 'Source',
+      syncStatus: 'Sync Status',
+      calendarEventId: 'Calendar Event ID',
+      lastSyncedAt: 'Last Synced At',
+      description: 'Description',
+      archived: 'Archived',
+      log: 'Log'
     }
   },
 
   rituals: {
-    tableId: 'tblu2q7pWGJvT7QRz',
+    tableId: 'Weekly Rituals',
     fields: {
-      weekId: 'fldDyMD0RFk4r4it1',
-      startedAt: 'fldt2R2P9sjczZHVr',
-      closedAt: 'fldN8sWcXP6AoFHx4',
-      currentStep: 'flddZbko42ILrQfLL',
-      decisions: 'fldmpX1XMMS4og7vZ'
+      weekId: 'Week ID',
+      startedAt: 'Started At',
+      closedAt: 'Closed At',
+      currentStep: 'Current Step',
+      decisions: 'Decisions'
     }
   },
 
   settings: {
-    tableId: 'tblwJiiWaE7ClRNUN',
+    tableId: 'Settings',
     fields: {
-      key: 'fldA8NdMdujE7olJ3',
-      value: 'fld1u8jmzYVU5Jxy4'
+      key: 'Key',
+      value: 'Value'
     }
   }
 };
@@ -2925,13 +2928,13 @@ async function atFetch(path, options = {}) {
 async function atList(tableId, filterFormula = null) {
   let records = [];
   let offset = null;
+  const tablePath = encodeURIComponent(tableId);
   do {
     const params = new URLSearchParams();
     if (filterFormula) params.set('filterByFormula', filterFormula);
     if (offset) params.set('offset', offset);
     params.set('pageSize', '100');
-    params.set('returnFieldsByFieldId', 'true');
-    const r = await atFetch(`/${tableId}?${params.toString()}`);
+    const r = await atFetch(`/${tablePath}?${params.toString()}`);
     records = records.concat(r.records);
     offset = r.offset;
   } while (offset);
@@ -2939,21 +2942,21 @@ async function atList(tableId, filterFormula = null) {
 }
 
 async function atCreate(tableId, fields) {
-  return atFetch(`/${tableId}?returnFieldsByFieldId=true`, {
+  return atFetch(`/${encodeURIComponent(tableId)}`, {
     method: 'POST',
     body: JSON.stringify({ fields, typecast: false })
   });
 }
 
 async function atUpdate(tableId, recordId, fields) {
-  return atFetch(`/${tableId}/${recordId}?returnFieldsByFieldId=true`, {
+  return atFetch(`/${encodeURIComponent(tableId)}/${recordId}`, {
     method: 'PATCH',
     body: JSON.stringify({ fields, typecast: false })
   });
 }
 
 async function atDelete(tableId, recordId) {
-  return atFetch(`/${tableId}/${recordId}`, { method: 'DELETE' });
+  return atFetch(`/${encodeURIComponent(tableId)}/${recordId}`, { method: 'DELETE' });
 }
 
 // ---- Load Settings (workspace name, etc.) from the Settings table ----
