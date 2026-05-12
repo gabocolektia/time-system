@@ -3481,6 +3481,13 @@ function updateSyncIndicator() {
 /* ============================================================
  * 3. UTILS
  * ============================================================ */
+
+// Temp local ID for records created before Airtable assigns one.
+function makeId() {
+  if (window.crypto?.randomUUID) return 'tmp_' + crypto.randomUUID();
+  return 'tmp_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+
 function teamById(id) { return state.teams.find(t => t.id === id) || null; }
 function teamInitial(name) {
   if (!name) return '?';
