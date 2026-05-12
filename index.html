@@ -2980,8 +2980,7 @@ const MAP = {
     tableId: 'Availability Blocks',
     fields: {
       blockId: 'Block ID',
-      weekId: 'Week ID',
-      day: 'Day',
+      date: 'Date',
       startHHMM: 'Start HHMM',
       endHHMM: 'End HHMM',
       archived: 'Archived'
@@ -3180,14 +3179,42 @@ function mapActivity(rec, hatsById, constraintsById, teamsById, stagesById) {
   };
 }
 
+// Block storage uses a single Date field in Airtable. Day-of-week and
+// weekId are derived in memory so the rest of the wizard logic, which
+// thinks in (weekId, day 0..6), keeps working unchanged.
+function dateToDayAndWeek(dateStr) {
+  if (!dateStr) return { day: 0, weekId: '' };
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  const js = date.getDay(); // 0=Sun..6=Sat
+  const day = (js + 6) % 7;  // → 0=Mon..6=Sun (matches wizard convention)
+  const monday = new Date(date);
+  monday.setDate(date.getDate() - day);
+  const weekId = weekIdFromMonday(monday);
+  return { day, weekId };
+}
+
+function dayAndWeekToDate(weekId, day) {
+  const monday = mondayFromWeekId(weekId);
+  const date = new Date(monday);
+  date.setDate(monday.getDate() + day);
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 function mapAvailability(rec) {
   const f = rec.fields;
   const F = MAP.availability.fields;
+  const dateStr = f[F.date] || null;
+  const { day, weekId } = dateToDayAndWeek(dateStr);
   return {
     recordId: rec.id,
     id: f[F.blockId] || rec.id,
-    weekId: f[F.weekId] || '',
-    day: f[F.day] != null ? f[F.day] : 0,
+    date: dateStr,
+    weekId,
+    day,
     startHHMM: f[F.startHHMM] || '09:00',
     endHHMM: f[F.endHHMM] || '10:00',
     archived: !!f[F.archived]
@@ -3274,10 +3301,10 @@ function activityToAirtableFields(a) {
 
 function availabilityToAirtableFields(b) {
   const F = MAP.availability.fields;
+  const date = b.date || (b.weekId ? dayAndWeekToDate(b.weekId, b.day || 0) : null);
   return {
     [F.blockId]: b.id || '',
-    [F.weekId]: b.weekId || '',
-    [F.day]: b.day != null ? b.day : 0,
+    [F.date]: date,
     [F.startHHMM]: b.startHHMM || '',
     [F.endHHMM]: b.endHHMM || '',
     [F.archived]: !!b.archived
@@ -5414,7 +5441,8 @@ function dayLabelFromWeekIdAndOffset(weekId, dayOffset) {
 async function addAvailabilityBlock(weekId, day) {
   const blocks = getAvailability(weekId);
   const id = 'av_' + weekId + '_' + day + '_' + Date.now().toString(36);
-  const block = { id, weekId, day, startHHMM: '09:00', endHHMM: '10:00', archived: false };
+  const date = dayAndWeekToDate(weekId, day);
+  const block = { id, weekId, day, date, startHHMM: '09:00', endHHMM: '10:00', archived: false };
   blocks.push(block);
   markAvailabilityDirty(id);
   renderWizard();
