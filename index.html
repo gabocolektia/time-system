@@ -3696,7 +3696,7 @@ function renderActivityRow(a) {
   if (showCompletedStyle) classes.push('completed');
   if (!showPrio) classes.push('no-prio');
   return `
-    <div class="${classes.join(' ')}" onclick="rowClick(event, '${a.id}')">
+    <div class="${classes.join(' ')}" data-act-id="${a.id}" onclick="rowClick(event, '${a.id}')">
       ${showPrio ? prio : ''}
       <div class="act-name">${escapeHtml(a.name)}</div>
       ${constraintCell}
@@ -3740,16 +3740,18 @@ async function commitInlineEdit(id, field, value) {
   const a = state.activities.find(x => x.id === id);
   if (!a) return;
   const oldValue = a[field];
-  if (oldValue === value) {
-    renderActivities();
-    return;
-  }
+  if (oldValue === value) return;
   a[field] = value;
   const display = (v) => v == null || v === '' ? '—' : v;
   a.log.push({ ts: new Date().toISOString(), text: `${field}: ${display(oldValue)} → ${display(value)} (inline edit)` });
   markActivityDirty(a.id);
-  await saveActivities();
-  renderActivities();
+
+  // Replace only this row so dropdowns open elsewhere stay alive.
+  const row = document.querySelector(`[data-act-id="${a.id}"]`);
+  if (row) row.outerHTML = renderActivityRow(a);
+
+  // Fire-and-forget save so the next interaction isn't blocked by the network roundtrip.
+  saveActivities().catch(e => console.error('save error', e));
 }
 
 // Returns the list of activities in the same scope (tab) that participate in priority ordering
