@@ -2446,6 +2446,53 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   border: none;
 }
 
+/* Step 1 row grid — overrides .act-row default to make room for the
+   "when" column (Last week section) or shrink when omitted (Needs info,
+   which also drops the check cell). */
+.act-row.step1-row {
+  grid-template-columns: 56px 1fr 70px 100px 130px 110px 70px;
+}
+.act-row.step1-row.no-when {
+  grid-template-columns: 56px 1fr 70px 100px 130px 110px;
+}
+.act-row.step1-row.no-check {
+  grid-template-columns: 1fr 70px 100px 130px 110px;
+}
+.step1-card .act-row.step1-row { cursor: default; }
+.act-row.step1-row.completed .act-name {
+  text-decoration: line-through;
+  color: var(--ink4);
+}
+.act-row.step1-row .cell-team.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Step 2 Phase A — methodology fields table (name, duration, horizon,
+   blocks_team, cost). Same .act-row chassis, different column widths. */
+.act-row.step2a-row {
+  grid-template-columns: 1fr 110px 180px 110px 150px;
+}
+.act-row.step2a-row.step2a-head {
+  border-bottom: 1px solid var(--ink6);
+  cursor: default;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.step2a-th {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.step2a-th.name { padding-left: 0; }
+.act-row.step2a-row .cell-select { font-size: 11px; }
+.act-row.step2a-row .cell-hat-wrap select { font-size: 11px; }
+
 /* ============================================================
  * LOGIN, LOADING, SYNC INDICATORS
  * ============================================================ */
@@ -5648,7 +5695,7 @@ function renderStep1Body(weekId, ritual) {
           <div class="step1-section-sub">Activities in your backlog with missing fields. Complete them before continuing.</div>
         </div>
         <div class="act-card step1-card">
-          ${needsInfoActs.map(a => renderStep1Row(a, { showWhen: false })).join('')}
+          ${needsInfoActs.map(a => renderStep1Row(a, { showWhen: false, showCheck: false })).join('')}
         </div>
       </div>
     `;
@@ -5752,6 +5799,7 @@ function renderAvailabilityBlockListItem(weekId, b) {
 
 function renderStep1Row(a, opts = {}) {
   const showWhen = opts.showWhen !== false;
+  const showCheck = opts.showCheck !== false;
   const isArchitect = a.hat === 'Architect';
   const needsHat = !a.hat;
   const needsConstraint = !a.constraint;
@@ -5853,10 +5901,11 @@ function renderStep1Row(a, opts = {}) {
 
   // Same .act-row class as main table — visual consistency
   const rowClass = a.completed ? 'act-row step1-row completed' : 'act-row step1-row';
-  const rowClassWithVariant = showWhen ? rowClass : (rowClass + ' no-when');
+  let rowClassWithVariant = showWhen ? rowClass : (rowClass + ' no-when');
+  if (!showCheck) rowClassWithVariant += ' no-check';
   return `
     <div class="${rowClassWithVariant}">
-      ${checkCell}
+      ${showCheck ? checkCell : ''}
       <div class="act-name">${escapeHtml(a.name)}</div>
       ${constraintCell}
       ${hatCell}
