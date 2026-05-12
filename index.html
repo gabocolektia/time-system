@@ -2456,8 +2456,24 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   grid-template-columns: 56px 1fr 70px 100px 130px 110px;
 }
 .act-row.step1-row.no-check {
-  grid-template-columns: 1fr 70px 100px 130px 110px;
+  grid-template-columns: 1fr 70px 100px 130px 110px 28px;
 }
+.step1-archive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px; height: 22px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--ink4);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .12s, color .12s, background .12s;
+}
+.act-row.step1-row:hover .step1-archive { opacity: 1; }
+.step1-archive:hover { background: var(--ink6); color: var(--red); }
 .step1-card .act-row.step1-row { cursor: default; }
 .act-row.step1-row.completed .act-name {
   text-decoration: line-through;
@@ -6047,6 +6063,12 @@ function renderStep1Row(a, opts = {}) {
   const rowClass = a.completed ? 'act-row step1-row completed' : 'act-row step1-row';
   let rowClassWithVariant = showWhen ? rowClass : (rowClass + ' no-when');
   if (!showCheck) rowClassWithVariant += ' no-check';
+  // Archive button — only in the Needs info section (showCheck=false).
+  const archiveCell = !showCheck ? `
+    <button class="step1-archive" onclick="event.stopPropagation(); archiveActivityFromWizard('${a.id}')" data-tooltip="Archive activity">
+      ${xIcon()}
+    </button>` : '';
+
   return `
     <div class="${rowClassWithVariant}">
       ${showCheck ? checkCell : ''}
@@ -6056,7 +6078,19 @@ function renderStep1Row(a, opts = {}) {
       ${teamCell}
       ${stageCell}
       ${showWhen ? whenCell : ''}
+      ${archiveCell}
     </div>`;
+}
+
+async function archiveActivityFromWizard(activityId) {
+  const a = state.activities.find(x => x.id === activityId);
+  if (!a) return;
+  a.archived = true;
+  a.log = a.log || [];
+  a.log.push({ ts: new Date().toISOString(), text: 'Archived (weekly ritual)' });
+  markActivityDirty(a.id);
+  renderWizard();
+  saveActivities().catch(e => console.error('archive save error', e));
 }
 
 // Handler for inline edits in Step 1 — same as the main table but re-renders Step 1
