@@ -6527,11 +6527,10 @@ function renderStep2PhaseC(weekId) {
     .filter(a => !a.archived && a.stage !== 'Live')
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  // Backlog: not archived, not Live, no priority for this week, not pre-scheduled
+  // Backlog: Manual + not archived + not completed, and not already scheduled.
   const scheduledIds = new Set(scheduled.map(a => a.id));
   const backlog = state.activities
-    .filter(a => !a.archived && a.stage !== 'Live')
-    .filter(a => !(a.priority != null && a.priority_week === weekId))
+    .filter(a => !a.archived && !a.completed && a.source === 'Manual')
     .filter(a => !scheduledIds.has(a.id))
     .sort((a, b) => a.name.localeCompare(b.name));
 
