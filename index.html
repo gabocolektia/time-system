@@ -6138,13 +6138,9 @@ const STEP2_DURATION_OPTIONS = [
 // Returns activities pending in the backlog (not archived, not Live,
 // not yet scheduled for this week, not from a past week). Used by Step 2.
 function step2BacklogPending(weekId) {
-  const monday = mondayFromWeekId(weekId);
-  return state.activities
-    .filter(a => !a.archived && !a.completed && a.stage !== 'Live')
-    .filter(a => a.source !== 'Calendar')
-    .filter(a => !(a.priority != null && a.priority_week === weekId))
-    // Exclude activities scheduled in past weeks (Last Week / Sync calendar items)
-    .filter(a => !a.date || new Date(a.date) >= monday);
+  return state.activities.filter(a =>
+    !a.archived && !a.completed && a.source === 'Manual'
+  );
 }
 
 // Returns only the activities from the backlog that have at least one
