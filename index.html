@@ -2197,17 +2197,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   font-weight: 500;
 }
 
-/* Row completed look — strike-through name */
-.act-row.completed .act-name {
-  color: var(--ink4);
-  text-decoration: line-through;
-}
-.act-row.completed .cell-prio-ro .cp-text,
-.act-row.completed .cell-constraint,
-.act-row.completed .cell-team,
-.act-row.completed .cell-select {
-  opacity: .55;
-}
+/* Row completed look — relies on the green check; no strike-through or dimming. */
 
 /* ============================================================
  * LOGIN, LOADING, SYNC INDICATORS
@@ -3643,20 +3633,16 @@ function renderKpis() {
 }
 
 function renderActivityRow(a) {
-  // First column varies by tab: check in My desk, priority (read-only) in All,
-  // and nothing for Delegated / Live.
+  // First column is the completion check on My desk and All; Delegated and
+  // Live drop the column entirely.
   const tab = state.currentTab;
   let firstCell = '';
-  if (tab === 'mydesk') {
+  if (tab === 'mydesk' || tab === 'all') {
     firstCell = `<div class="cell-check ${a.completed ? 'checked' : ''}" onclick="event.stopPropagation(); toggleCompletedInline('${a.id}')">
       <span class="check-ring">
         <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-6"/></svg>
       </span>
     </div>`;
-  } else if (tab === 'all') {
-    firstCell = a.priority != null
-      ? `<div class="cell-prio-ro"><span class="cp-text">${a.priority}</span></div>`
-      : `<div class="cell-prio-ro"><span class="cp-text empty">—</span></div>`;
   }
 
   // Status — unified icon at the end (calendar = scheduled, clipboard gray = backlog)
