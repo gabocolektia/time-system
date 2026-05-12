@@ -1330,17 +1330,11 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   border-radius: var(--r);
   background: var(--white);
   overflow: hidden;
-  transition: border-color .12s;
 }
-.hat-card:hover { border-color: var(--ink4); }
-.hat-card.open { border-color: var(--ink4); }
 .hat-hd {
   padding: 11px 14px;
-  cursor: pointer;
   display: flex; align-items: center; gap: 12px;
 }
-.hat-hd:hover { background: var(--surface); }
-.hat-card.open .hat-hd { background: var(--surface); border-bottom: 1px solid var(--ink6); }
 .hat-icon {
   width: 30px; height: 30px;
   border-radius: var(--rs);
@@ -1351,28 +1345,8 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   flex-shrink: 0;
 }
 .hat-meta { flex: 1; min-width: 0; }
-.hat-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.hat-name { font-size: 13px; font-weight: 600; color: var(--ink2); }
 .hat-summary { font-size: 11px; color: var(--ink4); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.hat-chev { color: var(--ink4); transition: transform .15s; flex-shrink: 0; }
-.hat-card.open .hat-chev { transform: rotate(180deg); }
-.hat-body { display: none; padding: 14px 18px 16px; }
-.hat-card.open .hat-body { display: block; }
-
-.hat-field { margin-bottom: 12px; }
-.hat-field-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink4); margin-bottom: 4px; }
-.hat-field-area {
-  width: 100%;
-  border: 1px solid var(--ink5);
-  border-radius: var(--rs);
-  padding: 8px 10px;
-  font-size: 12px;
-  color: var(--ink);
-  background: var(--white);
-  font-family: var(--f);
-  line-height: 1.55;
-  resize: vertical;
-}
-.hat-field-area:focus { border-color: var(--red); }
 
 /* ============================================================
  * Coming soon page
@@ -3284,58 +3258,6 @@ async function saveTeams(only = null) {
   if (hadError) toast('Some teams could not be saved');
 }
 
-// Reverse mappers for Hats and Stages
-function hatToAirtableFields(h) {
-  const F = MAP.hats.fields;
-  const out = {};
-  out[F.hat] = h.id || '';
-  out[F.order] = h.order || 0;
-  out[F.summary] = h.summary || '';
-  out[F.whatYouDo] = h.whatYouDo || '';
-  out[F.whatYouDont] = h.whatYouDont || '';
-  out[F.signals] = h.signals || '';
-  out[F.examples] = h.examples || '';
-  out[F.whenToSwitch] = h.whenToSwitch || '';
-  return out;
-}
-
-function stageToAirtableFields(s) {
-  const F = MAP.stages.fields;
-  const out = {};
-  out[F.stage] = s.name || '';
-  out[F.order] = s.order || 0;
-  out[F.description] = s.description || '';
-  return out;
-}
-
-// Persist all Hats to Airtable. Called after edits in Configuration panel.
-async function saveHats(only = null) {
-  const items = only ? [only] : state.hats;
-  for (const h of items) {
-    if (!h.recordId) continue; // Hats are seeded — never created from HTML
-    try {
-      await atUpdate(MAP.hats.tableId, h.recordId, hatToAirtableFields(h));
-    } catch (e) {
-      toast('Error saving hat: ' + e.message);
-      console.error('Hat save error', e);
-    }
-  }
-}
-
-// Persist Stages to Airtable. Pass an item to save just that one.
-async function saveStages(only = null) {
-  const items = only ? [only] : state.stages;
-  for (const s of items) {
-    if (!s.recordId) continue;
-    try {
-      await atUpdate(MAP.stages.tableId, s.recordId, stageToAirtableFields(s));
-    } catch (e) {
-      toast('Error saving stage: ' + e.message);
-      console.error('Stage save error', e);
-    }
-  }
-}
-
 async function saveWizardRituals() {
   // Persist only dirty rituals. If none marked, persist newly added (no _recordId).
   const weekIds = new Set(dirtyRitualWeekIds);
@@ -4343,28 +4265,19 @@ function renderConfig() {
       <div class="cfg-card-hd">
         <div>
           <div class="cfg-card-title">Hats</div>
-          <div class="cfg-card-sub">The 5 roles I operate from. Click to expand.</div>
+          <div class="cfg-card-sub">The 5 roles I operate from. Edit in Airtable.</div>
         </div>
       </div>
       <div class="cfg-card-body">
         <div class="hat-list">
-          ${state.hats.map((h, i) => `
-            <div class="hat-card" id="hat-card-${i}">
-              <div class="hat-hd" onclick="toggleHat(${i})">
+          ${state.hats.map(h => `
+            <div class="hat-card">
+              <div class="hat-hd">
                 <div class="hat-icon">${h.id[0]}</div>
                 <div class="hat-meta">
                   <div class="hat-name">${h.id}</div>
                   <div class="hat-summary">${escapeHtml(h.summary)}</div>
                 </div>
-                <svg class="hat-chev" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
-              </div>
-              <div class="hat-body">
-                ${renderHatField(i, 'summary', 'Summary', 1, h.summary)}
-                ${renderHatField(i, 'whatYouDo', 'What you do', 5, h.whatYouDo)}
-                ${renderHatField(i, 'whatYouDont', "What you don't do", 3, h.whatYouDont)}
-                ${renderHatField(i, 'signals', "Signals you're wearing it", 3, h.signals)}
-                ${renderHatField(i, 'examples', 'Examples', 5, h.examples)}
-                ${renderHatField(i, 'whenToSwitch', 'When to switch', 3, h.whenToSwitch)}
               </div>
             </div>
           `).join('')}
@@ -4418,7 +4331,7 @@ function renderConfig() {
       <div class="cfg-card-hd">
         <div>
           <div class="cfg-card-title">Stages</div>
-          <div class="cfg-card-sub">Lifecycle of every activity</div>
+          <div class="cfg-card-sub">Lifecycle of every activity. Edit in Airtable.</div>
         </div>
       </div>
       <div class="cfg-card-body">
@@ -4429,11 +4342,11 @@ function renderConfig() {
             <th>Description</th>
           </tr></thead>
           <tbody>
-            ${state.stages.map((s, i) => `
+            ${state.stages.map(s => `
               <tr>
                 <td style="text-align:center; color: var(--ink4); font-weight: 600;">${s.order}</td>
-                <td><input class="cfg-input" value="${escapeHtml(s.name)}" onchange="updateStage(${i}, 'name', this.value)"></td>
-                <td><input class="cfg-input" value="${escapeHtml(s.description)}" onchange="updateStage(${i}, 'description', this.value)"></td>
+                <td>${escapeHtml(s.name)}</td>
+                <td>${escapeHtml(s.description)}</td>
               </tr>
             `).join('')}
           </tbody>
@@ -4444,17 +4357,7 @@ function renderConfig() {
   grid.innerHTML = constraintsHtml + hatsHtml + teamsHtml + stagesHtml;
 }
 
-function renderHatField(idx, field, label, rows, value) {
-  return `
-    <div class="hat-field">
-      <div class="hat-field-lbl">${label}</div>
-      <textarea class="hat-field-area" rows="${rows}" onchange="updateHat(${idx}, '${field}', this.value)">${escapeHtml(value)}</textarea>
-    </div>`;
-}
-
 function xIcon() { return '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>'; }
-
-function toggleHat(i) { document.getElementById('hat-card-' + i).classList.toggle('open'); }
 
 async function updateConstraint(i, field, value) {
   const visible = state.constraints.filter(c => !c.archived);
@@ -4476,11 +4379,6 @@ async function archiveConstraint(i) {
   c.archived = true;
   await saveConstraints(c);
   renderConfig();
-}
-async function updateHat(i, field, value) {
-  const h = state.hats[i];
-  h[field] = value;
-  await saveHats(h);
 }
 async function updateTeam(i, field, value) {
   const visible = state.teams.filter(t => !t.archived);
@@ -4504,12 +4402,6 @@ async function archiveTeam(i) {
   await saveTeams(t);
   renderConfig();
 }
-async function updateStage(i, field, value) {
-  const s = state.stages[i];
-  s[field] = value;
-  await saveStages(s);
-}
-
 /* ============================================================
  * 8. MODAL & TOAST
  * ============================================================ */
