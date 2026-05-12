@@ -3458,7 +3458,7 @@ function mapAvailability(rec) {
   const dateStr = f[F.date] || null;
   const { day, weekId } = dateToDayAndWeek(dateStr);
   return {
-    recordId: rec.id,
+    _recordId: rec.id,
     id: f[F.blockId] || rec.id,
     date: dateStr,
     weekId,
