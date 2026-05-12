@@ -2641,11 +2641,13 @@ const state = {
   currentPanel: 'activities',
   editingId: null,
   wizard: {
-    // null = no week selected yet (show Step 0)
+    // null = no week selected yet (show week picker)
     // weekId = currently working on that week
     activeWeekId: null,
-    // Map: weekId -> { step (1-5), startedAt, closedAt, decisions: {...} }
-    rituals: {}
+    // Map: weekId -> { step (1-3), startedAt, closedAt, decisions: {...} }
+    rituals: {},
+    // Map: weekId -> array of { id, weekId, day, startHHMM, endHHMM }
+    availability: {}
   },
   airtable: {
     config: null,           // { baseId, token, baseName }
@@ -2944,6 +2946,13 @@ function mapHat(rec) {
   };
 }
 
+// Wizard fields use internal codes (compact) but Airtable stores readable
+// option names. Two-way maps keep the in-memory model decoupled from labels.
+const GOAL_HORIZON_TO_AT = { month: 'Monthly goal', quarter: 'Quarterly goal', none: 'No' };
+const GOAL_HORIZON_FROM_AT = { 'Monthly goal': 'month', 'Quarterly goal': 'quarter', 'No': 'none' };
+const COST_TO_AT = { none: 'Nothing serious', delay: 'Delays it', problem: 'Creates a problem' };
+const COST_FROM_AT = { 'Nothing serious': 'none', 'Delays it': 'delay', 'Creates a problem': 'problem' };
+
 function mapActivity(rec, hatsById, constraintsById, teamsById, stagesById) {
   const f = rec.fields;
   const F = MAP.activities.fields;
@@ -2969,11 +2978,29 @@ function mapActivity(rec, hatsById, constraintsById, teamsById, stagesById) {
     estimated_hours: f[F.duration] ? f[F.duration] / 60 : null,
     priority: f[F.priority] != null ? f[F.priority] : null,
     priority_week: f[F.priorityWeek] || null,
+    priority_block: f[F.priorityBlock] || null,
+    obj_horizon: GOAL_HORIZON_FROM_AT[f[F.goalHorizon]] || null,
+    blocks_team: f[F.blocksTeam] === 'Yes' ? 'yes' : (f[F.blocksTeam] === 'No' ? 'no' : null),
+    cost_of_not_doing: COST_FROM_AT[f[F.costOfNotDoing]] || null,
     completed: !!f[F.completed],
     description: f[F.description] || '',
     archived: !!f[F.archived],
     log: f[F.log] ? parseLog(f[F.log]) : [],
     _recordId: rec.id
+  };
+}
+
+function mapAvailability(rec) {
+  const f = rec.fields;
+  const F = MAP.availability.fields;
+  return {
+    recordId: rec.id,
+    id: f[F.blockId] || rec.id,
+    weekId: f[F.weekId] || '',
+    day: f[F.day] != null ? f[F.day] : 0,
+    startHHMM: f[F.startHHMM] || '09:00',
+    endHHMM: f[F.endHHMM] || '10:00',
+    archived: !!f[F.archived]
   };
 }
 
@@ -3043,12 +3070,28 @@ function activityToAirtableFields(a) {
   out[F.completed] = !!a.completed;
   if (a.priority !== undefined) out[F.priority] = a.priority;
   if (a.priority_week !== undefined) out[F.priorityWeek] = a.priority_week || '';
+  if (a.priority_block !== undefined) out[F.priorityBlock] = a.priority_block || '';
   if (a.date !== undefined) out[F.date] = a.date || null;
   if (a.duration_minutes !== undefined) out[F.duration] = a.duration_minutes;
+  if (a.obj_horizon !== undefined) out[F.goalHorizon] = a.obj_horizon ? GOAL_HORIZON_TO_AT[a.obj_horizon] : null;
+  if (a.blocks_team !== undefined) out[F.blocksTeam] = a.blocks_team === 'yes' ? 'Yes' : (a.blocks_team === 'no' ? 'No' : null);
+  if (a.cost_of_not_doing !== undefined) out[F.costOfNotDoing] = a.cost_of_not_doing ? COST_TO_AT[a.cost_of_not_doing] : null;
   if (a.description !== undefined) out[F.description] = a.description || '';
   out[F.archived] = !!a.archived;
   if (a.log !== undefined) out[F.log] = serializeLog(a.log);
   return out;
+}
+
+function availabilityToAirtableFields(b) {
+  const F = MAP.availability.fields;
+  return {
+    [F.blockId]: b.id || '',
+    [F.weekId]: b.weekId || '',
+    [F.day]: b.day != null ? b.day : 0,
+    [F.startHHMM]: b.startHHMM || '',
+    [F.endHHMM]: b.endHHMM || '',
+    [F.archived]: !!b.archived
+  };
 }
 
 function constraintToAirtableFields(c) {
@@ -3115,10 +3158,11 @@ async function loadAllFromAirtable() {
   const teamsById = {};
   state.teams.forEach(t => { teamsById[t.recordId] = t; });
 
-  // 3. Load Activities and Rituals
-  const [activitiesRaw, ritualsRaw] = await Promise.all([
+  // 3. Load Activities, Rituals and Availability Blocks
+  const [activitiesRaw, ritualsRaw, availabilityRaw] = await Promise.all([
     atList(MAP.activities.tableId),
-    atList(MAP.rituals.tableId)
+    atList(MAP.rituals.tableId),
+    atList(MAP.availability.tableId)
   ]);
   state.activities = activitiesRaw.map(r => mapActivity(r, hatsById, constraintsById, teamsById, stagesById));
 
@@ -3130,9 +3174,17 @@ async function loadAllFromAirtable() {
       step: m.step,
       startedAt: m.startedAt,
       closedAt: m.closedAt,
-      decisions: m.decisions || { step1_lastWeek: {}, step2_inventory: {}, step5_synced: false }
+      decisions: m.decisions || { step1_phase: 'A', step2_phase: 'A', step1_lastWeek: {} }
     };
   });
+
+  // Availability blocks grouped by weekId for fast access.
+  state.wizard.availability = {};
+  availabilityRaw.map(mapAvailability)
+    .filter(b => !b.archived)
+    .forEach(b => {
+      (state.wizard.availability[b.weekId] = state.wizard.availability[b.weekId] || []).push(b);
+    });
 
   state.airtable.lastSyncedAt = new Date().toISOString();
 }
@@ -3144,6 +3196,7 @@ async function loadAllFromAirtable() {
 // Each activity that mutates is marked dirty by id. flushDirty() persists only those.
 const dirtyActivityIds = new Set();
 const dirtyRitualWeekIds = new Set();
+const dirtyAvailabilityIds = new Set();
 
 // Activities just checked off — kept visible in My desk for a grace period
 // so an accidental click can be undone before the row disappears.
@@ -3156,6 +3209,17 @@ function markActivityDirty(activityId) {
 }
 function markRitualDirty(weekId) {
   if (weekId) dirtyRitualWeekIds.add(weekId);
+}
+function markAvailabilityDirty(blockId) {
+  if (blockId) dirtyAvailabilityIds.add(blockId);
+}
+
+function findAvailabilityBlock(blockId) {
+  for (const weekId in state.wizard.availability) {
+    const found = state.wizard.availability[weekId].find(b => b.id === blockId);
+    if (found) return found;
+  }
+  return null;
 }
 
 // Persists only dirty activities (and new ones without _recordId).
@@ -3302,6 +3366,56 @@ async function saveWizardRituals() {
   }
   if (errorCount > 0) toast(`${errorCount} ritual ${errorCount === 1 ? 'change' : 'changes'} failed to save`);
   dirtyRitualWeekIds.clear();
+}
+
+async function saveAvailability() {
+  // Persist dirty blocks plus any newly created (no _recordId).
+  const ids = new Set(dirtyAvailabilityIds);
+  for (const weekId in state.wizard.availability) {
+    state.wizard.availability[weekId].forEach(b => {
+      if (!b._recordId) ids.add(b.id);
+    });
+  }
+  if (ids.size === 0) return;
+
+  let errorCount = 0;
+  for (const id of ids) {
+    const b = findAvailabilityBlock(id);
+    if (!b) continue;
+    const fields = availabilityToAirtableFields(b);
+    try {
+      if (b._recordId) await atUpdate(MAP.availability.tableId, b._recordId, fields);
+      else {
+        const res = await atCreate(MAP.availability.tableId, fields);
+        b._recordId = res.id;
+      }
+    } catch (e) {
+      errorCount++;
+      console.error('Availability save error', e);
+    }
+  }
+  if (errorCount > 0) toast(`${errorCount} availability ${errorCount === 1 ? 'change' : 'changes'} failed to save`);
+  dirtyAvailabilityIds.clear();
+}
+
+async function archiveAvailabilityBlock(blockId) {
+  // Soft delete: drop from in-memory map and flip Archived in Airtable.
+  let target = null;
+  for (const weekId in state.wizard.availability) {
+    const idx = state.wizard.availability[weekId].findIndex(b => b.id === blockId);
+    if (idx >= 0) {
+      target = state.wizard.availability[weekId][idx];
+      state.wizard.availability[weekId].splice(idx, 1);
+      break;
+    }
+  }
+  if (!target || !target._recordId) return;
+  try {
+    await atUpdate(MAP.availability.tableId, target._recordId, { [MAP.availability.fields.archived]: true });
+  } catch (e) {
+    console.error('Availability archive error', e);
+    toast('Could not archive block');
+  }
 }
 
 // ---- Manual sync ----
