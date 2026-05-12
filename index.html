@@ -2474,6 +2474,32 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 }
 .act-row.step1-row:hover .step1-archive { opacity: 1; }
 .step1-archive:hover { background: var(--ink6); color: var(--red); }
+
+/* Asana-style completion check (Last week rows in Step 1) */
+.asana-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink5);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all .15s;
+  background: var(--white);
+  color: transparent;
+}
+.asana-check:hover {
+  border-color: var(--green);
+  color: var(--green-bd);
+}
+.asana-check.checked {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+.asana-check.checked:hover { opacity: .85; }
+.asana-check svg { width: 13px; height: 13px; }
 .step1-card .act-row.step1-row { cursor: default; }
 .act-row.step1-row.completed .act-name {
   text-decoration: line-through;
