@@ -1,0 +1,5590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CEO Time System — Colektia</title>
+<style>
+/* ============================================================
+ * Colektia Design System — Compact tokens (matches Pipeline Review)
+ * ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Font */
+  --f: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Coral */
+  --coral-50:  #fff5f4;
+  --coral-100: #ffe6e3;
+  --coral-200: #fdddd9;
+  --coral-300: #f8a097;
+  --coral-400: #f17064;
+  --coral-500: #e8443a;
+  --coral-600: #d03b32;
+  --coral-700: #b02d24;
+
+  /* Slate */
+  --slate-50:  #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cad5e2;
+  --slate-400: #90a1b9;
+  --slate-500: #62748e;
+  --slate-600: #45556c;
+  --slate-700: #314158;
+  --slate-800: #1d293d;
+  --slate-900: #0f172b;
+
+  /* States — semantic */
+  --green:    #00a155;
+  --green-h:  #007f45;
+  --green-bg: #d9fbe8;
+  --green-bd: #b3f5d1;
+  --amber:    #e17100;
+  --amber-bg: #fef3c6;
+  --amber-bd: #fde4a0;
+  --error-500: #fb2c36;
+  --error-600: #e7000b;
+  --error-50:  #fef2f2;
+  --info-50:   #eff6ff;
+  --info-500:  #2b7fff;
+  --info-600:  #1447e6;
+
+  /* Semantic surfaces */
+  --fg:         #0f172b;
+  --fg-muted:   #314158;
+  --fg-subtle:  #62748e;
+  --fg-faint:   #90a1b9;
+  --bg-surface: #ffffff;
+  --bg-page:    #f8fafc;
+  --bg-subtle:  #f1f5f9;
+  --border:     #d4d4d8;
+  --border-subtle: #e2e8f0;
+
+  /* Aliases used throughout the original CSS */
+  --red:    var(--coral-500);
+  --red-h:  var(--coral-600);
+  --red-bg: var(--coral-50);
+  --red-bd: var(--coral-200);
+
+  --hover-bg: #F4F4F5;
+
+  --ink:  var(--fg);
+  --ink2: var(--fg-muted);
+  --ink3: var(--fg-subtle);
+  --ink4: var(--fg-faint);
+  --ink5: var(--border);
+  --ink6: var(--border-subtle);
+
+  --white:    var(--bg-surface);
+  --surface:  var(--bg-page);
+  --surface2: var(--bg-subtle);
+
+  /* Radii */
+  --rxs: 4px;
+  --rs:  7px;
+  --r:   10px;
+  --rl:  14px;
+  --rxl: 16px;
+
+  /* Shadows */
+  --shs: 0 1px 2px 0 rgba(0,0,0,.05);
+  --sh:  0 1px 2px 0 rgba(0,0,0,.06), 0 1px 3px 0 rgba(0,0,0,.08);
+  --shm: 0 4px 6px -1px rgba(0,0,0,.06), 0 2px 4px -2px rgba(0,0,0,.06);
+  --shl: 0 10px 15px -3px rgba(0,0,0,.08), 0 4px 6px -4px rgba(0,0,0,.06);
+}
+
+/* ============================================================
+ * Base
+ * ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  font-family: var(--f);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+button { cursor: pointer; background: none; border: none; }
+input, select, textarea { outline: none; }
+.app { display: flex; height: 100vh; overflow: hidden; position: relative; }
+.app .sidebar {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  z-index: 40;
+}
+.main { flex: 1; overflow: hidden; display: flex; flex-direction: column; margin-left: 56px; }
+.panel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
+.panel.active { display: flex; }
+
+/* ============================================================
+ * Sidebar (collapsible: 56px → 240px on hover)
+ * ============================================================ */
+.sidebar {
+  width: 56px;
+  flex-shrink: 0;
+  background: var(--white);
+  border-right: 1px solid var(--ink5);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 40;
+  transition: width .18s ease-out;
+}
+/* Spacer placeholder so the main area doesn't shift when sidebar expands as overlay */
+.sidebar-spacer {
+  width: 56px;
+  flex-shrink: 0;
+}
+.sidebar.expanded,
+.sidebar:hover {
+  width: 240px;
+  box-shadow: var(--shl);
+}
+.sb-brand {
+  padding: 18px 14px 14px;
+  border-bottom: 1px solid var(--ink5);
+  height: 65px;
+  display: flex;
+  align-items: flex-start;
+  overflow: hidden;
+}
+.sb-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  white-space: nowrap;
+}
+.sb-logo-mark {
+  width: 28px; height: 28px;
+  background: var(--red);
+  border-radius: var(--rs);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+.sb-logo-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  opacity: 0;
+  transition: opacity .14s;
+}
+.sidebar:hover .sb-logo-text,
+.sidebar.expanded .sb-logo-text {
+  opacity: 1;
+}
+.sb-tag {
+  font-size: 10px;
+  color: var(--ink4);
+  margin-top: 4px;
+  margin-left: 37px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .14s;
+}
+.sidebar:hover .sb-tag,
+.sidebar.expanded .sb-tag {
+  opacity: 1;
+}
+
+.sb-nav {
+  flex: 1;
+  padding: 10px 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.nav-sec {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--ink4);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding: 14px 10px 6px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .14s;
+  height: 26px;
+}
+.sidebar:hover .nav-sec,
+.sidebar.expanded .nav-sec {
+  opacity: 1;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 8px 6px;
+  border-radius: var(--rs);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--f);
+  transition: background .12s;
+  text-align: left;
+  margin-bottom: 1px;
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.nav-btn:hover { background: var(--surface); }
+.nav-btn.active { background: var(--hover-bg); }
+.nav-btn.active .nb-name { color: var(--red); }
+.nav-btn.disabled { cursor: not-allowed; opacity: .55; }
+.nav-btn.disabled:hover { background: none; }
+
+.nb-icon {
+  width: 28px; height: 28px;
+  border-radius: var(--rs);
+  background: var(--surface2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: var(--ink3);
+}
+.nb-icon svg { stroke: var(--ink3); }
+.nav-btn.active .nb-icon { background: var(--red); color: #fff; }
+.nav-btn.active .nb-icon svg { stroke: #fff; }
+
+.nb-meta {
+  flex: 1;
+  min-width: 0;
+  opacity: 0;
+  transition: opacity .14s;
+}
+.sidebar:hover .nb-meta,
+.sidebar.expanded .nb-meta {
+  opacity: 1;
+}
+.nb-name { font-size: 12px; font-weight: 600; color: var(--ink2); line-height: 1.25; }
+.nb-sub { font-size: 10px; color: var(--ink4); margin-top: 1px; }
+
+.nb-tag {
+  font-size: 8px; font-weight: 700;
+  padding: 2px 5px; border-radius: var(--rxs);
+  background: var(--surface2); color: var(--ink4);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity .14s;
+}
+.sidebar:hover .nb-tag,
+.sidebar.expanded .nb-tag {
+  opacity: 1;
+}
+
+/* Tooltip — shown when collapsed and hovering individual nav-btn */
+.nb-tooltip {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--ink);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: var(--rs);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .12s;
+  z-index: 50;
+}
+.nb-tooltip::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 4px solid var(--ink);
+}
+.sidebar:not(:hover):not(.expanded) .nav-btn:hover .nb-tooltip {
+  opacity: 1;
+  transition-delay: .35s;
+}
+
+.sb-user {
+  padding: 12px 10px;
+  border-top: 1px solid var(--ink5);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  overflow: hidden;
+}
+.sb-uavatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.sb-user-meta {
+  opacity: 0;
+  transition: opacity .14s;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.sidebar:hover .sb-user-meta,
+.sidebar.expanded .sb-user-meta {
+  opacity: 1;
+}
+.uname { font-size: 11px; font-weight: 600; color: var(--ink); }
+.urole { font-size: 9px; color: var(--ink4); }
+
+/* ============================================================
+ * Topbar (52px)
+ * ============================================================ */
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 52px; background: var(--white); border-bottom: 1px solid var(--ink5); flex-shrink: 0; }
+.tbl { display: flex; align-items: center; gap: 6px; }
+.tbr { display: flex; align-items: center; gap: 10px; }
+
+/* Breadcrumb */
+.bc { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.bc-link { color: var(--ink4); cursor: pointer; font-weight: 500; transition: color .12s; }
+.bc-link:hover { color: var(--ink2); }
+.bc-sep { color: var(--ink5); }
+.bc-cur { font-weight: 600; color: var(--ink); }
+
+/* Topbar controls */
+.tb-ctl {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 30px; padding: 0 12px;
+  border-radius: var(--rs); border: 1px solid var(--ink5);
+  background: #fff;
+  font: 600 11px/1 var(--f);
+  color: var(--ink2); cursor: pointer;
+}
+.tb-ctl:hover { background: var(--hover-bg); }
+.tb-ctl .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+.tb-ctl.warn { color: var(--amber); border-color: var(--amber-bd); background: var(--amber-bg); }
+.tb-ctl.warn .dot { background: var(--amber); }
+.tb-uavatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  font-size: 11px; font-weight: 700;
+  border: 1px solid var(--ink5);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Last sync indicator (read-only) */
+.last-sync {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px;
+  color: var(--ink4);
+  padding: 0 4px;
+}
+.last-sync svg { color: var(--ink4); }
+.ls-label { font-weight: 500; }
+.ls-value { font-weight: 600; color: var(--ink2); }
+
+/* ============================================================
+ * Scroll + Page header
+ * ============================================================ */
+.scroll { flex: 1; overflow-y: auto; background: var(--white); }
+.scroll-padded { padding: 24px; }
+.ph { padding: 18px 24px 0; background: var(--white); }
+.ph-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.ph-filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ph-primary { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+/* ============================================================
+ * Tabs (under topbar)
+ * ============================================================ */
+.tabs {
+  display: flex; align-items: center; gap: 4px;
+  padding: 0 24px;
+  background: var(--white);
+  border-bottom: 1px solid var(--ink5);
+  flex-shrink: 0;
+}
+.tab {
+  padding: 11px 16px;
+  font-size: 12px; font-weight: 600;
+  color: var(--ink4);
+  border: none; background: none; cursor: pointer;
+  font-family: var(--f);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all .12s;
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.tab:hover { color: var(--ink2); }
+.tab.active { color: var(--red); border-bottom-color: var(--red); }
+.tab-cnt {
+  background: var(--surface2);
+  color: var(--ink3);
+  font-size: 10px; font-weight: 700;
+  padding: 1px 7px; border-radius: 99px;
+}
+.tab.active .tab-cnt { background: var(--red-bg); color: var(--red); }
+
+/* ============================================================
+ * Filter bar
+ * ============================================================ */
+.filter-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 24px;
+  background: var(--white);
+  flex-shrink: 0; flex-wrap: wrap;
+  border-bottom: 1px solid var(--ink6);
+}
+.filter-label { font-size: 10px; font-weight: 700; color: var(--ink4); text-transform: uppercase; letter-spacing: .08em; }
+
+select.fsel {
+  appearance: none; -webkit-appearance: none;
+  height: 30px; padding: 0 30px 0 12px;
+  border-radius: var(--rs);
+  border: 1px solid var(--ink5);
+  font-size: 11px; font-weight: 500;
+  font-family: var(--f); color: var(--ink2);
+  background: var(--white) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat right 10px center;
+  background-size: 10px;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+select.fsel:hover { background-color: var(--hover-bg); }
+select.fsel:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(232,68,58,.18); }
+
+input.finput {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--rs);
+  border: 1px solid var(--ink5);
+  font-size: 11px; font-weight: 500;
+  font-family: var(--f); color: var(--ink);
+  background: #fff;
+  width: 180px;
+}
+input.finput:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(232,68,58,.18); }
+input.finput::placeholder { color: var(--ink4); }
+
+/* ============================================================
+ * Buttons
+ * ============================================================ */
+.btn {
+  padding: 7px 16px;
+  border-radius: var(--rs);
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  font-family: var(--f);
+  transition: all .12s;
+  border: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-p { background: var(--red); color: #fff; }
+.btn-p:hover { background: var(--red-h); }
+.btn-g { background: none; color: var(--ink3); border: 1px solid var(--ink5); }
+.btn-g:hover { background: var(--hover-bg); }
+.btn-ok { background: var(--green); color: #fff; }
+.btn-ok:hover { opacity: .88; }
+.btn-sm { padding: 5px 12px; font-size: 11px; }
+.btn-xs { padding: 3px 9px; font-size: 10px; }
+.btn-danger { background: var(--coral-50); color: var(--red); border: 1px solid var(--coral-200); }
+.btn-danger:hover { background: var(--red); color: #fff; }
+.btn-subtle { background: transparent; color: var(--ink3); border: 1px solid transparent; }
+.btn-subtle:hover { background: var(--surface); color: var(--ink); }
+
+/* ============================================================
+ * KPI grid
+ * ============================================================ */
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
+.kpi-row.size-sm { gap: 8px; margin-bottom: 14px; }
+.kpi {
+  background: var(--white);
+  border: 1px solid var(--ink5);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  position: relative; overflow: hidden;
+  transition: border-color .12s, background .12s;
+}
+.kpi-row.size-sm .kpi { padding: 9px 11px; border-radius: var(--rs); }
+.kpi-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--ink4); margin-bottom: 4px; }
+.kpi-row.size-sm .kpi-lbl { font-size: 8px; letter-spacing: .09em; margin-bottom: 3px; }
+.kpi-val { font-size: 22px; font-weight: 700; color: var(--ink); line-height: 1; }
+.kpi-row.size-sm .kpi-val { font-size: 15px; }
+.kpi-val.red { color: var(--red); }
+.kpi-val.amber { color: var(--amber); }
+.kpi-val.green { color: var(--green); }
+.kpi-sub { font-size: 10px; color: var(--ink4); margin-top: 3px; }
+
+/* ============================================================
+ * Activity list
+ * ============================================================ */
+.act-list { padding: 8px 24px 60px; }
+.act-group { margin-bottom: 18px; }
+.act-group-hd {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 0 8px;
+}
+.act-group-lbl {
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ink3);
+}
+.act-group-meta { font-size: 10px; color: var(--ink4); font-weight: 500; }
+
+.act-card {
+  background: var(--white);
+  border: 1px solid var(--ink5);
+  border-radius: var(--r);
+  /* overflow: visible to allow tooltips to escape — rows use clean borders for visual containment */
+}
+/* .act-row styles defined further below in the table section */
+
+/* ============================================================
+ * Activity row — table-like, native selects always visible
+ * ============================================================ */
+
+/* Priority cell — dropdown with hidden select; shows number compactly */
+.cell-prio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 26px;
+  padding: 0 14px 0 6px;
+  border-radius: var(--rxs);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+  position: relative;
+}
+.cell-prio:hover {
+  border-color: var(--ink5);
+  background: var(--white);
+}
+.cell-prio .cp-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.cell-prio .cp-text.empty {
+  color: var(--ink4);
+  font-weight: 500;
+}
+.cell-prio::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  width: 8px; height: 8px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' stroke='%2390a1b9' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat center;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.cell-prio select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+}
+
+/* Generic table-like select (constraint, hat, team, etc.) */
+.cell-select {
+  appearance: none; -webkit-appearance: none;
+  width: 100%;
+  height: 26px;
+  padding: 0 20px 0 8px;
+  border-radius: var(--rxs);
+  border: 1px solid transparent;
+  background: transparent url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' stroke='%2390a1b9' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat right 6px center;
+  background-size: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--f);
+  color: var(--ink);
+  cursor: pointer;
+  outline: none;
+  transition: border-color .12s, background-color .12s;
+}
+.cell-select:hover {
+  border-color: var(--ink5);
+  background-color: var(--white);
+}
+.cell-select:focus {
+  border-color: var(--red);
+  background-color: var(--white);
+  box-shadow: 0 0 0 2px rgba(232,68,58,.18);
+}
+.cell-select.empty {
+  color: var(--ink4);
+  font-style: italic;
+}
+
+/* Constraint cell — compact display "C1" with hidden select for dropdown showing full names */
+.cell-constraint {
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  height: 26px;
+  padding: 0 18px 0 8px;
+  border-radius: var(--rxs);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+  position: relative;
+}
+.cell-constraint:hover {
+  border-color: var(--ink5);
+  background: var(--white);
+}
+.cell-constraint .cc-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.cell-constraint .cc-text.empty {
+  color: var(--ink4);
+  font-style: italic;
+}
+.cell-constraint::after {
+  content: '';
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  width: 8px; height: 8px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' stroke='%2390a1b9' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat center;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.cell-constraint select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+}
+
+/* Team avatar inline (kept — useful for quick identification) */
+.cell-team {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 26px;
+  padding: 0 4px;
+  border-radius: var(--rxs);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+  position: relative;
+}
+.cell-team:hover {
+  border-color: var(--ink5);
+  background: var(--white);
+}
+.cell-team .team-av {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  font-size: 9px; font-weight: 700;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.cell-team .team-av.empty {
+  background: var(--surface2);
+  color: var(--ink4);
+}
+.cell-team .team-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+.cell-team .team-name.empty {
+  color: var(--ink4);
+  font-style: italic;
+}
+.cell-team::after {
+  content: '';
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  width: 8px; height: 8px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' stroke='%2390a1b9' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat center;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.cell-team select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+}
+
+/* Status — unified icon at end of row (Google Calendar style / clipboard gray) */
+.status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--rxs);
+  cursor: default;
+  position: relative;
+}
+.status-icon.scheduled {
+  /* Icon has its own multi-color palette; no background tint */
+}
+.status-icon.backlog {
+  color: var(--ink4);
+  background: transparent;
+}
+
+/* Custom tooltip — modern, dark, appears above */
+[data-tooltip] {
+  position: relative;
+}
+[data-tooltip]::after,
+[data-tooltip]::before {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .14s ease-out, transform .14s ease-out;
+  z-index: 1000;
+}
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  background: var(--ink);
+  color: #ffffff;
+  font-family: var(--f);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  padding: 8px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px -2px rgba(0,0,0,.22), 0 2px 4px rgba(0,0,0,.12);
+  letter-spacing: -0.005em;
+}
+[data-tooltip]::before {
+  content: '';
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--ink);
+  bottom: calc(100% + 2px);
+}
+[data-tooltip]:hover::after,
+[data-tooltip]:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  transition-delay: .25s;
+}
+
+/* Activity name */
+.act-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Sync icon — kept with semantic color */
+.act-sync {
+  display: flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+}
+.act-sync.synced { color: var(--green); }
+.act-sync.out { color: var(--amber); }
+.act-sync.not-synced { color: var(--ink4); }
+
+/* Row */
+.act-row {
+  display: grid;
+  grid-template-columns: 56px 1fr 70px 100px 130px 32px;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--ink6);
+  cursor: pointer;
+  transition: background .1s;
+}
+.act-row:last-child { border-bottom: none; }
+.act-row:hover { background: var(--hover-bg); }
+
+/* Empty state */
+.empty-state {
+  padding: 64px 24px; text-align: center; color: var(--ink4);
+}
+.empty-state h3 { font-size: 14px; color: var(--ink2); margin-bottom: 4px; font-weight: 600; }
+.empty-state p { font-size: 11px; color: var(--ink4); }
+
+/* Sync icon */
+.act-sync {
+  display: flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+}
+.act-sync.synced { color: var(--green); }
+.act-sync.out { color: var(--amber); }
+.act-sync.not-synced { color: var(--ink4); }
+
+/* Empty state */
+.empty-state {
+  padding: 64px 24px; text-align: center; color: var(--ink4);
+}
+.empty-state h3 { font-size: 14px; color: var(--ink2); margin-bottom: 4px; font-weight: 600; }
+.empty-state p { font-size: 11px; color: var(--ink4); }
+
+/* ============================================================
+ * Slide panel
+ * ============================================================ */
+.sp-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15,17,23,.3);
+  z-index: 50;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s;
+}
+.sp-overlay.open { opacity: 1; pointer-events: all; }
+.sp {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: 92vw; max-width: 580px;
+  background: var(--white);
+  border-left: 1px solid var(--ink5);
+  z-index: 51;
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform .28s cubic-bezier(.4,0,.2,1);
+}
+.sp.open { transform: translateX(0); }
+.sp-hd { padding: 14px 18px; border-bottom: 1px solid var(--ink5); display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-shrink: 0; background: var(--white); }
+.sp-hd-info { flex: 1; min-width: 0; }
+.sp-title { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.sp-title-input {
+  font-size: 16px; font-weight: 700; color: var(--ink);
+  border: 1px solid transparent;
+  padding: 3px 6px;
+  margin: -3px -6px 1px;
+  border-radius: var(--rxs);
+  width: 100%;
+  background: transparent;
+}
+.sp-title-input:hover { border-color: var(--ink5); }
+.sp-title-input:focus { border-color: var(--red); background: #fff; }
+.sp-sub { font-size: 11px; color: var(--ink4); display: flex; align-items: center; gap: 6px; }
+.sp-close {
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  border: none;
+  background: var(--surface2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink3);
+}
+.sp-close:hover { background: var(--ink6); color: var(--ink); }
+.sp-body { flex: 1; overflow-y: auto; padding: 18px 24px; background: var(--white); }
+.sp-ft { padding: 12px 18px; border-top: 1px solid var(--ink5); background: var(--white); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sp-sec { margin-bottom: 18px; }
+.sp-sec-title {
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ink4); margin-bottom: 9px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+/* Form fields */
+.fg-m { margin-bottom: 12px; }
+.fl-m { font-size: 11px; font-weight: 700; color: var(--ink2); margin-bottom: 5px; display: block; }
+.fi, .ft-select, .ft-area {
+  width: 100%;
+  border: 1px solid var(--ink5);
+  border-radius: var(--rs);
+  padding: 8px 11px;
+  font-size: 12px;
+  font-family: var(--f);
+  color: var(--ink);
+  background: var(--white);
+  transition: border-color .12s;
+}
+.fi:focus, .ft-select:focus, .ft-area:focus { border-color: var(--red); }
+.ft-select {
+  appearance: none; -webkit-appearance: none;
+  padding-right: 30px;
+  background: var(--white) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat right 10px center;
+  background-size: 10px;
+  cursor: pointer;
+}
+.ft-area { resize: vertical; min-height: 60px; font-family: var(--f); line-height: 1.5; }
+.fi[disabled], .ft-select[disabled] {
+  background: var(--surface);
+  color: var(--ink4);
+  cursor: not-allowed;
+}
+.fg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.field-hint { font-size: 10px; color: var(--ink4); margin-top: 4px; }
+
+/* Toggle (switch) */
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--surface);
+  border-radius: var(--rs);
+  margin-top: 6px;
+}
+.toggle-meta .toggle-lbl { font-size: 12px; font-weight: 600; color: var(--ink); }
+.toggle-meta .toggle-sub { font-size: 10px; color: var(--ink4); margin-top: 1px; }
+.switch {
+  position: relative;
+  width: 32px; height: 18px;
+  background: var(--ink5);
+  border-radius: 99px;
+  cursor: pointer;
+  transition: background .16s;
+  flex-shrink: 0;
+}
+.switch.on { background: var(--red); }
+.switch::after {
+  content: ''; position: absolute;
+  top: 2px; left: 2px;
+  width: 14px; height: 14px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform .16s;
+}
+.switch.on::after { transform: translateX(14px); }
+
+/* Sync status box */
+.sync-box {
+  padding: 10px 12px;
+  background: var(--surface);
+  border-radius: var(--rs);
+  font-size: 11px;
+}
+.sync-box .row { display: flex; justify-content: space-between; padding: 2px 0; }
+.sync-box .row .l { color: var(--ink4); }
+.sync-box .row .v { color: var(--ink); font-weight: 600; }
+.sync-id { font-size: 9px; color: var(--ink4); margin-top: 6px; word-break: break-all; font-family: 'SF Mono', ui-monospace, monospace; }
+
+/* Log */
+.log { margin-top: 8px; }
+.log-row {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--ink6);
+  font-size: 11px;
+}
+.log-row:last-child { border-bottom: none; }
+.log-time { color: var(--ink4); font-size: 10px; font-weight: 500; }
+.log-text { color: var(--ink2); }
+
+/* Save msg */
+.save-msg { font-size: 11px; color: var(--green); font-weight: 600; display: flex; align-items: center; gap: 4px; opacity: 0; transition: opacity .3s; }
+.save-msg.show { opacity: 1; }
+
+/* ============================================================
+ * Modal
+ * ============================================================ */
+.modal-wrap { position: fixed; inset: 0; background: rgba(15,17,23,.4); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
+.modal-wrap.open { display: flex; }
+.modal { background: var(--white); border-radius: var(--rl); padding: 24px; width: 480px; max-width: 100%; border: 1px solid var(--ink5); box-shadow: var(--shm); }
+.modal-title { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.modal-desc { font-size: 12px; color: var(--ink3); line-height: 1.7; margin-bottom: 16px; white-space: pre-line; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+
+/* ============================================================
+ * Activity Edit Modal — minimal
+ * ============================================================ */
+.am-hd {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ink6);
+}
+.am-title {
+  flex: 1;
+  font-family: var(--f);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  border-radius: var(--rs);
+  outline: none;
+  transition: border-color .12s, background .12s;
+  letter-spacing: -0.01em;
+}
+.am-title:hover {
+  border-color: var(--ink6);
+  background: var(--surface);
+}
+.am-title:focus {
+  border-color: var(--red);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(232,68,58,.12);
+}
+.am-close {
+  width: 28px; height: 28px;
+  border-radius: var(--rs);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink3);
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.am-close:hover {
+  background: var(--ink6);
+  color: var(--ink);
+}
+
+.am-section { margin-bottom: 22px; }
+.am-section-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink4);
+  margin-bottom: 10px;
+}
+
+/* Stage progress — Ready → Building → Training → Live */
+.stage-progress {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 4px;
+}
+.stage-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: var(--rs);
+  transition: transform .12s, background .12s;
+}
+.stage-step:hover {
+  transform: translateY(-1px);
+}
+.stage-step:hover .stage-dot {
+  border-color: var(--red);
+}
+.stage-step.active:hover .stage-dot {
+  /* Already coral with halo, no extra effect needed */
+}
+.stage-step:active {
+  transform: translateY(0);
+}
+.stage-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface2);
+  color: var(--ink4);
+  font-size: 11px;
+  font-weight: 700;
+  border: 2px solid var(--surface2);
+  transition: all .15s;
+}
+.stage-step.completed .stage-dot {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+.stage-step.completed .stage-dot svg { stroke: #fff; }
+.stage-step.active .stage-dot {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+  box-shadow: 0 0 0 4px rgba(232,68,58,.16);
+}
+.stage-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink4);
+  white-space: nowrap;
+}
+.stage-step.completed .stage-label { color: var(--green); }
+.stage-step.active .stage-label { color: var(--red); }
+
+.stage-line {
+  flex: 1;
+  height: 2px;
+  background: var(--ink6);
+  margin: 0 4px;
+  margin-bottom: 20px;
+  transition: background .15s;
+  min-width: 20px;
+}
+.stage-line.completed { background: var(--green); }
+
+/* Delegate switch — iOS style, large */
+.am-delegate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border-radius: var(--r);
+  border: 1px solid var(--ink6);
+  transition: background .14s, border-color .14s;
+}
+.am-delegate-meta { flex: 1; min-width: 0; }
+.am-delegate-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.am-delegate.is-completed {
+  background: var(--green-bg);
+  border-color: var(--green-bd);
+}
+.am-delegate.is-completed .am-delegate-title {
+  color: var(--green);
+}
+
+/* CTA Completado — large button at the bottom of the modal */
+.am-status-section {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.cta-complete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 18px;
+  background: var(--white);
+  border: 1.5px solid var(--ink5);
+  border-radius: var(--r);
+  font-family: var(--f);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink2);
+  cursor: pointer;
+}
+.cta-complete .cta-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px; height: 22px;
+  color: var(--ink5);
+}
+.cta-complete:hover {
+  background: var(--surface);
+  border-color: var(--ink4);
+}
+.cta-complete:hover .cta-icon {
+  color: var(--green);
+}
+.cta-complete.is-completed {
+  background: var(--green-bg);
+  border-color: var(--green);
+  color: var(--green);
+}
+.cta-complete.is-completed .cta-icon {
+  color: var(--green);
+}
+
+/* Info card — shown when activity is not Architect */
+.am-info-card {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--ink6);
+  border-radius: var(--r);
+}
+.am-info-icon {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink4);
+  flex-shrink: 0;
+  border: 1px solid var(--ink6);
+}
+.am-info-text { flex: 1; min-width: 0; }
+.am-info-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.am-info-desc {
+  font-size: 12px;
+  color: var(--ink3);
+  line-height: 1.55;
+}
+.am-info-desc strong {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* iOS-style switch — large */
+.ios-switch {
+  position: relative;
+  width: 52px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--ink5);
+  cursor: pointer;
+  transition: background .22s cubic-bezier(.4,0,.2,1);
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.06);
+}
+.ios-switch.on {
+  background: var(--green);
+}
+.ios-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px; height: 24px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,.15), 0 0 0 0.5px rgba(0,0,0,.04);
+  transition: transform .22s cubic-bezier(.4,0,.2,1);
+}
+.ios-switch.on .ios-switch-thumb {
+  transform: translateX(22px);
+}
+
+.am-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ink6);
+  margin-top: 8px;
+}
+
+.am-autosave {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink4);
+}
+.am-autosave svg {
+  color: var(--green);
+}
+
+/* Adjust modal width for the activity-edit modal */
+.modal-wrap .modal:has(.am-hd) {
+  width: 520px;
+}
+
+/* ============================================================
+ * Toast
+ * ============================================================ */
+.toast-stack { position: fixed; bottom: 24px; right: 24px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+  background: var(--ink);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: var(--rs);
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: var(--shl);
+  animation: toast-in .2s ease-out;
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+ * Configuration page
+ * ============================================================ */
+.cfg-wrap { padding: 20px 24px 60px; display: flex; flex-direction: column; gap: 18px; max-width: 1080px; }
+.cfg-card { background: var(--white); border: 1px solid var(--ink5); border-radius: var(--rl); overflow: hidden; }
+.cfg-card-hd { padding: 13px 18px; border-bottom: 1px solid var(--ink5); display: flex; justify-content: space-between; align-items: center; }
+.cfg-card-title { font-size: 13px; font-weight: 700; color: var(--ink); }
+.cfg-card-sub { font-size: 10px; color: var(--ink4); margin-top: 2px; }
+.cfg-card-body { padding: 8px 18px 16px; }
+
+table.cfg-tbl { width: 100%; border-collapse: collapse; }
+.cfg-tbl th { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--ink4); padding: 8px 6px; text-align: left; border-bottom: 1px solid var(--ink5); }
+.cfg-tbl td { font-size: 12px; color: var(--ink2); padding: 8px 6px; border-bottom: 1px solid var(--ink6); vertical-align: middle; }
+.cfg-tbl tr:last-child td { border-bottom: none; }
+
+.cfg-input {
+  border: 1px solid transparent;
+  padding: 5px 8px;
+  border-radius: var(--rxs);
+  background: transparent;
+  width: 100%;
+  font-size: 12px;
+  color: var(--ink);
+  font-family: var(--f);
+}
+.cfg-input:hover { border-color: var(--ink5); background: #fff; }
+.cfg-input:focus { border-color: var(--red); background: #fff; }
+
+.cfg-select {
+  border: 1px solid transparent;
+  padding: 5px 8px;
+  border-radius: var(--rxs);
+  background: transparent;
+  font-size: 12px; font-family: var(--f);
+  color: var(--ink2);
+  cursor: pointer;
+}
+.cfg-select:hover { border-color: var(--ink5); background: #fff; }
+.cfg-select:focus { border-color: var(--red); background: #fff; }
+
+.cfg-act-cell { text-align: right; padding-right: 0 !important; width: 32px; }
+.cfg-act-btn {
+  width: 24px; height: 24px;
+  border-radius: var(--rxs);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--ink4);
+  background: transparent;
+  border: none; cursor: pointer;
+}
+.cfg-act-btn:hover { background: var(--coral-50); color: var(--red); }
+
+/* Hat accordion */
+.hat-list { display: flex; flex-direction: column; gap: 8px; }
+.hat-card {
+  border: 1px solid var(--ink5);
+  border-radius: var(--r);
+  background: var(--white);
+  overflow: hidden;
+  transition: border-color .12s;
+}
+.hat-card:hover { border-color: var(--ink4); }
+.hat-card.open { border-color: var(--ink4); }
+.hat-hd {
+  padding: 11px 14px;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 12px;
+}
+.hat-hd:hover { background: var(--surface); }
+.hat-card.open .hat-hd { background: var(--surface); border-bottom: 1px solid var(--ink6); }
+.hat-icon {
+  width: 30px; height: 30px;
+  border-radius: var(--rs);
+  background: var(--red-bg);
+  color: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px;
+  flex-shrink: 0;
+}
+.hat-meta { flex: 1; min-width: 0; }
+.hat-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.hat-summary { font-size: 11px; color: var(--ink4); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hat-chev { color: var(--ink4); transition: transform .15s; flex-shrink: 0; }
+.hat-card.open .hat-chev { transform: rotate(180deg); }
+.hat-body { display: none; padding: 14px 18px 16px; }
+.hat-card.open .hat-body { display: block; }
+
+.hat-field { margin-bottom: 12px; }
+.hat-field-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink4); margin-bottom: 4px; }
+.hat-field-area {
+  width: 100%;
+  border: 1px solid var(--ink5);
+  border-radius: var(--rs);
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--white);
+  font-family: var(--f);
+  line-height: 1.55;
+  resize: vertical;
+}
+.hat-field-area:focus { border-color: var(--red); }
+
+/* ============================================================
+ * Coming soon page
+ * ============================================================ */
+.coming-soon {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 60px 24px;
+  text-align: center;
+}
+.cs-icon {
+  width: 64px; height: 64px;
+  background: var(--surface);
+  border-radius: var(--rl);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px;
+  color: var(--ink4);
+}
+.cs-title { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.cs-desc { font-size: 12px; color: var(--ink3); max-width: 400px; line-height: 1.6; }
+.cs-tag {
+  margin-top: 14px;
+  background: var(--red-bg); color: var(--red);
+  font-size: 10px; font-weight: 700;
+  padding: 4px 10px; border-radius: 99px;
+  text-transform: uppercase; letter-spacing: .08em;
+}
+
+/* Loading */
+.loading { display: flex; align-items: center; justify-content: center; padding: 60px 20px; color: var(--ink4); font-size: 12px; }
+/* ============================================================
+ * THIS WEEK WIZARD
+ * ============================================================ */
+.wz-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 28px 60px;
+}
+
+/* Hero on Step 0 */
+.wz-hero {
+  margin-bottom: 28px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--ink6);
+}
+.wz-hero-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+.wz-hero-desc {
+  font-size: 13px;
+  color: var(--ink3);
+  line-height: 1.55;
+  max-width: 580px;
+}
+
+/* Step 0 — Week picker */
+.wp-section-lbl {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink4);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 12px;
+}
+.wp-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  max-width: 720px;
+}
+.wp-card {
+  position: relative;
+  padding: 22px 24px;
+  background: var(--white);
+  border: 1px solid var(--ink5);
+  border-radius: var(--rl);
+  cursor: pointer;
+  transition: all .15s;
+}
+.wp-card:hover {
+  border-color: var(--red);
+  box-shadow: var(--sh);
+  transform: translateY(-1px);
+}
+.wp-card-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.wp-card-range {
+  font-size: 12px;
+  color: var(--ink4);
+  font-weight: 500;
+}
+.wp-card-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 12px;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  border-radius: 99px;
+}
+.wp-card-badge.in-progress { background: var(--amber-bg); color: var(--amber); }
+.wp-card-badge.closed { background: var(--green-bg); color: var(--green); }
+.wp-card-arrow {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink4);
+  transition: transform .15s, color .15s;
+}
+.wp-card:hover .wp-card-arrow {
+  color: var(--red);
+  transform: translateY(-50%) translateX(3px);
+}
+
+/* Wizard header (steps 1-5) */
+.wz-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.wz-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink3);
+  cursor: pointer;
+  padding: 6px 10px;
+  margin-left: -10px;
+  border-radius: var(--rs);
+  transition: background .12s, color .12s;
+}
+.wz-back:hover {
+  background: var(--surface);
+  color: var(--ink);
+}
+.wz-week-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink3);
+}
+
+/* Closed banner */
+.wz-closed-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--green-bg);
+  border: 1px solid var(--green-bd);
+  border-radius: var(--rs);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  margin-bottom: 18px;
+}
+
+/* Stepper */
+.wz-stepper {
+  display: flex;
+  align-items: center;
+  margin: 22px 0 28px;
+  padding: 0 8px;
+}
+.wz-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  cursor: pointer;
+  padding: 2px;
+  transition: transform .12s;
+}
+.wz-step-item:hover { transform: translateY(-1px); }
+.wz-step-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface2);
+  color: var(--ink4);
+  font-size: 11px;
+  font-weight: 700;
+  border: 2px solid var(--surface2);
+  transition: all .15s;
+}
+.wz-step-item.completed .wz-step-dot {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+.wz-step-item.completed .wz-step-dot svg { stroke: #fff; }
+.wz-step-item.active .wz-step-dot {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+  box-shadow: 0 0 0 4px rgba(232,68,58,.16);
+}
+.wz-step-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink4);
+  white-space: nowrap;
+}
+.wz-step-item.completed .wz-step-label { color: var(--green); }
+.wz-step-item.active .wz-step-label { color: var(--red); }
+.wz-step-line {
+  flex: 1;
+  height: 2px;
+  background: var(--ink6);
+  margin: 0 4px 20px 4px;
+  min-width: 30px;
+}
+.wz-step-line.completed { background: var(--green); }
+
+/* Step header (title of current step) */
+.wz-step-hd {
+  margin-bottom: 22px;
+}
+.wz-step-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--red);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 4px;
+}
+.wz-step-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.wz-step-desc {
+  font-size: 13px;
+  color: var(--ink3);
+}
+
+/* Step body */
+.wz-body {
+  margin-bottom: 28px;
+}
+.wz-intro {
+  font-size: 13px;
+  color: var(--ink2);
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border-radius: var(--rs);
+  border-left: 3px solid var(--red);
+}
+.wz-tip {
+  margin-top: 18px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border-radius: var(--rs);
+  font-size: 12px;
+  color: var(--ink3);
+  border: 1px solid var(--ink6);
+}
+
+/* Empty state inside step */
+.wz-empty {
+  padding: 56px 24px;
+  text-align: center;
+  background: var(--surface);
+  border-radius: var(--r);
+  border: 1px dashed var(--ink5);
+}
+.wz-empty-icon {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--green-bg);
+  color: var(--green);
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  margin-bottom: 14px;
+}
+.wz-empty-icon svg { width: 22px; height: 22px; }
+.wz-empty-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.wz-empty-desc { font-size: 12px; color: var(--ink3); max-width: 360px; margin: 0 auto; line-height: 1.55; }
+
+/* Wizard footer */
+.wz-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink6);
+}
+
+/* Step 1 row layout */
+.wz-list {
+  background: var(--white);
+  border: 1px solid var(--ink5);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.wz-row {
+  display: grid;
+  grid-template-columns: 50px 1fr 220px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--ink6);
+}
+.wz-row:last-child { border-bottom: none; }
+.wz-row-prio {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink3);
+}
+.wz-row-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.wz-row-action {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 32px;
+  padding: 0 28px 0 10px;
+  border-radius: var(--rs);
+  border: 1px solid var(--ink5);
+  background: var(--white) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat right 10px center;
+  background-size: 10px;
+  font-size: 12px;
+  font-family: var(--f);
+  color: var(--ink);
+  cursor: pointer;
+}
+.wz-row-action:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(232,68,58,.18); outline: none; }
+
+/* Step 2 — Inventory groups */
+.wz-group {
+  margin-bottom: 16px;
+}
+.wz-group-hd {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wz-group-cnt {
+  background: var(--surface2);
+  color: var(--ink4);
+  padding: 2px 7px;
+  border-radius: 99px;
+  font-size: 10px;
+}
+.wz-inv-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--white);
+  border: 1px solid var(--ink6);
+  border-radius: var(--rs);
+  margin-bottom: 6px;
+  transition: opacity .15s;
+}
+.wz-inv-row.archived { opacity: .5; }
+.wz-inv-name { font-size: 13px; font-weight: 500; color: var(--ink); flex: 1; }
+.wz-inv-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.wz-inv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--f);
+  border: 1px solid var(--ink5);
+  background: var(--white);
+  color: var(--ink3);
+  border-radius: var(--rxs);
+  cursor: pointer;
+  transition: all .12s;
+}
+.wz-inv-btn:hover { background: var(--hover-bg); color: var(--ink); }
+.wz-inv-btn.active { background: var(--green); color: #fff; border-color: var(--green); }
+.wz-inv-btn.danger.active { background: var(--red); color: #fff; border-color: var(--red); }
+.wz-inv-btn svg { width: 11px; height: 11px; }
+
+/* Step 3 — Drag-and-drop priorities */
+.dl-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  min-height: 420px;
+}
+.dl-col {
+  background: var(--surface);
+  border: 1px solid var(--ink6);
+  border-radius: var(--r);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.dl-col.primary {
+  background: var(--white);
+  border: 1px solid var(--red-bd);
+}
+.dl-col-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--ink6);
+  background: var(--white);
+}
+.dl-col.primary .dl-col-hd {
+  background: var(--red-bg);
+  border-bottom-color: var(--red-bd);
+}
+.dl-col-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink2);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.dl-col.primary .dl-col-title { color: var(--red); }
+.dl-col-cnt {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink4);
+  background: var(--surface2);
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+.dl-col-cnt.good { background: var(--green-bg); color: var(--green); }
+.dl-col-body {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: background .15s;
+}
+.dl-col-body.drag-over {
+  background: rgba(232,68,58,.04);
+}
+.dl-empty {
+  padding: 40px 18px;
+  text-align: center;
+  color: var(--ink4);
+  font-size: 12px;
+  font-style: italic;
+}
+.dl-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--white);
+  border: 1px solid var(--ink6);
+  border-radius: var(--rs);
+  cursor: grab;
+  transition: all .12s;
+}
+.dl-item:hover {
+  border-color: var(--ink5);
+  box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+.dl-item:active { cursor: grabbing; }
+.dl-item.dragging {
+  opacity: .4;
+  cursor: grabbing;
+}
+.dl-handle {
+  color: var(--ink4);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  cursor: grab;
+}
+.dl-prio {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--red);
+  background: var(--red-bg);
+  padding: 3px 8px;
+  border-radius: var(--rxs);
+  flex-shrink: 0;
+}
+.dl-meta { flex: 1; min-width: 0; }
+.dl-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dl-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.dl-tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink4);
+  padding: 1px 6px;
+  background: var(--surface2);
+  border-radius: var(--rxs);
+}
+.dl-team {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dl-sub {
+  font-size: 10px;
+  color: var(--ink4);
+  font-style: italic;
+}
+.dl-sub.delegated { color: var(--green); font-weight: 600; font-style: normal; }
+
+/* Step 4 — Calendar */
+.cal-info-box {
+  padding: 10px 14px;
+  background: var(--surface);
+  border-radius: var(--rs);
+  border: 1px solid var(--ink6);
+  font-size: 12px;
+  color: var(--ink2);
+  margin-bottom: 14px;
+}
+.cal-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 16px;
+  height: 540px;
+}
+.cal-side {
+  background: var(--white);
+  border: 1px solid var(--ink6);
+  border-radius: var(--r);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.cal-side-hd {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--ink6);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink2);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  background: var(--surface);
+}
+.cal-side-body {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cal-grid {
+  background: var(--white);
+  border: 1px solid var(--ink6);
+  border-radius: var(--r);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.cal-header {
+  display: grid;
+  grid-template-columns: 48px repeat(5, 1fr);
+  background: var(--surface);
+  border-bottom: 1px solid var(--ink6);
+}
+.cal-day-hd {
+  padding: 8px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink2);
+  text-align: center;
+  border-left: 1px solid var(--ink6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.cal-day-num {
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 600;
+}
+.cal-body {
+  flex: 1;
+  overflow-y: auto;
+}
+.cal-row {
+  display: grid;
+  grid-template-columns: 48px repeat(5, 1fr);
+  border-bottom: 1px solid var(--ink6);
+  min-height: 44px;
+}
+.cal-row:last-child { border-bottom: none; }
+.cal-time-lbl {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink4);
+  padding: 4px 6px;
+  text-align: right;
+  border-right: 1px solid var(--ink6);
+  background: var(--surface);
+}
+.cal-cell {
+  border-left: 1px solid var(--ink6);
+  padding: 3px;
+  transition: background .12s;
+}
+.cal-cell:first-child { border-left: none; }
+.cal-cell.drag-over {
+  background: var(--red-bg);
+  outline: 2px solid var(--red);
+  outline-offset: -2px;
+}
+.cal-cell.occupied { padding: 2px; }
+.cal-event {
+  background: var(--red-bg);
+  border: 1px solid var(--red-bd);
+  border-left: 3px solid var(--red);
+  border-radius: var(--rxs);
+  padding: 4px 6px;
+  font-size: 10px;
+  cursor: pointer;
+  height: 100%;
+  transition: background .12s, transform .12s;
+}
+.cal-event:hover { background: rgba(232,68,58,.12); transform: scale(0.98); }
+.cal-event-prio {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--red);
+  margin-bottom: 1px;
+}
+.cal-event-name {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Step 5 — Sync summary */
+.sync-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 22px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border-radius: var(--r);
+  border: 1px solid var(--ink6);
+}
+.sync-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.sync-summary-icon {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--green-bg);
+  color: var(--green);
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.sync-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sync-item {
+  display: grid;
+  grid-template-columns: 50px 1fr 120px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--white);
+  border: 1px solid var(--ink6);
+  border-radius: var(--rs);
+}
+.sync-item-prio {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--red);
+  background: var(--red-bg);
+  padding: 2px 6px;
+  border-radius: var(--rxs);
+  display: inline-block;
+  text-align: center;
+  width: fit-content;
+}
+.sync-item-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.sync-item-date { font-size: 11px; color: var(--ink3); font-weight: 500; text-align: right; }
+
+/* ============================================================
+ * Asana-style completion check
+ * ============================================================ */
+.asana-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink5);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all .15s;
+  background: var(--white);
+  color: transparent;
+}
+.asana-check:hover {
+  border-color: var(--green);
+  color: var(--green-bd);
+}
+.asana-check.checked {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+.asana-check.checked:hover {
+  opacity: .85;
+}
+.asana-check svg {
+  width: 13px; height: 13px;
+}
+
+/* Title strike-through when completed (modal) */
+.am-title.completed {
+  color: var(--ink4);
+  text-decoration: line-through;
+}
+
+/* Step 1 — checklist row */
+.wz-row-check {
+  display: grid;
+  grid-template-columns: 40px 50px 1fr 130px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--white);
+  border-bottom: 1px solid var(--ink6);
+  transition: opacity .15s;
+}
+.wz-row-check:last-child { border-bottom: none; }
+.wz-row-check.completed .wz-row-name {
+  color: var(--ink4);
+  text-decoration: line-through;
+}
+.wz-row-check.completed .wz-row-prio {
+  opacity: .5;
+}
+
+.wz-status-tag {
+  display: inline-block;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: var(--rxs);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.wz-status-tag.completed { background: var(--green-bg); color: var(--green); }
+.wz-status-tag.pending { background: var(--surface2); color: var(--ink3); }
+
+/* Summary pills above the list */
+.wz-summary-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.wz-summary-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 99px;
+  letter-spacing: 0;
+}
+.wz-summary-pill.done { background: var(--green-bg); color: var(--green); }
+.wz-summary-pill.pending { background: var(--surface2); color: var(--ink3); }
+
+/* "Show completed" toggle in filter bar */
+.show-completed-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  height: 30px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink3);
+  cursor: pointer;
+  border-radius: var(--rs);
+  user-select: none;
+  transition: color .12s, background .12s;
+}
+.show-completed-toggle:hover {
+  color: var(--ink);
+  background: var(--surface);
+}
+.show-completed-toggle input[type="checkbox"] {
+  width: 14px; height: 14px;
+  margin: 0;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+.show-completed-toggle .sct-text {
+  font-weight: 500;
+}
+
+/* Row completed look — strike-through name */
+.act-row.completed .act-name {
+  color: var(--ink4);
+  text-decoration: line-through;
+}
+.act-row.completed .cell-prio .cp-text,
+.act-row.completed .cell-constraint,
+.act-row.completed .cell-team,
+.act-row.completed .cell-select {
+  opacity: .55;
+}
+
+/* ============================================================
+ * LOGIN, LOADING, SYNC INDICATORS
+ * ============================================================ */
+
+/* Login screen */
+.login-screen {
+  position: fixed; inset: 0;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--white);
+  border-radius: var(--rl);
+  border: 1px solid var(--ink6);
+  padding: 32px 32px 24px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+}
+.login-brand {
+  text-align: center;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--ink6);
+}
+.login-logo {
+  width: 56px; height: 56px;
+  background: var(--red);
+  color: #fff;
+  border-radius: var(--r);
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.login-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.login-subtitle {
+  font-size: 12px;
+  color: var(--ink3);
+}
+.login-form { display: flex; flex-direction: column; gap: 16px; }
+.login-field { display: flex; flex-direction: column; gap: 6px; }
+.login-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.login-input {
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--ink5);
+  border-radius: var(--rs);
+  font-size: 13px;
+  font-family: var(--f);
+  color: var(--ink);
+  background: var(--white);
+  outline: none;
+}
+.login-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(232,68,58,.16); }
+.login-help {
+  font-size: 10px;
+  color: var(--ink4);
+}
+.login-help code {
+  background: var(--surface);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 9px;
+}
+.login-help a { color: var(--red); text-decoration: none; }
+.login-help a:hover { text-decoration: underline; }
+.login-btn {
+  margin-top: 8px;
+  height: 42px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: var(--rs);
+  font-family: var(--f);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.login-btn:hover { background: var(--red-h); }
+.login-footer {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink6);
+  font-size: 10px;
+  color: var(--ink4);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Loading screen */
+.loading-screen {
+  position: fixed; inset: 0;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.loading-spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--ink6);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  font-size: 13px;
+  color: var(--ink3);
+  font-weight: 500;
+}
+
+/* Sync indicator (topbar) */
+.sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--f);
+  background: var(--surface);
+  border: 1px solid var(--ink6);
+  color: var(--ink3);
+  border-radius: var(--rs);
+  cursor: pointer;
+}
+.sync-btn:hover { background: var(--hover-bg); color: var(--ink); }
+.sync-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--ink5);
+  display: inline-block;
+}
+.sync-dot.ok { background: var(--green); }
+.sync-dot.syncing {
+  background: var(--amber);
+  animation: pulse 1s ease-in-out infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+
+/* Logout button */
+.logout-btn {
+  width: 30px; height: 30px;
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--rs);
+  color: var(--ink4);
+  cursor: pointer;
+}
+.logout-btn:hover {
+  background: var(--surface);
+  color: var(--red);
+  border-color: var(--ink6);
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============== LOGIN SCREEN ============== -->
+<div id="login-screen" class="login-screen" style="display:none;">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-logo">CT</div>
+      <div class="login-title">CEO Time System</div>
+      <div class="login-subtitle">Connect your private Airtable base</div>
+    </div>
+
+    <div class="login-form">
+      <div class="login-field">
+        <label class="login-label">Airtable Base ID</label>
+        <input type="text" class="login-input" id="login-baseid" placeholder="appXXXXXXXXXXXXXX">
+        <div class="login-help">Starts with <code>app</code>. Find it in your base URL.</div>
+      </div>
+
+      <div class="login-field">
+        <label class="login-label">Personal Access Token</label>
+        <input type="password" class="login-input" id="login-token" placeholder="patXXXXXXXXXXXXXX.XXXXX...">
+        <div class="login-help">Starts with <code>pat</code>. Generate at <a href="https://airtable.com/create/tokens" target="_blank">airtable.com/create/tokens</a>. Required scopes: <code>data.records:read</code>, <code>data.records:write</code>.</div>
+      </div>
+
+      <button class="login-btn" onclick="doLogin()">Connect</button>
+    </div>
+
+    <div class="login-footer">
+      Your credentials stay only in this browser. They never leave your device.<br>
+      Your data lives in <strong>your</strong> Airtable base — fully isolated from other users.
+    </div>
+  </div>
+</div>
+
+<!-- ============== LOADING SCREEN ============== -->
+<div id="loading-screen" class="loading-screen" style="display:none;">
+  <div class="loading-card">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading your workspace…</div>
+  </div>
+</div>
+
+<!-- ============== MAIN APP (hidden until logged in) ============== -->
+<div id="main-app" class="app" style="display:none;">
+
+  <!-- ============== SIDEBAR ============== -->
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo">
+        <div class="sb-logo-mark">C</div>
+        <div class="sb-logo-text">Colektia</div>
+      </div>
+      <div class="sb-tag">CEO Time System</div>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="nav-sec">Operation</div>
+
+      <button class="nav-btn" id="nav-thisweek" onclick="showPanel('thisweek')">
+        <span class="nb-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+        </span>
+        <span class="nb-meta">
+          <div class="nb-name">This week</div>
+          <div class="nb-sub">Weekly ritual</div>
+        </span>
+        <span class="nb-tooltip">This week · Weekly ritual</span>
+      </button>
+
+      <button class="nav-btn active" id="nav-activities" onclick="showPanel('activities')">
+        <span class="nb-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+        </span>
+        <span class="nb-meta">
+          <div class="nb-name">Activities</div>
+          <div class="nb-sub">My desk · Delegated · Live</div>
+        </span>
+        <span class="nb-tooltip">Activities</span>
+      </button>
+
+      <button class="nav-btn disabled" id="nav-insights">
+        <span class="nb-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 16l4-4 4 3 5-7"/></svg>
+        </span>
+        <span class="nb-meta">
+          <div class="nb-name">Insights</div>
+          <div class="nb-sub">Real time usage</div>
+        </span>
+        <span class="nb-tag">Soon</span>
+        <span class="nb-tooltip">Insights · Coming soon</span>
+      </button>
+
+      <div class="nav-sec">Settings</div>
+
+      <button class="nav-btn" id="nav-config" onclick="showPanel('config')">
+        <span class="nb-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </span>
+        <span class="nb-meta">
+          <div class="nb-name">Configuration</div>
+          <div class="nb-sub">Constraints, Hats, Teams</div>
+        </span>
+        <span class="nb-tooltip">Configuration</span>
+      </button>
+    </nav>
+
+    <div class="sb-user">
+      <div class="sb-uavatar" id="sb-uavatar">GM</div>
+      <div class="sb-user-meta">
+        <div class="uname" id="uname">Gabriel Monroy</div>
+        <div class="urole" id="urole">CEO · Colektia</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============== MAIN ============== -->
+  <main class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="tbl">
+        <div class="bc" id="breadcrumb">
+          <span class="bc-cur">Activities</span>
+        </div>
+      </div>
+      <div class="tbr">
+        <button class="sync-btn" id="sync-indicator" onclick="manualSync()">
+          <span class="sync-dot"></span> Not synced
+        </button>
+        <button class="logout-btn" onclick="doLogout()" data-tooltip="Sign out">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12l3-4-3-4M13 8H5M5 2H3v12h2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ============== PANEL: ACTIVITIES ============== -->
+    <div class="panel active" id="panel-activities">
+
+      <div class="tabs">
+        <button class="tab active" data-tab="mydesk" onclick="setTab('mydesk')">
+          My desk <span class="tab-cnt" id="cnt-mydesk">0</span>
+        </button>
+        <button class="tab" data-tab="delegated" onclick="setTab('delegated')">
+          Delegated <span class="tab-cnt" id="cnt-delegated">0</span>
+        </button>
+        <button class="tab" data-tab="live" onclick="setTab('live')">
+          Live <span class="tab-cnt" id="cnt-live">0</span>
+        </button>
+        <button class="tab" data-tab="all" onclick="setTab('all')">
+          All <span class="tab-cnt" id="cnt-all">0</span>
+        </button>
+      </div>
+
+      <div class="filter-bar">
+        <span class="filter-label">Filter:</span>
+        <select class="fsel" id="f-constraint" onchange="renderActivities()">
+          <option value="">All constraints</option>
+        </select>
+        <select class="fsel" id="f-hat" onchange="renderActivities()">
+          <option value="">All hats</option>
+        </select>
+        <select class="fsel" id="f-team" onchange="renderActivities()">
+          <option value="">All teams</option>
+        </select>
+        <input type="text" class="finput" id="f-search" placeholder="Search…" oninput="renderActivities()">
+        <div style="margin-left: auto; display: flex; gap: 8px;">
+          <button class="btn btn-p btn-sm" onclick="openNewActivityModal()">
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+            New activity
+          </button>
+        </div>
+      </div>
+
+      <div class="scroll">
+        <div class="scroll-padded" style="padding-top: 18px;">
+          <div class="kpi-row size-sm" id="kpi-row"></div>
+        </div>
+        <div id="activities-list"></div>
+      </div>
+
+    </div>
+
+    <!-- ============== PANEL: THIS WEEK (Wizard) ============== -->
+    <div class="panel" id="panel-thisweek">
+      <div class="scroll">
+        <div id="wizard-container"></div>
+      </div>
+    </div>
+
+    <!-- ============== PANEL: CONFIG ============== -->
+    <div class="panel" id="panel-config">
+      <div class="scroll">
+        <div class="cfg-wrap" id="cfg-wrap"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Modal (used for activity edit, quick add, confirmations, etc.) -->
+<div class="modal-wrap" id="modal-wrap" onclick="onModalWrapClick(event)">
+  <div class="modal" id="modal-content" onclick="event.stopPropagation()"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast-stack" id="toast-stack"></div>
+
+<script>
+/* ============================================================
+ * CEO TIME SYSTEM
+ * ============================================================
+ *
+ * Single-file HTML application based on Schleckser's "Great CEOs Are Lazy".
+ * Helps a CEO manage their time across 5 hats (Architect, Player, Coach,
+ * Prospector, Visionary), driven by the current strategic Constraint.
+ *
+ * Multi-tenant via Airtable base isolation: each user has their own base
+ * with the same schema. No shared user table, no cross-user data access.
+ *
+ * ----------------------------------------------------------
+ * INDEX
+ * ----------------------------------------------------------
+ *   1. STATE                  — single app state object
+ *   2. AIRTABLE DATA LAYER    — schema MAP, HTTP wrappers, mappers
+ *      2.1 MAP                — table & field IDs
+ *      2.2 atFetch / atList / atCreate / atUpdate / atDelete
+ *      2.3 Mappers            — Airtable record → model
+ *      2.4 Reverse mappers    — model → Airtable fields
+ *      2.5 loadAllFromAirtable
+ *      2.6 Dirty tracking     — minimize API writes
+ *      2.7 Save functions     — saveActivities, saveConstraints, etc.
+ *      2.8 syncFromAirtable   — manual refresh
+ *   3. UTILS                  — date, escape, formatters
+ *   4. RENDER                 — activities list, KPIs, filters
+ *   5. ACTIVITY EDIT MODAL
+ *   6. CONFIG RENDER          — constraints, teams, hats, stages
+ *   7. DATA EXPORT            — local JSON backup
+ *   8. MODAL & TOAST          — generic UI primitives
+ *   9. WIZARD                 — 5-step weekly ritual
+ *  10. INIT / LOGIN / LOGOUT  — entry point
+ * ----------------------------------------------------------
+ */
+
+/* ============================================================
+ * 1. STATE
+ * ============================================================ */
+const state = {
+  constraints: [],
+  hats: [],
+  teams: [],
+  stages: [],
+  activities: [],
+  currentTab: 'mydesk',
+  currentPanel: 'activities',
+  editingId: null,
+  wizard: {
+    // null = no week selected yet (show Step 0)
+    // weekId = currently working on that week
+    activeWeekId: null,
+    // Map: weekId -> { step (1-5), startedAt, closedAt, decisions: {...} }
+    rituals: {}
+  },
+  airtable: {
+    config: null,           // { baseId, token, baseName }
+    syncing: false,
+    lastSyncedAt: null,
+    initialized: false
+  }
+};
+
+/* ============================================================
+ * 2. AIRTABLE DATA LAYER
+ * ============================================================
+ *
+ * Architecture:
+ *   - Each user has their OWN Airtable base (multi-tenant via base isolation).
+ *   - No Users table, no Owner field — each base is private.
+ *   - Credentials (baseId + token) live in window.storage under
+ *     'airtable:config'. The base name is fetched once via the metadata
+ *     API and cached in the same config. Nothing ever leaves the browser
+ *     other than direct calls to api.airtable.com.
+ *
+ * Schema:
+ *   - Constraints, Teams, Activities, Weekly Rituals, Hats, Stages
+ *   - Field IDs hardcoded in MAP below. If schema changes, update MAP.
+ *
+ * Sync strategy:
+ *   - Manual only. Click "Refresh" in topbar to reload from Airtable.
+ *   - No automatic polling — saves API calls and respects rate limits.
+ *
+ * Write optimization:
+ *   - Dirty-tracking via dirtyActivityIds / dirtyRitualWeekIds Sets.
+ *   - saveActivities() and saveWizardRituals() only persist marked records.
+ *   - Single-record writes use saveActivity(a) for immediate persistence.
+ */
+
+const AIRTABLE_API = 'https://api.airtable.com/v0';
+
+// Schema map: table & field IDs for the entire app.
+// Each user's Airtable base must follow this exact schema.
+const MAP = {
+  // Base ID is dynamic — set at login
+
+  constraints: {
+    tableId: 'tblt3h6upLFzCmU0j',
+    fields: {
+      code: 'fldhVNT5jgUQepYhj',
+      name: 'fldqNN8knZDVP7lnu',
+      description: 'fldzNKyrbUtYo2AV4',
+      defaultHat: 'fldP7oY9dEeB1LVFx',     // link to Hats table
+      archived: 'fldy4smZgIkNSH7e6'
+    }
+  },
+
+  teams: {
+    tableId: 'tbl9JGs6P5kMAhHDS',
+    fields: {
+      teamId: 'fld38qEJTz6IKKpcL',
+      name: 'fldYOK2S0Kh4izDQp',
+      role: 'fld171YfeIMIvVEVn',
+      color: 'fldrolOvZ3CjoFHZ5',
+      archived: 'fldnsnrYFgBvcSHoD'
+    }
+  },
+
+  stages: {
+    tableId: 'tbl7bhpDd5QsQoxWN',
+    fields: {
+      stage: 'fldqgrxlohbrUE9uD',
+      order: 'fldHYwliDRwcQkAdj',
+      description: 'fldK8Mnf7LhVLkpUg'
+    }
+  },
+
+  hats: {
+    tableId: 'tbl3IGGYcX5kBQnvP',
+    fields: {
+      hat: 'fld1nxue7Ao9uBxBU',
+      order: 'fldlgoAJca5pOWN4p',
+      summary: 'fldxlGVHeMmVmxMox',
+      whatYouDo: 'fldghENrkntPIG7yY',
+      whatYouDont: 'flda3r0G7amd7i6qS',
+      signals: 'fldHTHzDnlyhFEr7N',
+      examples: 'fldRdyfv8MQD1mnYv',
+      whenToSwitch: 'fldg0prjJPfZHJ0Zu',
+      archived: 'fldAmlOo2b3f1IkK2'
+    }
+  },
+
+  activities: {
+    tableId: 'tblc8zOA5vJGii49S',
+    fields: {
+      name: 'fldCCqkGBaeFFLDQI',
+      constraint: 'fldfFBhfdzP1zUvpd',
+      hat: 'fldzIMshetnCR020G',            // link to Hats table
+      team: 'fldPaLRy2rrTqLNqr',
+      stage: 'fldUyYJ5kDpclotZx',
+      delegated: 'fldvsBCMShHZKXjcA',
+      completed: 'fldorC99qHj6dTt8i',
+      priority: 'fldAghs9vsNRXav3T',
+      priorityWeek: 'fld0hKIc2iSYoqXch',
+      date: 'fldBegpzOM4u2BW2e',
+      duration: 'fldAEgMOXwADHgGbx',
+      source: 'fldC6enlMD2Shomon',
+      syncStatus: 'fldISvfF9gFpbeD3O',
+      calendarEventId: 'fldv0TygnE1kFwMRw',
+      lastSyncedAt: 'fldDqjvmPDB8Jw02d',
+      description: 'fldULOx2cOA0MsurM',
+      archived: 'fldhhVpkel1SFoIOi',
+      log: 'fldBcniq4YRieTNYJ'
+    }
+  },
+
+  rituals: {
+    tableId: 'tblu2q7pWGJvT7QRz',
+    fields: {
+      weekId: 'fldDyMD0RFk4r4it1',
+      startedAt: 'fldt2R2P9sjczZHVr',
+      closedAt: 'fldN8sWcXP6AoFHx4',
+      currentStep: 'flddZbko42ILrQfLL',
+      decisions: 'fldmpX1XMMS4og7vZ'
+    }
+  },
+
+  settings: {
+    tableId: 'tblwJiiWaE7ClRNUN',
+    fields: {
+      key: 'fldA8NdMdujE7olJ3',
+      value: 'fld1u8jmzYVU5Jxy4'
+    }
+  }
+};
+
+// ---- Local storage helpers (only for Airtable credentials) ----
+async function storeGet(key) {
+  try { const r = await window.storage.get(key); return r ? r.value : null; }
+  catch { return null; }
+}
+async function storeSet(key, value) {
+  try { await window.storage.set(key, JSON.stringify(value)); return true; }
+  catch { return false; }
+}
+async function storeDel(key) {
+  try { await window.storage.delete(key); return true; }
+  catch { return false; }
+}
+
+// ---- Airtable HTTP wrapper ----
+async function atFetch(path, options = {}) {
+  const cfg = state.airtable.config;
+  if (!cfg || !cfg.token) throw new Error('Not authenticated');
+  const url = `${AIRTABLE_API}/${cfg.baseId}${path}`;
+  const opts = {
+    ...options,
+    headers: {
+      'Authorization': `Bearer ${cfg.token}`,
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    }
+  };
+  const res = await fetch(url, opts);
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Airtable ${res.status}: ${txt}`);
+  }
+  return res.json();
+}
+
+// ---- List records with optional filter (paginates automatically) ----
+async function atList(tableId, filterFormula = null) {
+  let records = [];
+  let offset = null;
+  do {
+    const params = new URLSearchParams();
+    if (filterFormula) params.set('filterByFormula', filterFormula);
+    if (offset) params.set('offset', offset);
+    params.set('pageSize', '100');
+    const r = await atFetch(`/${tableId}?${params.toString()}`);
+    records = records.concat(r.records);
+    offset = r.offset;
+  } while (offset);
+  return records;
+}
+
+async function atCreate(tableId, fields) {
+  return atFetch(`/${tableId}`, {
+    method: 'POST',
+    body: JSON.stringify({ fields, typecast: false })
+  });
+}
+
+async function atUpdate(tableId, recordId, fields) {
+  return atFetch(`/${tableId}/${recordId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ fields, typecast: false })
+  });
+}
+
+async function atDelete(tableId, recordId) {
+  return atFetch(`/${tableId}/${recordId}`, { method: 'DELETE' });
+}
+
+// ---- Load Settings (workspace name, etc.) from the Settings table ----
+// This replaces the metadata API call (which has no CORS).
+async function loadSettings() {
+  try {
+    const records = await atList(MAP.settings.tableId);
+    const settings = {};
+    records.forEach(rec => {
+      const key = rec.fields[MAP.settings.fields.key];
+      const val = rec.fields[MAP.settings.fields.value];
+      if (key) settings[key] = val || '';
+    });
+    return settings;
+  } catch (e) {
+    console.warn('Could not load settings:', e.message);
+    return {};
+  }
+}
+
+// ---- Record mappers (Airtable record -> HTML model object) ----
+
+function mapConstraint(rec, hatsById) {
+  const f = rec.fields;
+  const F = MAP.constraints.fields;
+  const hatLinks = f[F.defaultHat] || [];
+  const defaultHat = hatLinks.length > 0 && hatsById[hatLinks[0]]
+    ? hatsById[hatLinks[0]].id
+    : 'Architect';
+  return {
+    recordId: rec.id,
+    code: f[F.code] || '',
+    name: f[F.name] || '',
+    description: f[F.description] || '',
+    defaultHat,
+    archived: !!f[F.archived]
+  };
+}
+
+function mapTeam(rec) {
+  const f = rec.fields;
+  const F = MAP.teams.fields;
+  return {
+    recordId: rec.id,
+    id: f[F.teamId] || '',
+    name: f[F.name] || '',
+    role: f[F.role] || '',
+    color: f[F.color] || '#888',
+    archived: !!f[F.archived]
+  };
+}
+
+function mapStage(rec) {
+  const f = rec.fields;
+  const F = MAP.stages.fields;
+  return {
+    recordId: rec.id,
+    name: f[F.stage] || '',
+    order: f[F.order] || 0,
+    description: f[F.description] || ''
+  };
+}
+
+function mapHat(rec) {
+  const f = rec.fields;
+  const F = MAP.hats.fields;
+  return {
+    recordId: rec.id,
+    id: f[F.hat] || '',
+    order: f[F.order] || 0,
+    summary: f[F.summary] || '',
+    whatYouDo: f[F.whatYouDo] || '',
+    whatYouDont: f[F.whatYouDont] || '',
+    signals: f[F.signals] || '',
+    examples: f[F.examples] || '',
+    whenToSwitch: f[F.whenToSwitch] || ''
+  };
+}
+
+function mapActivity(rec, hatsById, constraintsById, teamsById, stagesById) {
+  const f = rec.fields;
+  const F = MAP.activities.fields;
+  const hatLinks = f[F.hat] || [];
+  const constraintLinks = f[F.constraint] || [];
+  const teamLinks = f[F.team] || [];
+  const stageLinks = f[F.stage] || [];
+  return {
+    recordId: rec.id,
+    id: rec.id,
+    name: f[F.name] || '',
+    source: f[F.source] || 'Manual',
+    sync_status: f[F.syncStatus] || 'Not synced',
+    calendar_event_id: f[F.calendarEventId] || null,
+    last_synced_at: f[F.lastSyncedAt] || null,
+    hat: hatLinks.length > 0 && hatsById[hatLinks[0]] ? hatsById[hatLinks[0]].id : null,
+    constraint: constraintLinks.length > 0 && constraintsById[constraintLinks[0]] ? constraintsById[constraintLinks[0]].code : null,
+    stage: stageLinks.length > 0 && stagesById[stageLinks[0]] ? stagesById[stageLinks[0]].name : null,
+    delegated: !!f[F.delegated],
+    team: teamLinks.length > 0 && teamsById[teamLinks[0]] ? teamsById[teamLinks[0]].id : null,
+    date: f[F.date] || null,
+    duration_minutes: f[F.duration] || null,
+    estimated_hours: f[F.duration] ? f[F.duration] / 60 : null,
+    priority: f[F.priority] != null ? f[F.priority] : null,
+    priority_week: f[F.priorityWeek] || null,
+    completed: !!f[F.completed],
+    description: f[F.description] || '',
+    archived: !!f[F.archived],
+    log: f[F.log] ? parseLog(f[F.log]) : [],
+    _recordId: rec.id
+  };
+}
+
+function mapRitual(rec) {
+  const f = rec.fields;
+  const F = MAP.rituals.fields;
+  let decisions = {};
+  try { decisions = f[F.decisions] ? JSON.parse(f[F.decisions]) : {}; }
+  catch { decisions = {}; }
+  return {
+    recordId: rec.id,
+    weekId: f[F.weekId] || '',
+    startedAt: f[F.startedAt] || null,
+    closedAt: f[F.closedAt] || null,
+    step: f[F.currentStep] || 0,
+    decisions
+  };
+}
+
+// Log: stored as plain text (one entry per line: "ts | text")
+function parseLog(raw) {
+  if (!raw) return [];
+  return raw.split('\n').filter(Boolean).map(line => {
+    const idx = line.indexOf(' | ');
+    if (idx > 0) return { ts: line.substring(0, idx), text: line.substring(idx + 3) };
+    return { ts: new Date().toISOString(), text: line };
+  });
+}
+function serializeLog(logArr) {
+  if (!logArr || logArr.length === 0) return '';
+  return logArr.map(e => `${e.ts} | ${e.text}`).join('\n');
+}
+
+// ---- Reverse mappers (HTML model -> Airtable fields) ----
+
+function activityToAirtableFields(a) {
+  const F = MAP.activities.fields;
+  const out = {};
+  out[F.name] = a.name || '';
+  out[F.source] = a.source || 'Manual';
+  out[F.syncStatus] = a.sync_status || 'Not synced';
+  if (a.calendar_event_id !== undefined) out[F.calendarEventId] = a.calendar_event_id || '';
+  if (a.last_synced_at !== undefined) out[F.lastSyncedAt] = a.last_synced_at || null;
+
+  // Hat (link)
+  if (a.hat !== undefined) {
+    const hatRec = state.hats.find(h => h.id === a.hat);
+    out[F.hat] = hatRec ? [hatRec.recordId] : [];
+  }
+  // Constraint (link)
+  if (a.constraint !== undefined) {
+    const cRec = state.constraints.find(c => c.code === a.constraint);
+    out[F.constraint] = cRec ? [cRec.recordId] : [];
+  }
+  // Team (link)
+  if (a.team !== undefined) {
+    const tRec = state.teams.find(t => t.id === a.team);
+    out[F.team] = tRec ? [tRec.recordId] : [];
+  }
+  // Stage (link)
+  if (a.stage !== undefined) {
+    const sRec = state.stages.find(s => s.name === a.stage);
+    out[F.stage] = sRec ? [sRec.recordId] : [];
+  }
+
+  out[F.delegated] = !!a.delegated;
+  out[F.completed] = !!a.completed;
+  if (a.priority !== undefined) out[F.priority] = a.priority;
+  if (a.priority_week !== undefined) out[F.priorityWeek] = a.priority_week || '';
+  if (a.date !== undefined) out[F.date] = a.date || null;
+  if (a.duration_minutes !== undefined) out[F.duration] = a.duration_minutes;
+  if (a.description !== undefined) out[F.description] = a.description || '';
+  out[F.archived] = !!a.archived;
+  if (a.log !== undefined) out[F.log] = serializeLog(a.log);
+  return out;
+}
+
+function constraintToAirtableFields(c) {
+  const F = MAP.constraints.fields;
+  const out = {};
+  out[F.code] = c.code || '';
+  out[F.name] = c.name || '';
+  out[F.description] = c.description || '';
+  out[F.archived] = !!c.archived;
+  if (c.defaultHat) {
+    const hatRec = state.hats.find(h => h.id === c.defaultHat);
+    if (hatRec) out[F.defaultHat] = [hatRec.recordId];
+  }
+  return out;
+}
+
+function teamToAirtableFields(t) {
+  const F = MAP.teams.fields;
+  const out = {};
+  out[F.teamId] = t.id || '';
+  out[F.name] = t.name || '';
+  out[F.role] = t.role || '';
+  out[F.color] = t.color || '#888';
+  out[F.archived] = !!t.archived;
+  return out;
+}
+
+function ritualToAirtableFields(r) {
+  const F = MAP.rituals.fields;
+  const out = {};
+  out[F.weekId] = r.weekId;
+  if (r.startedAt) out[F.startedAt] = r.startedAt;
+  if (r.closedAt) out[F.closedAt] = r.closedAt;
+  out[F.currentStep] = r.step || 0;
+  out[F.decisions] = JSON.stringify(r.decisions || {});
+  return out;
+}
+
+// ---- Initial data load from Airtable ----
+async function loadAllFromAirtable() {
+  // 1. Load Hats and Stages (they live in this base)
+  const [hatsRaw, stagesRaw] = await Promise.all([
+    atList(MAP.hats.tableId),
+    atList(MAP.stages.tableId)
+  ]);
+  state.hats = hatsRaw.map(mapHat).sort((a, b) => a.order - b.order);
+  state.stages = stagesRaw.map(mapStage).sort((a, b) => a.order - b.order);
+
+  const hatsById = {};
+  state.hats.forEach(h => { hatsById[h.recordId] = h; });
+  const stagesById = {};
+  state.stages.forEach(s => { stagesById[s.recordId] = s; });
+
+  // 2. Load Constraints and Teams
+  const [constraintsRaw, teamsRaw] = await Promise.all([
+    atList(MAP.constraints.tableId),
+    atList(MAP.teams.tableId)
+  ]);
+  state.constraints = constraintsRaw.map(r => mapConstraint(r, hatsById));
+  state.teams = teamsRaw.map(mapTeam);
+
+  const constraintsById = {};
+  state.constraints.forEach(c => { constraintsById[c.recordId] = c; });
+  const teamsById = {};
+  state.teams.forEach(t => { teamsById[t.recordId] = t; });
+
+  // 3. Load Activities and Rituals
+  const [activitiesRaw, ritualsRaw] = await Promise.all([
+    atList(MAP.activities.tableId),
+    atList(MAP.rituals.tableId)
+  ]);
+  state.activities = activitiesRaw.map(r => mapActivity(r, hatsById, constraintsById, teamsById, stagesById));
+
+  state.wizard.rituals = {};
+  ritualsRaw.forEach(r => {
+    const m = mapRitual(r);
+    state.wizard.rituals[m.weekId] = {
+      _recordId: m.recordId,
+      step: m.step,
+      startedAt: m.startedAt,
+      closedAt: m.closedAt,
+      decisions: m.decisions || { step1_lastWeek: {}, step2_inventory: {}, step5_synced: false }
+    };
+  });
+
+  state.airtable.lastSyncedAt = new Date().toISOString();
+}
+
+// ---- High-level save functions (called from UI) ----
+// All take the local object and persist to Airtable
+
+// ---- Dirty tracking for batched writes ----
+// Each activity that mutates is marked dirty by id. flushDirty() persists only those.
+const dirtyActivityIds = new Set();
+const dirtyRitualWeekIds = new Set();
+
+function markActivityDirty(activityId) {
+  if (activityId) dirtyActivityIds.add(activityId);
+}
+function markRitualDirty(weekId) {
+  if (weekId) dirtyRitualWeekIds.add(weekId);
+}
+
+// Persists only dirty activities (and new ones without _recordId).
+// Uses dirty-tracking to minimize API calls.
+async function saveActivities() {
+  const dirty = Array.from(dirtyActivityIds);
+  // Always include activities without _recordId (newly created in state)
+  const newOnes = state.activities.filter(a => !a._recordId);
+  const newOnesIds = new Set(newOnes.map(a => a.id));
+  const allToSave = new Set([...dirty, ...newOnesIds]);
+
+  if (allToSave.size === 0) return;
+
+  const tasks = [];
+  const newTasks = [];
+  let errorCount = 0;
+
+  for (const id of allToSave) {
+    const a = state.activities.find(x => x.id === id || x._recordId === id);
+    if (!a) continue;
+    const fields = activityToAirtableFields(a);
+    if (a._recordId) {
+      tasks.push(
+        atUpdate(MAP.activities.tableId, a._recordId, fields).catch(e => {
+          errorCount++;
+          console.error('Activity update error', e);
+        })
+      );
+    } else {
+      newTasks.push(async () => {
+        try {
+          const res = await atCreate(MAP.activities.tableId, fields);
+          a._recordId = res.id;
+          a.id = res.id;
+        } catch (e) {
+          errorCount++;
+          console.error('Activity create error', e);
+        }
+      });
+    }
+  }
+
+  // Run creates sequentially to avoid duplicates; updates in parallel
+  for (const t of newTasks) await t();
+  await Promise.all(tasks);
+
+  if (errorCount > 0) {
+    toast(`${errorCount} activity ${errorCount === 1 ? 'change' : 'changes'} failed to save`);
+  }
+
+  dirtyActivityIds.clear();
+  state.airtable.lastSyncedAt = new Date().toISOString();
+  updateSyncIndicator();
+}
+
+async function saveActivity(a) {
+  if (!a) return;
+  const fields = activityToAirtableFields(a);
+  try {
+    if (a._recordId) {
+      const res = await atUpdate(MAP.activities.tableId, a._recordId, fields);
+      dirtyActivityIds.delete(a.id); // no longer dirty
+      return res;
+    } else {
+      const res = await atCreate(MAP.activities.tableId, fields);
+      a._recordId = res.id;
+      a.id = res.id;
+      return res;
+    }
+  } catch (e) {
+    toast('Error saving activity: ' + e.message);
+    throw e;
+  }
+}
+
+async function saveConstraints() {
+  // Bulk save all (used after edits in Configuration)
+  let hadError = false;
+  for (const c of state.constraints) {
+    const fields = constraintToAirtableFields(c);
+    try {
+      if (c.recordId) await atUpdate(MAP.constraints.tableId, c.recordId, fields);
+      else {
+        const res = await atCreate(MAP.constraints.tableId, fields);
+        c.recordId = res.id;
+      }
+    } catch (e) {
+      hadError = true;
+      console.error('Constraint save error', e);
+    }
+  }
+  if (hadError) toast('Some constraints could not be saved');
+}
+
+async function saveTeams() {
+  let hadError = false;
+  for (const t of state.teams) {
+    const fields = teamToAirtableFields(t);
+    try {
+      if (t.recordId) await atUpdate(MAP.teams.tableId, t.recordId, fields);
+      else {
+        const res = await atCreate(MAP.teams.tableId, fields);
+        t.recordId = res.id;
+      }
+    } catch (e) {
+      hadError = true;
+      console.error('Team save error', e);
+    }
+  }
+  if (hadError) toast('Some teams could not be saved');
+}
+
+// Reverse mappers for Hats and Stages
+function hatToAirtableFields(h) {
+  const F = MAP.hats.fields;
+  const out = {};
+  out[F.hat] = h.id || '';
+  out[F.order] = h.order || 0;
+  out[F.summary] = h.summary || '';
+  out[F.whatYouDo] = h.whatYouDo || '';
+  out[F.whatYouDont] = h.whatYouDont || '';
+  out[F.signals] = h.signals || '';
+  out[F.examples] = h.examples || '';
+  out[F.whenToSwitch] = h.whenToSwitch || '';
+  return out;
+}
+
+function stageToAirtableFields(s) {
+  const F = MAP.stages.fields;
+  const out = {};
+  out[F.stage] = s.name || '';
+  out[F.order] = s.order || 0;
+  out[F.description] = s.description || '';
+  return out;
+}
+
+// Persist all Hats to Airtable. Called after edits in Configuration panel.
+async function saveHats() {
+  for (const h of state.hats) {
+    if (!h.recordId) continue; // Hats are seeded — never created from HTML
+    try {
+      await atUpdate(MAP.hats.tableId, h.recordId, hatToAirtableFields(h));
+    } catch (e) {
+      toast('Error saving hat: ' + e.message);
+      console.error('Hat save error', e);
+    }
+  }
+}
+
+// Persist all Stages to Airtable. Called after edits in Configuration panel.
+async function saveStages() {
+  for (const s of state.stages) {
+    if (!s.recordId) continue;
+    try {
+      await atUpdate(MAP.stages.tableId, s.recordId, stageToAirtableFields(s));
+    } catch (e) {
+      toast('Error saving stage: ' + e.message);
+      console.error('Stage save error', e);
+    }
+  }
+}
+
+async function saveWizardRituals() {
+  // Persist only dirty rituals. If none marked, persist newly added (no _recordId).
+  const weekIds = new Set(dirtyRitualWeekIds);
+  // Include any without _recordId
+  for (const w in state.wizard.rituals) {
+    if (!state.wizard.rituals[w]._recordId) weekIds.add(w);
+  }
+  if (weekIds.size === 0) return;
+
+  let errorCount = 0;
+  for (const weekId of weekIds) {
+    const r = state.wizard.rituals[weekId];
+    if (!r) continue;
+    const fields = ritualToAirtableFields({
+      weekId,
+      startedAt: r.startedAt,
+      closedAt: r.closedAt,
+      step: r.step,
+      decisions: r.decisions
+    });
+    try {
+      if (r._recordId) await atUpdate(MAP.rituals.tableId, r._recordId, fields);
+      else {
+        const res = await atCreate(MAP.rituals.tableId, fields);
+        r._recordId = res.id;
+      }
+    } catch (e) {
+      errorCount++;
+      console.error('Ritual save error', e);
+    }
+  }
+  if (errorCount > 0) toast(`${errorCount} ritual ${errorCount === 1 ? 'change' : 'changes'} failed to save`);
+  dirtyRitualWeekIds.clear();
+}
+
+// ---- Manual sync ----
+
+async function syncFromAirtable() {
+  if (state.airtable.syncing) return;
+  state.airtable.syncing = true;
+  updateSyncIndicator();
+  try {
+    await loadAllFromAirtable();
+    if (state.currentPanel === 'activities') renderActivities();
+    if (state.currentPanel === 'thisweek') renderWizard();
+    if (state.currentPanel === 'config') renderConfig();
+  } catch (e) {
+    console.error('Sync error', e);
+    toast('Sync failed: ' + e.message);
+  } finally {
+    state.airtable.syncing = false;
+    updateSyncIndicator();
+  }
+}
+
+function updateSyncIndicator() {
+  const el = document.getElementById('sync-indicator');
+  if (!el) return;
+  const refreshIcon = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8a6 6 0 0 1 10.5-4M14 8a6 6 0 0 1-10.5 4M11 4h3V1M5 12H2v3"/></svg>';
+  if (state.airtable.syncing) {
+    el.innerHTML = `<span class="sync-dot syncing"></span> Refreshing…`;
+  } else {
+    const ts = state.airtable.lastSyncedAt ? new Date(state.airtable.lastSyncedAt) : null;
+    if (ts) {
+      const hh = ts.getHours().toString().padStart(2, '0');
+      const mm = ts.getMinutes().toString().padStart(2, '0');
+      el.innerHTML = `${refreshIcon} Synced ${hh}:${mm}`;
+    } else {
+      el.innerHTML = `${refreshIcon} Refresh`;
+    }
+  }
+}
+
+/* ============================================================
+ * 3. UTILS
+ * ============================================================ */
+function teamById(id) { return state.teams.find(t => t.id === id) || null; }
+function teamInitial(name) {
+  if (!name) return '?';
+  const parts = name.split(/[\s\/]+/);
+  return parts.map(p => p[0]).join('').slice(0, 2).toUpperCase();
+}
+function constraintByCode(code) { return state.constraints.find(c => c.code === code) || null; }
+
+function isThisWeek(dateStr) {
+  if (!dateStr) return false;
+  const d = new Date(dateStr);
+  const now = new Date();
+  const day = now.getDay();
+  const diffToMon = (day === 0 ? -6 : 1 - day);
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + diffToMon); monday.setHours(0,0,0,0);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6); sunday.setHours(23,59,59,999);
+  return d >= monday && d <= sunday;
+}
+function isFuture(dateStr) {
+  if (!dateStr) return false;
+  return new Date(dateStr) > new Date() && !isThisWeek(dateStr);
+}
+function isPast(dateStr) {
+  if (!dateStr) return false;
+  return new Date(dateStr) < new Date() && !isThisWeek(dateStr);
+}
+function formatDateChip(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const dayName = days[d.getDay()];
+  const day = d.getDate();
+  const hh = d.getHours().toString().padStart(2,'0');
+  const mm = d.getMinutes().toString().padStart(2,'0');
+  return `${dayName} ${day} · ${hh}:${mm}`;
+}
+function formatDateInput(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const yyyy = d.getFullYear();
+  const mm = (d.getMonth()+1).toString().padStart(2,'0');
+  const dd = d.getDate().toString().padStart(2,'0');
+  const hh = d.getHours().toString().padStart(2,'0');
+  const mn = d.getMinutes().toString().padStart(2,'0');
+  return `${yyyy}-${mm}-${dd}T${hh}:${mn}`;
+}
+function formatLogTime(ts) {
+  const d = new Date(ts);
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  return `${days[d.getDay()]} ${d.getDate()}/${d.getMonth()+1} ${d.getHours()}:${d.getMinutes().toString().padStart(2,'0')}`;
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ============================================================
+ * 4. RENDER
+ * ============================================================ */
+function showPanel(name) {
+  state.currentPanel = name;
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  const navBtn = document.getElementById('nav-' + name);
+  if (navBtn && !navBtn.classList.contains('disabled')) navBtn.classList.add('active');
+
+  if (name === 'activities') {
+    updateBreadcrumb();
+    renderFilters();
+    renderActivities();
+  } else if (name === 'config') {
+    document.getElementById('breadcrumb').innerHTML = `<span class="bc-cur">Configuration</span>`;
+    renderConfig();
+  } else if (name === 'thisweek') {
+    document.getElementById('breadcrumb').innerHTML = `<span class="bc-cur">This week</span>`;
+    renderWizard();
+  }
+}
+
+function updateBreadcrumb() {
+  document.getElementById('breadcrumb').innerHTML =
+    `<span class="bc-cur">Activities</span><span class="bc-sep">›</span><span class="bc-cur">${tabLabel(state.currentTab)}</span>`;
+}
+function tabLabel(t) { return { mydesk:'My desk', delegated:'Delegated', live:'Live', all:'All' }[t]; }
+
+function setTab(t) {
+  state.currentTab = t;
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+  updateBreadcrumb();
+  renderActivities();
+}
+
+function renderFilters() {
+  const c = document.getElementById('f-constraint');
+  c.innerHTML = '<option value="">All constraints</option>' +
+    state.constraints.filter(x => !x.archived).map(x => `<option value="${x.code}">${x.code} · ${x.name}</option>`).join('');
+  const h = document.getElementById('f-hat');
+  h.innerHTML = '<option value="">All hats</option>' +
+    state.hats.map(x => `<option value="${x.id}">${x.id}</option>`).join('');
+  const t = document.getElementById('f-team');
+  t.innerHTML = '<option value="">All teams</option><option value="__none__">No team</option>' +
+    state.teams.filter(x => !x.archived).map(x => `<option value="${x.id}">${x.name}</option>`).join('');
+}
+
+function filterActivities() {
+  let list = [...state.activities];
+  if (state.currentTab === 'mydesk') list = list.filter(a => !a.delegated && a.stage !== 'Live');
+  else if (state.currentTab === 'delegated') list = list.filter(a => a.delegated && a.stage !== 'Live');
+  else if (state.currentTab === 'live') list = list.filter(a => a.stage === 'Live');
+
+  // Hide completed activities in My desk only — All tab shows them
+  if (state.currentTab === 'mydesk') {
+    list = list.filter(a => !a.completed);
+  }
+
+  const fc = document.getElementById('f-constraint').value;
+  const fh = document.getElementById('f-hat').value;
+  const ft = document.getElementById('f-team').value;
+  const fSearch = (document.getElementById('f-search').value || '').toLowerCase();
+  if (fc) list = list.filter(a => a.constraint === fc);
+  if (fh) list = list.filter(a => a.hat === fh);
+  if (ft === '__none__') list = list.filter(a => !a.team);
+  else if (ft) list = list.filter(a => a.team === ft);
+  if (fSearch) list = list.filter(a => a.name.toLowerCase().includes(fSearch));
+  return list;
+}
+
+function sortByPriority(arr) {
+  return arr.sort((a, b) => {
+    // Prioritized first (by number ascending)
+    if (a.priority != null && b.priority == null) return -1;
+    if (a.priority == null && b.priority != null) return 1;
+    if (a.priority != null && b.priority != null) return a.priority - b.priority;
+    // Both unprioritized: alphabetical
+    return a.name.localeCompare(b.name);
+  });
+}
+
+// Group activities — only used in tabs that benefit from grouping.
+// For mydesk/live we now return a flat list (single group) sorted by priority.
+function groupActivities(list) {
+  if (state.currentTab === 'mydesk' || state.currentTab === 'live') {
+    return [{ key: 'flat', label: null, items: sortByPriority(list) }];
+  } else if (state.currentTab === 'delegated') {
+    const groups = {};
+    list.forEach(a => {
+      const k = a.team || '__none__';
+      (groups[k] = groups[k] || []).push(a);
+    });
+    return Object.keys(groups).map(k => {
+      const team = k === '__none__' ? null : teamById(k);
+      return { key: k, label: team ? team.name : 'No team', items: sortByPriority(groups[k]) };
+    });
+  } else {
+    const groups = {};
+    list.forEach(a => { (groups[a.stage] = groups[a.stage] || []).push(a); });
+    return state.stages.map(s => ({
+      key: s.name, label: s.name, items: sortByPriority(groups[s.name] || [])
+    })).filter(g => g.items.length);
+  }
+}
+
+function renderActivities() {
+  const all = state.activities;
+  document.getElementById('cnt-mydesk').textContent = all.filter(a => !a.delegated && a.stage !== 'Live').length;
+  document.getElementById('cnt-delegated').textContent = all.filter(a => a.delegated && a.stage !== 'Live').length;
+  document.getElementById('cnt-live').textContent = all.filter(a => a.stage === 'Live').length;
+  document.getElementById('cnt-all').textContent = all.length;
+
+  renderKpis();
+
+  const list = filterActivities();
+  const groups = groupActivities(list);
+  const container = document.getElementById('activities-list');
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <h3>Nothing here yet</h3>
+        <p>Try adjusting filters or create a new activity.</p>
+      </div>`;
+    return;
+  }
+
+  let html = '<div class="act-list">';
+  groups.forEach(g => {
+    if (g.label === null) {
+      // Flat list — single card, no group header
+      html += `<div class="act-card">${g.items.map(a => renderActivityRow(a)).join('')}</div>`;
+    } else {
+      const totalH = g.items.reduce((s,i) => s + (i.estimated_hours || 0), 0);
+      html += `
+        <div class="act-group">
+          <div class="act-group-hd">
+            <div class="act-group-lbl">${escapeHtml(g.label)}</div>
+            <div class="act-group-meta">${g.items.length} activities${totalH ? ' · ' + totalH.toFixed(1) + 'h estimated' : ''}</div>
+          </div>
+          <div class="act-card">
+            ${g.items.map(a => renderActivityRow(a)).join('')}
+          </div>
+        </div>`;
+    }
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function renderKpis() {
+  const list = filterActivities();
+  const tab = state.currentTab;
+  let cards = [];
+  if (tab === 'mydesk') {
+    const total = list.length;
+    const prioritized = list.filter(a => a.priority != null).length;
+    const thisweek = list.filter(a => isThisWeek(a.date)).length;
+    const unsched = list.filter(a => !a.date).length;
+    cards = [
+      ['Total', total, ''],
+      ['Prioritized', prioritized, prioritized > 0 ? '' : ''],
+      ['This week', thisweek, thisweek > 0 ? 'green' : ''],
+      ['Unscheduled', unsched, unsched > 5 ? 'amber' : '']
+    ];
+  } else if (tab === 'delegated') {
+    cards = [
+      ['Total', list.length, ''],
+      ['Building', list.filter(a => a.stage === 'Building').length, ''],
+      ['Training', list.filter(a => a.stage === 'Training').length, ''],
+      ['Teams', new Set(list.map(a => a.team).filter(Boolean)).size, '']
+    ];
+  } else if (tab === 'live') {
+    cards = [
+      ['Total live', list.length, 'green'],
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', '']
+    ];
+  } else {
+    cards = state.stages.slice(0,4).map(s => [s.name, list.filter(a => a.stage === s.name).length, '']);
+  }
+  document.getElementById('kpi-row').innerHTML = cards.map(([l, v, color]) => {
+    if (!l) return `<div class="kpi" style="visibility:hidden"></div>`;
+    return `<div class="kpi"><div class="kpi-lbl">${l}</div><div class="kpi-val ${color}">${v}</div></div>`;
+  }).join('');
+}
+
+function renderActivityRow(a) {
+  const isTopPrio = a.priority != null && a.priority <= 3;
+
+  // Priority — native dropdown, options 1..N+1 (N = current prioritized count in scope)
+  // We use a wrapper similar to constraint/team: visible compact label + invisible select
+  const scope = activitiesInScope();
+  const prioritizedCount = scope.filter(x => x.priority != null).length;
+  const maxOption = a.priority != null ? prioritizedCount : prioritizedCount + 1;
+  let prioOptions = '<option value="">—</option>';
+  for (let i = 1; i <= maxOption; i++) {
+    prioOptions += `<option value="${i}" ${a.priority === i ? 'selected' : ''}>${i}</option>`;
+  }
+  const prioDisplay = a.priority != null
+    ? `<span class="cp-text">${a.priority}</span>`
+    : `<span class="cp-text empty">—</span>`;
+  const prio = `<div class="cell-prio" onclick="event.stopPropagation()">
+    ${prioDisplay}
+    <select onchange="onPriorityChange(event, '${a.id}')" onclick="event.stopPropagation()">${prioOptions}</select>
+  </div>`;
+
+  // Status — unified icon at the end (calendar = scheduled, clipboard gray = backlog)
+  let statusCell;
+  if (a.date) {
+    const tip = formatDateChip(a.date);
+    statusCell = `<span class="status-icon scheduled" data-tooltip="${escapeHtml(tip)}">${schedIconCal(a.date)}</span>`;
+  } else {
+    statusCell = `<span class="status-icon backlog" data-tooltip="In backlog">${iconClipboard()}</span>`;
+  }
+
+  // Constraint — wrapper shows compact code, dropdown shows full name
+  const cOpts = '<option value="">—</option>' +
+    state.constraints.filter(c => !c.archived).map(c =>
+      `<option value="${c.code}" ${a.constraint === c.code ? 'selected' : ''}>${c.code} · ${c.name}</option>`
+    ).join('');
+  const cDisplay = a.constraint
+    ? `<span class="cc-text">${a.constraint}</span>`
+    : `<span class="cc-text empty">—</span>`;
+  const constraintCell = `<div class="cell-constraint" onclick="event.stopPropagation()">
+    ${cDisplay}
+    <select onchange="onCellChange(event, '${a.id}', 'constraint')" onclick="event.stopPropagation()">${cOpts}</select>
+  </div>`;
+
+  // Hat — native select always visible
+  const hOpts = '<option value="">—</option>' +
+    state.hats.map(h =>
+      `<option value="${h.id}" ${a.hat === h.id ? 'selected' : ''}>${h.id}</option>`
+    ).join('');
+  const hatCell = `<select class="cell-select ${a.hat ? '' : 'empty'}"
+    onchange="onCellChange(event, '${a.id}', 'hat')"
+    onclick="event.stopPropagation()">${hOpts}</select>`;
+
+  // Team — wrapper with avatar + invisible select on top for the dropdown
+  const tOpts = '<option value="">—</option>' +
+    state.teams.filter(t => !t.archived).map(t =>
+      `<option value="${t.id}" ${a.team === t.id ? 'selected' : ''}>${t.name}</option>`
+    ).join('');
+  let teamInner;
+  if (a.team) {
+    const t = teamById(a.team);
+    if (t) {
+      teamInner = `<span class="team-av" style="background:${t.color}">${teamInitial(t.name)}</span><span class="team-name">${escapeHtml(t.name)}</span>`;
+    } else {
+      teamInner = `<span class="team-av empty"></span>`;
+    }
+  } else {
+    teamInner = `<span class="team-av empty"></span>`;
+  }
+  const teamCell = `<div class="cell-team" onclick="event.stopPropagation()">
+    ${teamInner}
+    <select onchange="onCellChange(event, '${a.id}', 'team')" onclick="event.stopPropagation()">${tOpts}</select>
+  </div>`;
+
+  // Columns: Priority, Name, Constraint, Hat, Team, Status (unified)
+  // Only apply "completed" styling in tabs where it's meaningful (mydesk, all).
+  // In delegated and live, the completed flag is personal — don't strike through.
+  const showCompletedStyle = a.completed && (state.currentTab === 'mydesk' || state.currentTab === 'all');
+  const rowClass = showCompletedStyle ? 'act-row completed' : 'act-row';
+  return `
+    <div class="${rowClass}" onclick="rowClick(event, '${a.id}')">
+      ${prio}
+      <div class="act-name">${escapeHtml(a.name)}</div>
+      ${constraintCell}
+      ${hatCell}
+      ${teamCell}
+      ${statusCell}
+    </div>`;
+}
+
+// Generic onChange for native selects in the row
+async function onCellChange(event, id, field) {
+  event.stopPropagation();
+  const value = event.target.value || null;
+  await commitInlineEdit(id, field, value);
+}
+
+// Priority change from native number input
+async function onPriorityChange(event, id) {
+  event.stopPropagation();
+  const raw = event.target.value.trim();
+  const newPrio = raw === '' ? null : parseInt(raw, 10);
+  await commitPriorityChange(id, newPrio);
+}
+
+// Click on row — only open slide panel when clicking the activity name
+function rowClick(event, id) {
+  // If click target is anything other than the name cell, ignore
+  if (event.target.closest('.cell-prio') ||
+      event.target.closest('.cell-select') ||
+      event.target.closest('.cell-constraint') ||
+      event.target.closest('.cell-team') ||
+      event.target.tagName === 'SELECT' ||
+      event.target.tagName === 'INPUT' ||
+      event.target.tagName === 'OPTION') {
+    return;
+  }
+  openActivity(id);
+}
+
+async function commitInlineEdit(id, field, value) {
+  const a = state.activities.find(x => x.id === id);
+  if (!a) return;
+  const oldValue = a[field];
+  if (oldValue === value) {
+    renderActivities();
+    return;
+  }
+  a[field] = value;
+  const display = (v) => v == null || v === '' ? '—' : v;
+  a.log.push({ ts: new Date().toISOString(), text: `${field}: ${display(oldValue)} → ${display(value)} (inline edit)` });
+  markActivityDirty(a.id);
+  await saveActivities();
+  renderActivities();
+}
+
+// Returns the list of activities in the same scope (tab) that participate in priority ordering
+function activitiesInScope() {
+  if (state.currentTab === 'mydesk') return state.activities.filter(a => !a.delegated && a.stage !== 'Live');
+  if (state.currentTab === 'delegated') return state.activities.filter(a => a.delegated && a.stage !== 'Live');
+  if (state.currentTab === 'live') return state.activities.filter(a => a.stage === 'Live');
+  return [...state.activities];
+}
+
+// Insert-and-shift logic: when an activity is assigned a new priority,
+// other activities in the same scope shift to make room.
+async function commitPriorityChange(id, newPrio) {
+  const a = state.activities.find(x => x.id === id);
+  if (!a) return;
+
+  // Validate input
+  if (newPrio != null && (isNaN(newPrio) || newPrio < 1)) {
+    toast('Priority must be 1 or higher');
+    renderActivities();
+    return;
+  }
+
+  const oldPrio = a.priority;
+  if (oldPrio === newPrio) {
+    renderActivities();
+    return;
+  }
+
+  // Get all activities in scope, sorted by current priority (priority asc, nulls last)
+  const scope = activitiesInScope().filter(x => x.id !== id);
+  const prioritized = scope.filter(x => x.priority != null).sort((x, y) => x.priority - y.priority);
+
+  // Cap newPrio so it can't be higher than the number of prioritized + 1 (no gaps)
+  let cappedPrio = newPrio;
+  if (cappedPrio != null) {
+    const maxAllowed = prioritized.length + 1;
+    if (cappedPrio > maxAllowed) cappedPrio = maxAllowed;
+  }
+
+  // Apply insert-and-shift logic
+  if (cappedPrio == null) {
+    // Removing priority: simply unset, and renumber the rest contiguously
+    a.priority = null;
+    a.priority_week = null;
+    prioritized.forEach((x, idx) => { x.priority = idx + 1; });
+  } else if (oldPrio == null) {
+    // Adding new priority N: push others at N..max down by 1, set this to N
+    prioritized.forEach(x => {
+      if (x.priority >= cappedPrio) x.priority = x.priority + 1;
+    });
+    a.priority = cappedPrio;
+    a.priority_week = currentWeekId();
+  } else if (cappedPrio < oldPrio) {
+    // Moving up (e.g. #5 → #2): shift others between cappedPrio..oldPrio-1 down by 1
+    prioritized.forEach(x => {
+      if (x.priority >= cappedPrio && x.priority < oldPrio) x.priority = x.priority + 1;
+    });
+    a.priority = cappedPrio;
+  } else {
+    // Moving down (e.g. #2 → #5): shift others between oldPrio+1..cappedPrio up by 1
+    prioritized.forEach(x => {
+      if (x.priority > oldPrio && x.priority <= cappedPrio) x.priority = x.priority - 1;
+    });
+    a.priority = cappedPrio;
+  }
+
+  // Log change
+  const display = (v) => v == null ? '—' : '#' + v;
+  a.log.push({ ts: new Date().toISOString(), text: `Priority: ${display(oldPrio)} → ${display(a.priority)} (reorder)` });
+
+  // Mark this activity and all reordered ones as dirty
+  markActivityDirty(a.id);
+  prioritized.forEach(x => markActivityDirty(x.id));
+
+  await saveActivities();
+  renderActivities();
+}
+
+function currentWeekId() {
+  const now = new Date();
+  const day = now.getDay();
+  const diffToMon = (day === 0 ? -6 : 1 - day);
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + diffToMon); monday.setHours(0,0,0,0);
+  const start = new Date(monday.getFullYear(), 0, 1);
+  const weekNum = Math.ceil(((monday - start) / 86400000 + start.getDay() + 1) / 7);
+  return `${monday.getFullYear()}-W${String(weekNum).padStart(2,'0')}`;
+}
+
+// Re-compact priorities of a given week (1, 2, 3... without gaps)
+// Excludes completed activities so they don't take a number
+function recompactPriorities(weekId) {
+  if (!weekId) return;
+  const inWeek = state.activities
+    .filter(a => a.priority_week === weekId && a.priority != null && !a.completed)
+    .sort((x, y) => x.priority - y.priority);
+  inWeek.forEach((a, idx) => {
+    if (a.priority !== idx + 1) {
+      a.priority = idx + 1;
+      markActivityDirty(a.id);
+    }
+  });
+  // Completed activities lose their priority slot for that week
+  state.activities
+    .filter(a => a.priority_week === weekId && a.completed)
+    .forEach(a => {
+      a.priority = null;
+      a.priority_week = null;
+      markActivityDirty(a.id);
+    });
+}
+
+// Compute Monday of a given offset (0 = this week, 1 = next week, -1 = last week)
+function mondayOfWeek(offset = 0) {
+  const now = new Date();
+  const day = now.getDay();
+  const diffToMon = (day === 0 ? -6 : 1 - day);
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + diffToMon + (offset * 7));
+  monday.setHours(0, 0, 0, 0);
+  return monday;
+}
+function weekIdFromMonday(monday) {
+  const start = new Date(monday.getFullYear(), 0, 1);
+  const weekNum = Math.ceil(((monday - start) / 86400000 + start.getDay() + 1) / 7);
+  return `${monday.getFullYear()}-W${String(weekNum).padStart(2,'0')}`;
+}
+function nextWeekId() { return weekIdFromMonday(mondayOfWeek(1)); }
+
+// Format a week range nicely: "11–17 may 2026"
+function formatWeekRange(weekId) {
+  // Find which offset corresponds to this weekId
+  for (let offset = -52; offset <= 52; offset++) {
+    if (weekIdFromMonday(mondayOfWeek(offset)) === weekId) {
+      const monday = mondayOfWeek(offset);
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+      const mD = monday.getDate();
+      const sD = sunday.getDate();
+      const mM = months[monday.getMonth()];
+      const sM = months[sunday.getMonth()];
+      const yr = sunday.getFullYear();
+      if (mM === sM) return `${mD}–${sD} ${mM} ${yr}`;
+      return `${mD} ${mM} – ${sD} ${sM} ${yr}`;
+    }
+  }
+  return weekId;
+}
+function formatWeekShort(weekId) {
+  // e.g. "11–17 may"
+  for (let offset = -52; offset <= 52; offset++) {
+    if (weekIdFromMonday(mondayOfWeek(offset)) === weekId) {
+      const monday = mondayOfWeek(offset);
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+      const mD = monday.getDate();
+      const sD = sunday.getDate();
+      const mM = months[monday.getMonth()];
+      const sM = months[sunday.getMonth()];
+      if (mM === sM) return `${mD}–${sD} ${mM}`;
+      return `${mD} ${mM} – ${sD} ${sM}`;
+    }
+  }
+  return weekId;
+}
+
+function iconCheck() { return '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8l4 4 6-7"/></svg>'; }
+function schedIconCal(date) {
+  // Google Calendar-style icon: white card with blue top stripe and day number
+  const day = date ? new Date(date).getDate() : '';
+  return '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">' +
+    '<rect x="1.5" y="2.5" width="13" height="12" rx="1.5" fill="#ffffff" stroke="#d4d4d8" stroke-width="1"/>' +
+    '<rect x="1.5" y="2.5" width="13" height="3.5" rx="1.5" fill="#2b7fff"/>' +
+    '<rect x="1.5" y="4" width="13" height="2" fill="#2b7fff"/>' +
+    '<rect x="4" y="1" width="1.2" height="2.6" rx="0.4" fill="#1447e6"/>' +
+    '<rect x="10.8" y="1" width="1.2" height="2.6" rx="0.4" fill="#1447e6"/>' +
+    '<text x="8" y="12.2" text-anchor="middle" font-family="Poppins, sans-serif" font-size="5.5" font-weight="700" fill="#0f172b">' + day + '</text>' +
+    '</svg>';
+}
+function iconClipboard() {
+  // Hourglass — pending, waiting for a moment in time
+  return '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M4 2h8M4 14h8"/>' +
+    '<path d="M4 2v2.5l4 3.5 4-3.5V2"/>' +
+    '<path d="M4 14v-2.5l4-3.5 4 3.5V14"/>' +
+    '</svg>';
+}
+
+/* ============================================================
+ * 5. ACTIVITY EDIT MODAL — minimal: title + stage progress + delegate toggle
+ * ============================================================ */
+function openActivity(id) {
+  state.editingId = id;
+  const a = state.activities.find(x => x.id === id);
+  if (!a) return;
+  renderActivityModal(a);
+}
+
+function renderActivityModal(a) {
+  const wrap = document.getElementById('modal-wrap');
+  const content = document.getElementById('modal-content');
+
+  const isArchitect = a.hat === 'Architect';
+
+  // Build stage progress steps (only used when Architect)
+  let stageBlock = '';
+  let delegateBlock = '';
+
+  if (isArchitect) {
+    const currentStageIdx = state.stages.findIndex(s => s.name === a.stage);
+    const stageSteps = state.stages.map((s, i) => {
+      const isActive = i === currentStageIdx;
+      const isCompleted = i < currentStageIdx;
+      const klass = isActive ? 'stage-step active' : (isCompleted ? 'stage-step completed' : 'stage-step');
+      const safeName = s.name.replace(/'/g, "\\'");
+      return `
+        <div class="${klass}" onclick="changeStage('${safeName}')" data-tooltip="Move to ${escapeHtml(s.name)}">
+          <div class="stage-dot">${isCompleted ? iconCheck() : (i + 1)}</div>
+          <div class="stage-label">${escapeHtml(s.name)}</div>
+        </div>${i < state.stages.length - 1 ? '<div class="stage-line ' + (isCompleted ? 'completed' : '') + '"></div>' : ''}
+      `;
+    }).join('');
+
+    stageBlock = `
+      <div class="am-section">
+        <div class="am-section-lbl">Stage</div>
+        <div class="stage-progress">${stageSteps}</div>
+      </div>
+    `;
+
+    delegateBlock = `
+      <div class="am-section">
+        <div class="am-section-lbl">Delegation</div>
+        <div class="am-delegate" id="am-delegate-wrap">
+          <div class="am-delegate-meta">
+            <div class="am-delegate-title" id="am-delegate-title">${a.delegated ? 'Delegated' : 'Not delegated'}</div>
+          </div>
+          <div class="ios-switch ${a.delegated ? 'on' : ''}" id="am-delegate-switch" onclick="toggleDelegatedModal()">
+            <div class="ios-switch-thumb"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    // Non-Architect: show informative message about why stage/delegate don't apply
+    const hatLabel = a.hat || 'No hat assigned';
+    delegateBlock = `
+      <div class="am-section">
+        <div class="am-info-card">
+          <div class="am-info-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M8 5.5v3M8 10.5v.5"/></svg>
+          </div>
+          <div class="am-info-text">
+            <div class="am-info-title">This activity is direct execution</div>
+            <div class="am-info-desc">Activities under the <strong>${escapeHtml(hatLabel)}</strong> hat are executed by you directly. They don't have stages or get delegated to the team. If you want to build a delegable system, change it to <strong>Architect</strong> hat from the table.</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Status button (large CTA) — always at the bottom, after Stage and Delegation
+  const statusBlock = `
+    <div class="am-section am-status-section">
+      <button class="cta-complete ${a.completed ? 'is-completed' : ''}" onclick="toggleCompletedModal()">
+        <span class="cta-icon">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 6-7"/></svg>
+        </span>
+        <span class="cta-text">${a.completed ? 'Completed' : 'Mark as completed'}</span>
+      </button>
+    </div>
+  `;
+
+  content.innerHTML = `
+    <div class="am-hd">
+      <input type="text" class="am-title" id="am-name" value="${escapeHtml(a.name)}" placeholder="Activity name">
+      <button class="am-close" onclick="closeActivityModal()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+      </button>
+    </div>
+
+    ${stageBlock}
+    ${delegateBlock}
+    ${statusBlock}
+
+    <div class="am-footer">
+      <button class="btn btn-danger btn-sm" onclick="deleteActivityModal()">Delete</button>
+      <div class="am-autosave">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8l4 4 6-7"/></svg>
+        Auto-saved
+      </div>
+    </div>
+  `;
+  wrap.classList.add('open');
+
+  // Autofocus title on open with cursor at end
+  setTimeout(() => {
+    const input = document.getElementById('am-name');
+    if (input) {
+      input.focus();
+      const len = input.value.length;
+      input.setSelectionRange(len, len);
+      // Save name on blur (auto-save) and on Enter
+      input.addEventListener('blur', saveNameFromInput);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          input.blur();
+        }
+      });
+    }
+  }, 60);
+}
+
+async function closeActivityModal() {
+  // If activity-edit modal is open, save any pending name change
+  const nameInput = document.getElementById('am-name');
+  if (nameInput && state.editingId) {
+    await saveNameFromInput();
+  }
+  document.getElementById('modal-wrap').classList.remove('open');
+  document.getElementById('modal-content').innerHTML = '';
+  state.editingId = null;
+}
+
+// Click outside the modal — only closes activity-edit modal (not confirmation modals)
+async function onModalWrapClick(event) {
+  // Only act on direct clicks on the wrap itself (overlay), not on bubbled events from the modal
+  if (event.target.id !== 'modal-wrap') return;
+  // Only auto-close if this is the activity-edit modal (has am-name input)
+  const nameInput = document.getElementById('am-name');
+  if (!nameInput) return; // not an activity-edit modal — do nothing
+  // Save pending name change before closing
+  await saveNameFromInput();
+  closeActivityModal();
+}
+
+async function toggleCompletedModal() {
+  const a = state.activities.find(x => x.id === state.editingId);
+  if (!a) return;
+  const wasCompleted = a.completed;
+  const affectedWeek = a.priority_week;
+  a.completed = !a.completed;
+  a.log.push({
+    ts: new Date().toISOString(),
+    text: a.completed ? 'Marked as completed' : 'Reactivated (not completed)'
+  });
+  // If just marked as completed, recompact priorities of that week
+  if (!wasCompleted && a.completed && affectedWeek) {
+    recompactPriorities(affectedWeek);
+  }
+  markActivityDirty(a.id);
+  await saveActivities();
+  // Close modal immediately (no re-render)
+  closeActivityModal();
+  renderActivities();
+}
+
+async function toggleDelegatedModal() {
+  const a = state.activities.find(x => x.id === state.editingId);
+  if (!a) return;
+  a.delegated = !a.delegated;
+
+  const sw = document.getElementById('am-delegate-switch');
+  const title = document.getElementById('am-delegate-title');
+  sw.classList.toggle('on');
+
+  if (a.delegated) {
+    title.textContent = 'Delegated';
+    a.log.push({ ts: new Date().toISOString(), text: 'Marked as delegated to team' });
+  } else {
+    title.textContent = 'Not delegated';
+    a.log.push({ ts: new Date().toISOString(), text: 'Marked as not delegated' });
+  }
+  markActivityDirty(a.id);
+  await saveActivities();
+  // Refresh table tab counts (Delegated vs My desk)
+  renderActivities();
+}
+
+// Change stage from the modal stepper — click on any stage step
+async function changeStage(stageName) {
+  const a = state.activities.find(x => x.id === state.editingId);
+  if (!a) return;
+  if (a.stage === stageName) return;
+  const oldStage = a.stage;
+  a.stage = stageName;
+  a.log.push({ ts: new Date().toISOString(), text: `Stage: ${oldStage} → ${stageName}` });
+  markActivityDirty(a.id);
+  await saveActivities();
+  // Re-render the modal so the stepper reflects the new state
+  renderActivityModal(a);
+}
+
+async function saveNameFromInput() {
+  const a = state.activities.find(x => x.id === state.editingId);
+  if (!a) return;
+  const input = document.getElementById('am-name');
+  if (!input) return;
+  const newName = input.value.trim();
+  // If empty, revert to old name silently
+  if (!newName) {
+    input.value = a.name;
+    return;
+  }
+  if (a.name === newName) return;
+  a.log.push({ ts: new Date().toISOString(), text: `Name: "${a.name}" → "${newName}"` });
+  a.name = newName;
+  markActivityDirty(a.id);
+  await saveActivities();
+  // Refresh the table behind the modal without closing
+  renderActivities();
+}
+
+async function deleteActivityModal() {
+  const a = state.activities.find(x => x.id === state.editingId);
+  if (!a) return;
+  if (!confirm(`Delete "${a.name}"? This cannot be undone.`)) return;
+  try {
+    if (a._recordId) await atDelete(MAP.activities.tableId, a._recordId);
+  } catch (e) {
+    toast('Error deleting: ' + e.message);
+    return;
+  }
+  state.activities = state.activities.filter(x => x.id !== state.editingId);
+  closeActivityModal();
+  renderActivities();
+  toast('Activity deleted');
+}
+
+function openNewActivityModal() {
+  showModal({
+    title: 'New activity',
+    desc: 'Just give it a name. You can fill the rest later from the table.',
+    customBody: `
+      <div class="fg-m">
+        <label class="fl-m">Activity name</label>
+        <input class="fi" id="quick-add-name" placeholder="What is it called?" autofocus>
+      </div>
+    `,
+    actions: [
+      { label: 'Cancel', primary: false, action: closeModal },
+      { label: 'Create', primary: true, action: createQuickActivity }
+    ]
+  });
+  setTimeout(() => {
+    const input = document.getElementById('quick-add-name');
+    if (input) {
+      input.focus();
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') createQuickActivity();
+      });
+    }
+  }, 80);
+}
+
+async function createQuickActivity() {
+  const input = document.getElementById('quick-add-name');
+  const name = (input?.value || '').trim();
+  if (!name) {
+    if (input) {
+      input.style.borderColor = 'var(--red)';
+      input.focus();
+    }
+    return;
+  }
+  const now = new Date().toISOString();
+  const newAct = {
+    id: makeId(),
+    name,
+    source: 'Manual', sync_status: 'Not synced',
+    calendar_event_id: null, last_synced_at: null,
+    hat: null, constraint: null, stage: 'Ready',
+    delegated: false, team: null,
+    date: null, duration_minutes: null, estimated_hours: null,
+    priority: null, priority_week: null,
+    completed: false,
+    description: '',
+    log: [{ ts: now, text: 'Activity created (quick add)' }]
+  };
+  state.activities.unshift(newAct);
+  await saveActivities();
+  closeModal();
+  renderActivities();
+  toast('Activity created — fill the details from the table');
+}
+
+
+/* ============================================================
+ * 6. CONFIG RENDER
+ * ============================================================ */
+function renderConfig() {
+  const grid = document.getElementById('cfg-wrap');
+
+  const dataHtml = `
+    <div class="cfg-card">
+      <div class="cfg-card-hd">
+        <div>
+          <div class="cfg-card-title">Data</div>
+          <div class="cfg-card-sub">Download a local backup of your data. Your live data lives in Airtable — manage it there.</div>
+        </div>
+      </div>
+      <div class="cfg-card-body" style="display: flex; gap: 8px; flex-wrap: wrap; padding-top: 12px;">
+        <button class="btn btn-g btn-sm" onclick="exportData()">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 7l4 4 4-4M2 14h12"/></svg>
+          Export JSON backup
+        </button>
+      </div>
+    </div>`;
+
+  const constraintsHtml = `
+    <div class="cfg-card">
+      <div class="cfg-card-hd">
+        <div>
+          <div class="cfg-card-title">Constraints</div>
+          <div class="cfg-card-sub">The top problems where my energy goes</div>
+        </div>
+        <button class="btn btn-g btn-sm" onclick="addConstraint()">+ Add</button>
+      </div>
+      <div class="cfg-card-body">
+        <table class="cfg-tbl">
+          <thead><tr>
+            <th style="width:60px">Code</th>
+            <th style="width:200px">Name</th>
+            <th>Description</th>
+            <th style="width:120px">Default Hat</th>
+            <th style="width:32px"></th>
+          </tr></thead>
+          <tbody>
+            ${state.constraints.filter(c => !c.archived).map((c, i) => `
+              <tr>
+                <td><input class="cfg-input" value="${escapeHtml(c.code)}" onchange="updateConstraint(${i}, 'code', this.value)"></td>
+                <td><input class="cfg-input" value="${escapeHtml(c.name)}" onchange="updateConstraint(${i}, 'name', this.value)"></td>
+                <td><input class="cfg-input" value="${escapeHtml(c.description)}" onchange="updateConstraint(${i}, 'description', this.value)"></td>
+                <td>
+                  <select class="cfg-select" onchange="updateConstraint(${i}, 'defaultHat', this.value)">
+                    ${state.hats.map(h => `<option value="${h.id}" ${c.defaultHat === h.id ? 'selected' : ''}>${h.id}</option>`).join('')}
+                  </select>
+                </td>
+                <td class="cfg-act-cell"><button class="cfg-act-btn" onclick="archiveConstraint(${i})" title="Archive">${xIcon()}</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+
+  const hatsHtml = `
+    <div class="cfg-card">
+      <div class="cfg-card-hd">
+        <div>
+          <div class="cfg-card-title">Hats</div>
+          <div class="cfg-card-sub">The 5 roles I operate from. Click to expand.</div>
+        </div>
+      </div>
+      <div class="cfg-card-body">
+        <div class="hat-list">
+          ${state.hats.map((h, i) => `
+            <div class="hat-card" id="hat-card-${i}">
+              <div class="hat-hd" onclick="toggleHat(${i})">
+                <div class="hat-icon">${h.id[0]}</div>
+                <div class="hat-meta">
+                  <div class="hat-name">${h.id}</div>
+                  <div class="hat-summary">${escapeHtml(h.summary)}</div>
+                </div>
+                <svg class="hat-chev" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
+              </div>
+              <div class="hat-body">
+                ${renderHatField(i, 'summary', 'Summary', 1, h.summary)}
+                ${renderHatField(i, 'whatYouDo', 'What you do', 5, h.whatYouDo)}
+                ${renderHatField(i, 'whatYouDont', "What you don't do", 3, h.whatYouDont)}
+                ${renderHatField(i, 'signals', "Signals you're wearing it", 3, h.signals)}
+                ${renderHatField(i, 'examples', 'Examples', 5, h.examples)}
+                ${renderHatField(i, 'whenToSwitch', 'When to switch', 3, h.whenToSwitch)}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>`;
+
+  const colorPalette = ['#2b7fff','#8b5cf6','#fd9a00','#00a155','#62748e','#ec4899','#e8443a','#0ea5e9','#84cc16','#a855f7'];
+  const teamsHtml = `
+    <div class="cfg-card">
+      <div class="cfg-card-hd">
+        <div>
+          <div class="cfg-card-title">Teams</div>
+          <div class="cfg-card-sub">Teams that build and execute</div>
+        </div>
+        <button class="btn btn-g btn-sm" onclick="addTeam()">+ Add</button>
+      </div>
+      <div class="cfg-card-body">
+        <table class="cfg-tbl">
+          <thead><tr>
+            <th style="width:80px">Color</th>
+            <th style="width:180px">Team</th>
+            <th>Role</th>
+            <th style="width:32px"></th>
+          </tr></thead>
+          <tbody>
+            ${state.teams.filter(t => !t.archived).map((t, i) => `
+              <tr>
+                <td>
+                  <select class="cfg-select" style="padding: 3px 8px;" onchange="updateTeam(${i}, 'color', this.value)">
+                    ${colorPalette.map(c => `<option value="${c}" ${t.color === c ? 'selected' : ''}>${c}</option>`).join('')}
+                  </select>
+                </td>
+                <td>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="team-av" style="background:${t.color}; flex-shrink: 0;">${teamInitial(t.name)}</span>
+                    <input class="cfg-input" value="${escapeHtml(t.name)}" onchange="updateTeam(${i}, 'name', this.value)">
+                  </div>
+                </td>
+                <td><input class="cfg-input" value="${escapeHtml(t.role)}" onchange="updateTeam(${i}, 'role', this.value)"></td>
+                <td class="cfg-act-cell"><button class="cfg-act-btn" onclick="archiveTeam(${i})" title="Archive">${xIcon()}</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+
+  const stagesHtml = `
+    <div class="cfg-card">
+      <div class="cfg-card-hd">
+        <div>
+          <div class="cfg-card-title">Stages</div>
+          <div class="cfg-card-sub">Lifecycle of every activity</div>
+        </div>
+      </div>
+      <div class="cfg-card-body">
+        <table class="cfg-tbl">
+          <thead><tr>
+            <th style="width:40px">#</th>
+            <th style="width:180px">Stage</th>
+            <th>Description</th>
+          </tr></thead>
+          <tbody>
+            ${state.stages.map((s, i) => `
+              <tr>
+                <td style="text-align:center; color: var(--ink4); font-weight: 600;">${s.order}</td>
+                <td><input class="cfg-input" value="${escapeHtml(s.name)}" onchange="updateStage(${i}, 'name', this.value)"></td>
+                <td><input class="cfg-input" value="${escapeHtml(s.description)}" onchange="updateStage(${i}, 'description', this.value)"></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+
+  grid.innerHTML = dataHtml + constraintsHtml + hatsHtml + teamsHtml + stagesHtml;
+}
+
+function renderHatField(idx, field, label, rows, value) {
+  return `
+    <div class="hat-field">
+      <div class="hat-field-lbl">${label}</div>
+      <textarea class="hat-field-area" rows="${rows}" onchange="updateHat(${idx}, '${field}', this.value)">${escapeHtml(value)}</textarea>
+    </div>`;
+}
+
+function xIcon() { return '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>'; }
+
+function toggleHat(i) { document.getElementById('hat-card-' + i).classList.toggle('open'); }
+
+async function updateConstraint(i, field, value) {
+  const visible = state.constraints.filter(c => !c.archived);
+  const realIdx = state.constraints.indexOf(visible[i]);
+  state.constraints[realIdx][field] = value;
+  await saveConstraints();
+}
+async function addConstraint() {
+  const nextNum = state.constraints.filter(c => !c.archived).length + 1;
+  state.constraints.push({ code: 'C' + nextNum, name: 'New constraint', description: '', defaultHat: 'Architect', archived: false });
+  await saveConstraints();
+  renderConfig();
+}
+async function archiveConstraint(i) {
+  if (!confirm('Archive this constraint?')) return;
+  const visible = state.constraints.filter(c => !c.archived);
+  const realIdx = state.constraints.indexOf(visible[i]);
+  state.constraints[realIdx].archived = true;
+  await saveConstraints();
+  renderConfig();
+}
+async function updateHat(i, field, value) {
+  state.hats[i][field] = value;
+  await saveHats();
+}
+async function updateTeam(i, field, value) {
+  const visible = state.teams.filter(t => !t.archived);
+  const realIdx = state.teams.indexOf(visible[i]);
+  state.teams[realIdx][field] = value;
+  await saveTeams();
+  if (field === 'name' || field === 'color') renderConfig();
+}
+async function addTeam() {
+  const id = 'team-' + Math.random().toString(36).slice(2,6);
+  state.teams.push({ id, name: 'New team', role: '', color: '#62748e', archived: false });
+  await saveTeams();
+  renderConfig();
+}
+async function archiveTeam(i) {
+  if (!confirm('Archive this team?')) return;
+  const visible = state.teams.filter(t => !t.archived);
+  const realIdx = state.teams.indexOf(visible[i]);
+  state.teams[realIdx].archived = true;
+  await saveTeams();
+  renderConfig();
+}
+async function updateStage(i, field, value) {
+  state.stages[i][field] = value;
+  await saveStages();
+}
+
+/* ============================================================
+ * 7. DATA EXPORT (local backup)
+ * ============================================================ */
+
+function exportData() {
+  const payload = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    constraints: state.constraints,
+    hats: state.hats,
+    teams: state.teams,
+    stages: state.stages,
+    activities: state.activities
+  };
+  const json = JSON.stringify(payload, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const today = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `ceo-time-system-backup-${today}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('Data exported');
+}
+
+
+/* ============================================================
+ * 8. MODAL & TOAST
+ * ============================================================ */
+
+function showModal({ title, desc, customBody, actions }) {
+  const wrap = document.getElementById('modal-wrap');
+  const content = document.getElementById('modal-content');
+  content.innerHTML = `
+    <div class="modal-title">${escapeHtml(title)}</div>
+    ${desc ? `<div class="modal-desc">${escapeHtml(desc)}</div>` : ''}
+    ${customBody || ''}
+    <div class="modal-actions">
+      ${actions.map((a, i) => `<button class="btn ${a.primary ? 'btn-p' : 'btn-g'} btn-sm" data-action-i="${i}">${a.label}</button>`).join('')}
+    </div>`;
+  content.querySelectorAll('[data-action-i]').forEach(btn => {
+    btn.addEventListener('click', () => actions[parseInt(btn.dataset.actionI)].action());
+  });
+  wrap.classList.add('open');
+}
+function closeModal() { document.getElementById('modal-wrap').classList.remove('open'); }
+
+function toast(msg) {
+  const stack = document.getElementById('toast-stack');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  stack.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+/* ============================================================
+ * 9. WIZARD — 5-step weekly ritual
+ * ============================================================ */
+
+// Get or create ritual entry for a weekId
+function getRitual(weekId) {
+  if (!state.wizard.rituals[weekId]) {
+    state.wizard.rituals[weekId] = {
+      step: 0,             // 0 = not started, 1-5 = current step
+      startedAt: null,
+      closedAt: null,
+      decisions: {
+        step1_lastWeek: {},   // activityId -> 'done' | 'moved' | 'skipped' | 'paused'
+        step2_inventory: {},  // activityId -> 'keep' | 'archive'
+        step5_synced: false
+      }
+    };
+  }
+  return state.wizard.rituals[weekId];
+}
+
+// Main wizard router
+function renderWizard() {
+  const container = document.getElementById('wizard-container');
+  const activeWeekId = state.wizard.activeWeekId;
+
+  // No active week selected → show week picker (Paso 0)
+  if (!activeWeekId) {
+    renderWizardWeekPicker(container);
+    return;
+  }
+
+  const ritual = getRitual(activeWeekId);
+
+  // If ritual closed and just entering, default to read-only summary view
+  if (ritual.closedAt && ritual.step === 5) {
+    renderWizardClosedSummary(container, activeWeekId, ritual);
+    return;
+  }
+
+  // Otherwise render whatever step
+  const currentStep = Math.max(1, ritual.step || 1);
+  renderWizardStep(container, activeWeekId, currentStep);
+}
+
+/* ----------------------------------------------------------
+ * Step 0 — Week picker
+ * ---------------------------------------------------------- */
+function renderWizardWeekPicker(container) {
+  const thisW = currentWeekId();
+  const nextW = nextWeekId();
+  const thisR = state.wizard.rituals[thisW];
+  const nextR = state.wizard.rituals[nextW];
+
+  const cardHtml = (weekId, label, rangeLabel, ritual) => {
+    let badge = '';
+    if (ritual) {
+      if (ritual.closedAt) {
+        const dt = new Date(ritual.closedAt);
+        const dStr = dt.getDate() + '/' + (dt.getMonth() + 1);
+        badge = `<div class="wp-card-badge closed">Closed on ${dStr}</div>`;
+      } else if (ritual.step > 0) {
+        badge = `<div class="wp-card-badge in-progress">In progress · step ${ritual.step} of 5</div>`;
+      }
+    }
+    return `
+      <div class="wp-card" onclick="selectWizardWeek('${weekId}')">
+        <div class="wp-card-label">${label}</div>
+        <div class="wp-card-range">${rangeLabel}</div>
+        ${badge}
+        <div class="wp-card-arrow">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg>
+        </div>
+      </div>
+    `;
+  };
+
+  container.innerHTML = `
+    <div class="wz-wrap">
+      <div class="wz-hero">
+        <div class="wz-hero-title">Weekly ritual</div>
+        <div class="wz-hero-desc">Your planning session: look back, refresh the inventory, prioritize, distribute in the calendar, and sync.</div>
+      </div>
+      <div class="wp-section-lbl">Which week are you planning?</div>
+      <div class="wp-cards">
+        ${cardHtml(thisW, 'This week', formatWeekRange(thisW), thisR)}
+        ${cardHtml(nextW, 'Next week', formatWeekRange(nextW), nextR)}
+      </div>
+    </div>
+  `;
+}
+
+async function selectWizardWeek(weekId) {
+  state.wizard.activeWeekId = weekId;
+  const ritual = getRitual(weekId);
+  if (!ritual.startedAt) {
+    ritual.startedAt = new Date().toISOString();
+    ritual.step = 1;
+    await saveWizardRituals();
+  }
+  renderWizard();
+}
+
+/* ----------------------------------------------------------
+ * Generic wizard step shell — stepper + body + footer
+ * ---------------------------------------------------------- */
+const STEP_META = [
+  { n: 1, name: 'Look back', desc: 'Review what happened last week' },
+  { n: 2, name: 'Refresh inventory', desc: 'Clean up the backlog before prioritizing' },
+  { n: 3, name: 'Prioritize', desc: 'Pick your 5–10 activities for the week, in order' },
+  { n: 4, name: 'Distribute', desc: 'Assign day and time to the ones you execute' },
+  { n: 5, name: 'Sync', desc: 'Confirm and send everything to your Google Calendar' }
+];
+
+function renderWizardStep(container, weekId, step) {
+  const ritual = getRitual(weekId);
+  const meta = STEP_META[step - 1];
+
+  // Build stepper
+  const stepperHtml = STEP_META.map((s, i) => {
+    const isActive = s.n === step;
+    const isCompleted = s.n < step;
+    const klass = isActive ? 'wz-step-item active' : (isCompleted ? 'wz-step-item completed' : 'wz-step-item');
+    return `
+      <div class="${klass}" onclick="goToStep(${s.n})">
+        <div class="wz-step-dot">${isCompleted ? iconCheck() : s.n}</div>
+        <div class="wz-step-label">${s.name}</div>
+      </div>${i < STEP_META.length - 1 ? '<div class="wz-step-line ' + (isCompleted ? 'completed' : '') + '"></div>' : ''}
+    `;
+  }).join('');
+
+  // Body per step
+  let body = '';
+  if (step === 1) body = renderStep1Body(weekId, ritual);
+  else if (step === 2) body = renderStep2Body(weekId, ritual);
+  else if (step === 3) body = renderStep3Body(weekId, ritual);
+  else if (step === 4) body = renderStep4Body(weekId, ritual);
+  else if (step === 5) body = renderStep5Body(weekId, ritual);
+
+  // Closed indicator
+  let closedBadge = '';
+  if (ritual.closedAt) {
+    const dt = new Date(ritual.closedAt);
+    const dStr = dt.getDate() + '/' + (dt.getMonth() + 1);
+    closedBadge = `<div class="wz-closed-banner">${iconCheck()} Week closed on ${dStr}</div>`;
+  }
+
+  // Footer buttons
+  const prevDisabled = step <= 1;
+  const isLastStep = step >= 5;
+  const nextLabel = isLastStep ? 'Finish ritual' : 'Next';
+
+  container.innerHTML = `
+    <div class="wz-wrap">
+      <div class="wz-header">
+        <div class="wz-back" onclick="goBackToWeekPicker()">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3l-5 5 5 5"/></svg>
+          Change week
+        </div>
+        <div class="wz-week-label">Week of ${formatWeekRange(weekId)}</div>
+      </div>
+
+      ${closedBadge}
+
+      <div class="wz-stepper">${stepperHtml}</div>
+
+      <div class="wz-step-hd">
+        <div class="wz-step-num">Step ${step} of 5</div>
+        <div class="wz-step-title">${meta.name}</div>
+        <div class="wz-step-desc">${meta.desc}</div>
+      </div>
+
+      <div class="wz-body">${body}</div>
+
+      <div class="wz-footer">
+        <button class="btn btn-g btn-sm" onclick="wizardPrevStep()" ${prevDisabled ? 'disabled' : ''}>
+          ← Previous
+        </button>
+        <button class="btn btn-subtle btn-sm" onclick="wizardSkipStep()">Skip this step</button>
+        <button class="btn btn-p btn-sm" onclick="wizardNextStep()" style="margin-left: auto;">
+          ${nextLabel} →
+        </button>
+      </div>
+    </div>
+  `;
+
+  // Initialize step-specific JS (e.g. drag-and-drop)
+  if (step === 3) initStep3DragDrop();
+  if (step === 4) initStep4DragDrop();
+}
+
+async function wizardPrevStep() {
+  const ritual = getRitual(state.wizard.activeWeekId);
+  if (ritual.step > 1) {
+    ritual.step--;
+    markRitualDirty(state.wizard.activeWeekId);
+    await saveWizardRituals();
+    renderWizard();
+  }
+}
+async function wizardNextStep() {
+  const ritual = getRitual(state.wizard.activeWeekId);
+  if (ritual.step < 5) {
+    ritual.step++;
+    markRitualDirty(state.wizard.activeWeekId);
+    await saveWizardRituals();
+    renderWizard();
+  } else {
+    // Finalize ritual
+    ritual.closedAt = new Date().toISOString();
+    markRitualDirty(state.wizard.activeWeekId);
+    await saveWizardRituals();
+    renderWizard();
+    toast('Ritual completed · Week closed');
+  }
+}
+async function wizardSkipStep() {
+  await wizardNextStep();
+}
+async function goToStep(n) {
+  const ritual = getRitual(state.wizard.activeWeekId);
+  // Only allow going to steps already reached (no jumping forward)
+  if (n > Math.max(ritual.step, 1)) return;
+  ritual.step = n;
+  markRitualDirty(state.wizard.activeWeekId);
+  await saveWizardRituals();
+  renderWizard();
+}
+function goBackToWeekPicker() {
+  state.wizard.activeWeekId = null;
+  renderWizard();
+}
+
+/* ----------------------------------------------------------
+ * Step 1 — Look back
+ * ---------------------------------------------------------- */
+function renderStep1Body(weekId, ritual) {
+  // Find activities that had priority OR were dated to the previous week
+  const lastWeek = lastWeekIdRelativeTo(weekId);
+  const lastWeekMonday = mondayFromWeekId(lastWeek);
+  const lastWeekSunday = new Date(lastWeekMonday);
+  lastWeekSunday.setDate(lastWeekMonday.getDate() + 6);
+  lastWeekSunday.setHours(23, 59, 59, 999);
+
+  const candidates = state.activities.filter(a => {
+    if (a.priority_week === lastWeek) return true;
+    if (a.date) {
+      const d = new Date(a.date);
+      if (d >= lastWeekMonday && d <= lastWeekSunday) return true;
+    }
+    return false;
+  }).sort((a, b) => {
+    const pa = a.priority != null ? a.priority : 999;
+    const pb = b.priority != null ? b.priority : 999;
+    return pa - pb;
+  });
+
+  if (candidates.length === 0) {
+    return `
+      <div class="wz-empty">
+        <div class="wz-empty-icon">${iconCheck()}</div>
+        <div class="wz-empty-title">Nothing to review</div>
+        <div class="wz-empty-desc">You had no prioritized or scheduled activities last week. Go to the next step.</div>
+      </div>
+    `;
+  }
+
+  const completedCount = candidates.filter(a => a.completed).length;
+  const pendingCount = candidates.length - completedCount;
+
+  const rowsHtml = candidates.map(a => {
+    return `
+      <div class="wz-row-check ${a.completed ? 'completed' : ''}">
+        <div class="asana-check ${a.completed ? 'checked' : ''}" onclick="toggleCompletedFromStep1('${a.id}')">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 6-7"/></svg>
+        </div>
+        <div class="wz-row-prio">${a.priority != null ? '#' + a.priority : '—'}</div>
+        <div class="wz-row-name">${escapeHtml(a.name)}</div>
+        <div class="wz-row-status">
+          ${a.completed
+            ? '<span class="wz-status-tag completed">Completed</span>'
+            : '<span class="wz-status-tag pending">To backlog</span>'}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="wz-intro">
+      You had ${candidates.length} ${candidates.length === 1 ? 'activity' : 'activities'} prioritized or scheduled the week of ${formatWeekShort(lastWeek)}. Check off the ones you completed; the rest go back to the backlog to be reprioritized in step 3.
+    </div>
+    <div class="wz-summary-row">
+      <div class="wz-summary-pill done">${completedCount} completed</div>
+      <div class="wz-summary-pill pending">${pendingCount} to backlog</div>
+    </div>
+    <div class="wz-list">${rowsHtml}</div>
+  `;
+}
+
+async function toggleCompletedFromStep1(activityId) {
+  const a = state.activities.find(x => x.id === activityId);
+  if (!a) return;
+  const wasCompleted = a.completed;
+  const affectedWeek = a.priority_week;
+  a.completed = !a.completed;
+  if (a.completed) {
+    a.log.push({ ts: new Date().toISOString(), text: 'Marked as completed (weekly ritual)' });
+  } else {
+    a.log.push({ ts: new Date().toISOString(), text: 'Reactivated (weekly ritual)' });
+  }
+  if (!wasCompleted && a.completed && affectedWeek) {
+    recompactPriorities(affectedWeek);
+  }
+  markActivityDirty(a.id);
+  await saveActivities();
+  renderWizard();
+}
+
+function lastWeekIdRelativeTo(weekId) {
+  for (let offset = -52; offset <= 52; offset++) {
+    if (weekIdFromMonday(mondayOfWeek(offset)) === weekId) {
+      return weekIdFromMonday(mondayOfWeek(offset - 1));
+    }
+  }
+  return weekId;
+}
+function mondayFromWeekId(weekId) {
+  for (let offset = -52; offset <= 52; offset++) {
+    if (weekIdFromMonday(mondayOfWeek(offset)) === weekId) {
+      return mondayOfWeek(offset);
+    }
+  }
+  return mondayOfWeek(0);
+}
+
+/* ----------------------------------------------------------
+ * Step 2 — Refresh inventory
+ * ---------------------------------------------------------- */
+function renderStep2Body(weekId, ritual) {
+  const backlog = state.activities.filter(a => !a.archived && a.priority == null && !a.date && a.stage !== 'Live');
+  if (backlog.length === 0) {
+    return `
+      <div class="wz-empty">
+        <div class="wz-empty-icon">${iconCheck()}</div>
+        <div class="wz-empty-title">Empty backlog</div>
+        <div class="wz-empty-desc">You have no activities in backlog. Go to the next step to prioritize what you do have.</div>
+      </div>
+    `;
+  }
+  // Group by constraint
+  const groups = {};
+  backlog.forEach(a => {
+    const k = a.constraint || '__none__';
+    (groups[k] = groups[k] || []).push(a);
+  });
+  const groupOrder = Object.keys(groups).sort();
+  const groupsHtml = groupOrder.map(k => {
+    const c = k === '__none__' ? null : state.constraints.find(x => x.code === k);
+    const label = c ? `${c.code} · ${c.name}` : 'No constraint';
+    const items = groups[k].sort((a, b) => a.name.localeCompare(b.name));
+    return `
+      <div class="wz-group">
+        <div class="wz-group-hd">${escapeHtml(label)} <span class="wz-group-cnt">${items.length}</span></div>
+        ${items.map(a => {
+          const decision = ritual.decisions.step2_inventory[a.id] || 'keep';
+          return `
+            <div class="wz-inv-row ${decision === 'archive' ? 'archived' : ''}">
+              <div class="wz-inv-name">${escapeHtml(a.name)}</div>
+              <div class="wz-inv-actions">
+                <button class="wz-inv-btn ${decision === 'keep' ? 'active' : ''}" onclick="setStep2Decision('${a.id}', 'keep')">
+                  ${iconCheck()} Keep
+                </button>
+                <button class="wz-inv-btn danger ${decision === 'archive' ? 'active' : ''}" onclick="setStep2Decision('${a.id}', 'archive')">
+                  ✗ Archive
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }).join('');
+  return `
+    <div class="wz-intro">
+      You have ${backlog.length} activities in backlog. Decide what's still relevant before prioritizing.
+    </div>
+    ${groupsHtml}
+  `;
+}
+async function setStep2Decision(activityId, decision) {
+  const ritual = getRitual(state.wizard.activeWeekId);
+  ritual.decisions.step2_inventory[activityId] = decision;
+  const a = state.activities.find(x => x.id === activityId);
+  if (a) {
+    if (decision === 'archive') {
+      a.archived = true;
+      a.log.push({ ts: new Date().toISOString(), text: 'Archived (weekly ritual)' });
+    } else {
+      a.archived = false;
+    }
+    markActivityDirty(a.id);
+    await saveActivities();
+  }
+  markRitualDirty(state.wizard.activeWeekId);
+  await saveWizardRituals();
+  renderWizard();
+}
+
+/* ----------------------------------------------------------
+ * Step 3 — Prioritize (drag and drop)
+ * ---------------------------------------------------------- */
+function renderStep3Body(weekId, ritual) {
+  // Backlog: activities not archived, not Live, no priority for THIS week (or no priority at all)
+  const prioritized = state.activities
+    .filter(a => a.priority != null && a.priority_week === weekId)
+    .sort((a, b) => a.priority - b.priority);
+
+  const backlog = state.activities
+    .filter(a => !a.archived && a.stage !== 'Live' && !(a.priority != null && a.priority_week === weekId))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const renderItem = (a, inWeek) => {
+    const t = a.team ? teamById(a.team) : null;
+    const teamLabel = t ? `<span class="dl-team" style="background:${t.color}"></span>` : '';
+    const isDelegatable = a.hat === 'Architect' && a.delegated;
+    const subLabel = isDelegatable
+      ? '<span class="dl-sub delegated">Delegated · no time required</span>'
+      : '<span class="dl-sub">You execute</span>';
+    return `
+      <div class="dl-item" draggable="true" data-id="${a.id}" data-in-week="${inWeek ? 1 : 0}">
+        <div class="dl-handle">⋮⋮</div>
+        ${inWeek ? `<div class="dl-prio">#${a.priority}</div>` : ''}
+        <div class="dl-meta">
+          <div class="dl-name">${escapeHtml(a.name)}</div>
+          <div class="dl-tags">
+            ${a.constraint ? `<span class="dl-tag">${a.constraint}</span>` : ''}
+            ${a.hat ? `<span class="dl-tag">${a.hat}</span>` : ''}
+            ${teamLabel}
+            ${subLabel}
+          </div>
+        </div>
+      </div>
+    `;
+  };
+
+  return `
+    <div class="wz-intro">
+      Drag activities from the backlog to "This week". The #1 is the most important. Between 5 and 10 is recommended.
+    </div>
+    <div class="dl-cols">
+      <div class="dl-col">
+        <div class="dl-col-hd">
+          <div class="dl-col-title">Backlog</div>
+          <div class="dl-col-cnt">${backlog.length}</div>
+        </div>
+        <div class="dl-col-body" data-zone="backlog" id="dl-backlog">
+          ${backlog.length === 0 ? '<div class="dl-empty">Empty backlog</div>' : backlog.map(a => renderItem(a, false)).join('')}
+        </div>
+      </div>
+      <div class="dl-col primary">
+        <div class="dl-col-hd">
+          <div class="dl-col-title">This week</div>
+          <div class="dl-col-cnt ${prioritized.length >= 5 && prioritized.length <= 10 ? 'good' : ''}">${prioritized.length} / 5–10</div>
+        </div>
+        <div class="dl-col-body" data-zone="week" id="dl-week">
+          ${prioritized.length === 0 ? '<div class="dl-empty">Drag activities here</div>' : prioritized.map(a => renderItem(a, true)).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function initStep3DragDrop() {
+  const items = document.querySelectorAll('.dl-item');
+  const zones = document.querySelectorAll('.dl-col-body');
+
+  items.forEach(item => {
+    item.addEventListener('dragstart', (e) => {
+      item.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', item.dataset.id);
+    });
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+      document.querySelectorAll('.dl-col-body').forEach(z => z.classList.remove('drag-over'));
+    });
+  });
+
+  zones.forEach(zone => {
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      zone.classList.add('drag-over');
+
+      // Find insertion point
+      const afterElement = getDragAfterElement(zone, e.clientY);
+      const dragging = document.querySelector('.dl-item.dragging');
+      if (!dragging) return;
+      if (afterElement == null) zone.appendChild(dragging);
+      else zone.insertBefore(dragging, afterElement);
+    });
+    zone.addEventListener('dragleave', (e) => {
+      // Only remove if leaving the zone entirely
+      if (!zone.contains(e.relatedTarget)) zone.classList.remove('drag-over');
+    });
+    zone.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      await commitStep3Order();
+    });
+  });
+}
+
+function getDragAfterElement(container, y) {
+  const draggables = [...container.querySelectorAll('.dl-item:not(.dragging)')];
+  return draggables.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closest.offset) return { offset, element: child };
+    return closest;
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+async function commitStep3Order() {
+  const weekId = state.wizard.activeWeekId;
+  const weekZone = document.getElementById('dl-week');
+  const backlogZone = document.getElementById('dl-backlog');
+
+  // Items in "This week" → assign priorities 1..N
+  const weekItems = Array.from(weekZone.querySelectorAll('.dl-item'));
+  weekItems.forEach((it, idx) => {
+    const a = state.activities.find(x => x.id === it.dataset.id);
+    if (!a) return;
+    const newPrio = idx + 1;
+    if (a.priority !== newPrio || a.priority_week !== weekId) {
+      a.priority = newPrio;
+      a.priority_week = weekId;
+      markActivityDirty(a.id);
+    }
+  });
+
+  // Items in "Backlog" → remove priority for this week
+  const backlogItems = Array.from(backlogZone.querySelectorAll('.dl-item'));
+  backlogItems.forEach(it => {
+    const a = state.activities.find(x => x.id === it.dataset.id);
+    if (!a) return;
+    if (a.priority_week === weekId) {
+      a.priority = null;
+      a.priority_week = null;
+      markActivityDirty(a.id);
+    }
+  });
+
+  await saveActivities();
+  // Re-render to refresh priority numbers
+  renderWizard();
+}
+
+/* ----------------------------------------------------------
+ * Step 4 — Distribute (weekly calendar)
+ * ---------------------------------------------------------- */
+function renderStep4Body(weekId, ritual) {
+  // Get prioritized activities for this week that need a slot (not delegated)
+  const prioritized = state.activities
+    .filter(a => a.priority_week === weekId && a.priority != null)
+    .sort((a, b) => a.priority - b.priority);
+
+  const needsSlot = prioritized.filter(a => !(a.hat === 'Architect' && a.delegated));
+  const unscheduled = needsSlot.filter(a => !a.date || !isDateInWeek(a.date, weekId));
+  const scheduledInWeek = needsSlot.filter(a => a.date && isDateInWeek(a.date, weekId));
+
+  // Build calendar grid: 5 days × hours 8-19
+  const monday = mondayFromWeekId(weekId);
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+  const dayDates = [];
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    dayDates.push(d);
+  }
+  const HOURS_START = 8, HOURS_END = 19;
+
+  // Map scheduled activities to grid cells
+  const scheduledMap = {}; // "dayIdx-hour" -> activity
+  scheduledInWeek.forEach(a => {
+    const d = new Date(a.date);
+    const dayIdx = (d.getDay() === 0 ? 6 : d.getDay() - 1); // Mon=0
+    const hour = d.getHours();
+    if (dayIdx >= 0 && dayIdx < 5 && hour >= HOURS_START && hour <= HOURS_END) {
+      scheduledMap[dayIdx + '-' + hour] = a;
+    }
+  });
+
+  // Render unscheduled list
+  const unschedHtml = unscheduled.length === 0
+    ? '<div class="dl-empty">Todas las prioridades tienen slot asignado</div>'
+    : unscheduled.map(a => `
+        <div class="dl-item draggable-time" draggable="true" data-id="${a.id}">
+          <div class="dl-handle">⋮⋮</div>
+          <div class="dl-prio">#${a.priority}</div>
+          <div class="dl-meta">
+            <div class="dl-name">${escapeHtml(a.name)}</div>
+            <div class="dl-tags">
+              <span class="dl-tag">${a.duration_minutes || 60} min</span>
+              ${a.hat ? `<span class="dl-tag">${a.hat}</span>` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+  // Render delegated list (informational)
+  const delegated = prioritized.filter(a => a.hat === 'Architect' && a.delegated);
+  const delegatedHtml = delegated.length === 0 ? '' : `
+    <div class="cal-info-box">
+      <strong>${delegated.length} delegated activities</strong> · No personal slot needed because the team executes them.
+    </div>
+  `;
+
+  // Render calendar grid
+  const headerCols = days.map((d, i) => `<div class="cal-day-hd">${d}<span class="cal-day-num">${dayDates[i].getDate()}</span></div>`).join('');
+  let gridRows = '';
+  for (let h = HOURS_START; h <= HOURS_END; h++) {
+    let row = `<div class="cal-time-lbl">${h.toString().padStart(2, '0')}:00</div>`;
+    for (let dIdx = 0; dIdx < 5; dIdx++) {
+      const key = dIdx + '-' + h;
+      const a = scheduledMap[key];
+      if (a) {
+        row += `
+          <div class="cal-cell occupied" data-day="${dIdx}" data-hour="${h}">
+            <div class="cal-event" data-id="${a.id}" onclick="removeFromCalendar('${a.id}')" data-tooltip="Click to remove from slot">
+              <div class="cal-event-prio">#${a.priority}</div>
+              <div class="cal-event-name">${escapeHtml(a.name)}</div>
+            </div>
+          </div>
+        `;
+      } else {
+        row += `<div class="cal-cell" data-day="${dIdx}" data-hour="${h}" data-zone="cal"></div>`;
+      }
+    }
+    gridRows += `<div class="cal-row">${row}</div>`;
+  }
+
+  return `
+    <div class="wz-intro">
+      Drag the unscheduled priorities to the calendar. Click on a scheduled activity to remove it.
+    </div>
+    ${delegatedHtml}
+    <div class="cal-layout">
+      <div class="cal-side">
+        <div class="cal-side-hd">Unscheduled (${unscheduled.length})</div>
+        <div class="cal-side-body" id="cal-unsched">${unschedHtml}</div>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-header">
+          <div class="cal-time-lbl"></div>
+          ${headerCols}
+        </div>
+        <div class="cal-body">${gridRows}</div>
+      </div>
+    </div>
+    <div class="wz-tip">💡 Tip: leave at least 30% of your time free for unexpected things.</div>
+  `;
+}
+
+function isDateInWeek(dateStr, weekId) {
+  if (!dateStr) return false;
+  const monday = mondayFromWeekId(weekId);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  sunday.setHours(23, 59, 59, 999);
+  const d = new Date(dateStr);
+  return d >= monday && d <= sunday;
+}
+
+function initStep4DragDrop() {
+  const items = document.querySelectorAll('.draggable-time');
+  const cells = document.querySelectorAll('.cal-cell:not(.occupied)');
+
+  items.forEach(item => {
+    item.addEventListener('dragstart', (e) => {
+      item.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', item.dataset.id);
+    });
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+      document.querySelectorAll('.cal-cell').forEach(c => c.classList.remove('drag-over'));
+    });
+  });
+
+  cells.forEach(cell => {
+    cell.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      cell.classList.add('drag-over');
+    });
+    cell.addEventListener('dragleave', () => cell.classList.remove('drag-over'));
+    cell.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      cell.classList.remove('drag-over');
+      const id = e.dataTransfer.getData('text/plain');
+      await assignActivityToSlot(id, parseInt(cell.dataset.day), parseInt(cell.dataset.hour));
+    });
+  });
+}
+
+async function assignActivityToSlot(activityId, dayIdx, hour) {
+  const a = state.activities.find(x => x.id === activityId);
+  if (!a) return;
+  const monday = mondayFromWeekId(state.wizard.activeWeekId);
+  const date = new Date(monday);
+  date.setDate(monday.getDate() + dayIdx);
+  date.setHours(hour, 0, 0, 0);
+  a.date = date.toISOString();
+  if (a.sync_status === 'Synced') a.sync_status = 'Out of sync';
+  a.log.push({ ts: new Date().toISOString(), text: `Scheduled to slot ${date.toISOString()}` });
+  markActivityDirty(a.id);
+  await saveActivities();
+  renderWizard();
+}
+
+async function removeFromCalendar(activityId) {
+  const a = state.activities.find(x => x.id === activityId);
+  if (!a) return;
+  a.date = null;
+  a.log.push({ ts: new Date().toISOString(), text: 'Removed from slot' });
+  markActivityDirty(a.id);
+  await saveActivities();
+  renderWizard();
+}
+
+/* ----------------------------------------------------------
+ * Step 5 — Sync
+ * ---------------------------------------------------------- */
+function renderStep5Body(weekId, ritual) {
+  const prioritized = state.activities.filter(a => a.priority_week === weekId && a.priority != null);
+  const scheduled = prioritized.filter(a => a.date && isDateInWeek(a.date, weekId));
+  const delegated = prioritized.filter(a => a.hat === 'Architect' && a.delegated);
+  const pending = scheduled.filter(a => a.sync_status !== 'Synced');
+
+  const summaryItems = [
+    { icon: iconCheck(), text: `${prioritized.length} prioritized activities` },
+    { icon: iconCheck(), text: `${scheduled.length} activities scheduled in calendar` },
+    { icon: iconCheck(), text: `${delegated.length} delegated activities (no personal slot)` }
+  ];
+
+  const scheduledList = scheduled.length === 0
+    ? '<div class="dl-empty">No activities scheduled yet</div>'
+    : scheduled.sort((a, b) => new Date(a.date) - new Date(b.date)).map(a => {
+        const d = new Date(a.date);
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const dStr = `${days[d.getDay()]} ${d.getDate()} · ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+        return `
+          <div class="sync-item">
+            <div class="sync-item-prio">#${a.priority}</div>
+            <div class="sync-item-name">${escapeHtml(a.name)}</div>
+            <div class="sync-item-date">${dStr}</div>
+          </div>
+        `;
+      }).join('');
+
+  const syncMsg = pending.length > 0
+    ? `"Sync the week of ${formatWeekShort(weekId)} to my Google Calendar, ${pending.length} new events."`
+    : null;
+
+  return `
+    <div class="wz-intro">
+      Review your week and send everything to your calendar.
+    </div>
+    <div class="sync-summary">
+      ${summaryItems.map(i => `
+        <div class="sync-summary-item">
+          <span class="sync-summary-icon">${i.icon}</span>
+          <span>${i.text}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div class="am-section">
+      <div class="am-section-lbl">Events to create in calendar</div>
+      <div class="sync-list">${scheduledList}</div>
+    </div>
+    ${syncMsg ? `
+      <div class="am-section">
+        <div class="am-section-lbl">How to sync</div>
+        <div class="am-info-card">
+          <div class="am-info-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M8 5.5v3M8 10.5v.5"/></svg>
+          </div>
+          <div class="am-info-text">
+            <div class="am-info-title">Copy this message to the chat with me</div>
+            <div class="am-info-desc"><strong>${escapeHtml(syncMsg)}</strong></div>
+            <div class="am-info-desc" style="margin-top:6px;">I read the app, create the events in your Google Calendar, and mark the activities as synced.</div>
+          </div>
+        </div>
+      </div>
+    ` : ''}
+  `;
+}
+
+/* ----------------------------------------------------------
+ * Closed summary (read-only view after ritual completion)
+ * ---------------------------------------------------------- */
+function renderWizardClosedSummary(container, weekId, ritual) {
+  // Just render step 5 in read mode + buttons to reopen
+  const dt = new Date(ritual.closedAt);
+  const dStr = `${dt.getDate()}/${dt.getMonth() + 1}/${dt.getFullYear()}`;
+  // Reuse step5 body
+  const body = renderStep5Body(weekId, ritual);
+  container.innerHTML = `
+    <div class="wz-wrap">
+      <div class="wz-header">
+        <div class="wz-back" onclick="goBackToWeekPicker()">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3l-5 5 5 5"/></svg>
+          Change week
+        </div>
+        <div class="wz-week-label">Week of ${formatWeekRange(weekId)}</div>
+      </div>
+      <div class="wz-closed-banner">${iconCheck()} Ritual closed on ${dStr}</div>
+      <div class="wz-body">${body}</div>
+      <div class="wz-footer">
+        <button class="btn btn-g btn-sm" onclick="reopenRitual()">Reopen ritual</button>
+        <button class="btn btn-p btn-sm" onclick="goBackToWeekPicker()" style="margin-left: auto;">Close</button>
+      </div>
+    </div>
+  `;
+}
+
+async function reopenRitual() {
+  const ritual = getRitual(state.wizard.activeWeekId);
+  ritual.closedAt = null;
+  ritual.step = 5;
+  markRitualDirty(state.wizard.activeWeekId);
+  await saveWizardRituals();
+  renderWizard();
+}
+
+
+/* ============================================================
+ * 10. INIT / LOGIN / LOGOUT — entry point
+ * ============================================================ */
+
+async function init() {
+  // 1. Load saved Airtable credentials from local storage
+  const cfgRaw = await storeGet('airtable:config');
+
+  if (!cfgRaw) {
+    // No credentials → show login screen
+    showLoginScreen();
+    return;
+  }
+
+  state.airtable.config = JSON.parse(cfgRaw);
+
+  // 2. Show loading screen and load data
+  showLoadingScreen();
+
+  // 3. Load all data (and settings) from Airtable
+  try {
+    await loadAllFromAirtable();
+    const settings = await loadSettings();
+    state.airtable.config.baseName = settings.workspace_name || '';
+    state.airtable.initialized = true;
+  } catch (e) {
+    toast('Failed to load data: ' + e.message);
+    console.error('Load failed:', e);
+    showLoginScreen();
+    return;
+  }
+
+  // 4. Show main app
+  hideLoginScreen();
+  hideLoadingScreen();
+  showMainApp();
+  updateWorkspaceInfo();
+  showPanel('activities');
+  updateSyncIndicator();
+}
+
+function showLoginScreen() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'none';
+}
+function hideLoginScreen() {
+  document.getElementById('login-screen').style.display = 'none';
+}
+function showLoadingScreen() {
+  document.getElementById('loading-screen').style.display = 'flex';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'none';
+}
+function hideLoadingScreen() {
+  document.getElementById('loading-screen').style.display = 'none';
+}
+function showMainApp() {
+  document.getElementById('main-app').style.display = 'flex';
+}
+
+async function doLogin() {
+  const baseId = document.getElementById('login-baseid').value.trim();
+  const token = document.getElementById('login-token').value.trim();
+
+  if (!baseId || !token) {
+    toast('All fields required');
+    return;
+  }
+  if (!baseId.startsWith('app')) {
+    toast('Base ID must start with "app"');
+    return;
+  }
+  if (!token.startsWith('pat')) {
+    toast('Token must start with "pat"');
+    return;
+  }
+
+  // Save credentials with empty baseName for now; init() will resolve it from Airtable
+  state.airtable.config = { baseId, token, baseName: '' };
+  await storeSet('airtable:config', state.airtable.config);
+  init();
+}
+
+async function doLogout() {
+  if (!confirm('Disconnect? Your data stays safe in Airtable.')) return;
+  await storeDel('airtable:config');
+  state.airtable.config = null;
+  showLoginScreen();
+}
+
+function updateWorkspaceInfo() {
+  const cfg = state.airtable.config;
+  if (!cfg) return;
+  const nameEl = document.getElementById('uname');
+  const roleEl = document.getElementById('urole');
+  const avatarEl = document.getElementById('sb-uavatar');
+  const displayName = cfg.baseName || 'Workspace';
+  if (nameEl) nameEl.textContent = displayName;
+  if (roleEl) roleEl.textContent = 'Airtable · ' + cfg.baseId.slice(0, 10) + '…';
+  if (avatarEl) {
+    const parts = displayName.split(/\s+/).filter(Boolean);
+    const initials = parts.length >= 2
+      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+      : displayName.slice(0, 2).toUpperCase();
+    avatarEl.textContent = initials;
+  }
+}
+
+async function manualSync() {
+  await syncFromAirtable();
+  toast('Synced from Airtable');
+}
+
+init();
+</script>
+</body>
+</html>
