@@ -488,50 +488,21 @@ input.finput::placeholder { color: var(--ink4); }
  * ============================================================ */
 
 /* Priority cell — dropdown with hidden select; shows number compactly */
-.cell-prio {
-  display: inline-flex;
+.cell-prio-ro {
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 26px;
-  padding: 0 14px 0 6px;
-  border-radius: var(--rxs);
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: border-color .12s, background .12s;
-  position: relative;
 }
-.cell-prio:hover {
-  border-color: var(--ink5);
-  background: var(--white);
-}
-.cell-prio .cp-text {
+.cell-prio-ro .cp-text {
   font-size: 12px;
   font-weight: 600;
   color: var(--ink);
 }
-.cell-prio .cp-text.empty {
+.cell-prio-ro .cp-text.empty {
   color: var(--ink4);
   font-weight: 500;
-}
-.cell-prio::after {
-  content: '';
-  position: absolute;
-  right: 4px;
-  top: 50%;
-  width: 8px; height: 8px;
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' stroke='%2390a1b9' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat center;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-.cell-prio select {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-  border: none;
 }
 
 /* Generic table-like select (constraint, hat, team, etc.) */
@@ -2207,7 +2178,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   color: var(--ink4);
   text-decoration: line-through;
 }
-.act-row.completed .cell-prio .cp-text,
+.act-row.completed .cell-prio-ro .cp-text,
 .act-row.completed .cell-constraint,
 .act-row.completed .cell-team,
 .act-row.completed .cell-select {
@@ -3615,24 +3586,10 @@ function renderKpis() {
 }
 
 function renderActivityRow(a) {
-  const isTopPrio = a.priority != null && a.priority <= 3;
-
-  // Priority — native dropdown, options 1..N+1 (N = current prioritized count in scope)
-  // We use a wrapper similar to constraint/team: visible compact label + invisible select
-  const scope = activitiesInScope();
-  const prioritizedCount = scope.filter(x => x.priority != null).length;
-  const maxOption = a.priority != null ? prioritizedCount : prioritizedCount + 1;
-  let prioOptions = '<option value="">—</option>';
-  for (let i = 1; i <= maxOption; i++) {
-    prioOptions += `<option value="${i}" ${a.priority === i ? 'selected' : ''}>${i}</option>`;
-  }
-  const prioDisplay = a.priority != null
-    ? `<span class="cp-text">${a.priority}</span>`
-    : `<span class="cp-text empty">—</span>`;
-  const prio = `<div class="cell-prio" onclick="event.stopPropagation()">
-    ${prioDisplay}
-    <select onchange="onPriorityChange(event, '${a.id}')" onclick="event.stopPropagation()">${prioOptions}</select>
-  </div>`;
+  // Priority is read-only here — set it from the Prioritization section.
+  const prio = a.priority != null
+    ? `<div class="cell-prio-ro"><span class="cp-text">${a.priority}</span></div>`
+    : `<div class="cell-prio-ro"><span class="cp-text empty">—</span></div>`;
 
   // Status — unified icon at the end (calendar = scheduled, clipboard gray = backlog)
   let statusCell;
@@ -3713,19 +3670,11 @@ async function onCellChange(event, id, field) {
   await commitInlineEdit(id, field, value);
 }
 
-// Priority change from native number input
-async function onPriorityChange(event, id) {
-  event.stopPropagation();
-  const raw = event.target.value.trim();
-  const newPrio = raw === '' ? null : parseInt(raw, 10);
-  await commitPriorityChange(id, newPrio);
-}
-
 // Click on row — only open slide panel when clicking the activity name
 function rowClick(event, id) {
-  // If click target is anything other than the name cell, ignore
-  if (event.target.closest('.cell-prio') ||
-      event.target.closest('.cell-select') ||
+  // Skip when the click is on an interactive cell — the priority cell is
+  // read-only here so clicking it should open the activity like the name.
+  if (event.target.closest('.cell-select') ||
       event.target.closest('.cell-constraint') ||
       event.target.closest('.cell-team') ||
       event.target.tagName === 'SELECT' ||
