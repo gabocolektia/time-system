@@ -2500,6 +2500,12 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 }
 .asana-check.checked:hover { opacity: .85; }
 .asana-check svg { width: 13px; height: 13px; }
+.step1-check-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
 .step1-card .act-row.step1-row { cursor: default; }
 .act-row.step1-row.completed .act-name {
   text-decoration: line-through;
@@ -5997,7 +6003,7 @@ function renderStep1Row(a, opts = {}) {
 
   // Check (replaces priority cell)
   const checkCell = `
-    <div class="cell-prio" onclick="event.stopPropagation()">
+    <div class="step1-check-cell" onclick="event.stopPropagation()">
       <div class="asana-check ${a.completed ? 'checked' : ''}" onclick="toggleCompletedFromStep1('${a.id}')" data-tooltip="${a.completed ? 'Mark as not completed' : 'Mark as completed'}">
         <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 6-7"/></svg>
       </div>
