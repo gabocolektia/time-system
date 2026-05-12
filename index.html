@@ -2389,6 +2389,63 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 .sync-item-name { font-size: 13px; font-weight: 600; color: var(--ink); }
 .sync-item-date { font-size: 11px; color: var(--ink3); font-weight: 500; text-align: right; }
 
+/* Cell helpers used by Step 1 Phase B and Step 2 Phase A rows.
+   These styles live with the wizard because nowhere else in the app
+   shows the same table-cell layout (the main Activities table uses
+   cell-prio-ro, which is the read-only variant). */
+.cell-warn {
+  width: 12px; height: 12px;
+  color: var(--amber, #f59e0b);
+  flex-shrink: 0;
+  margin-left: 2px;
+}
+.cell-hat-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.cell-disabled-dash {
+  color: var(--ink5);
+  font-size: 12px;
+  text-align: center;
+  display: block;
+}
+.cell-prio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 26px;
+  padding: 0 14px 0 6px;
+  border-radius: var(--rxs);
+  border: 1px solid transparent;
+  cursor: pointer;
+  position: relative;
+  transition: border-color .12s, background .12s;
+}
+.cell-prio:hover { border-color: var(--ink5); background: var(--white); }
+.cell-prio .cp-text { font-size: 12px; font-weight: 700; color: var(--ink); }
+.cell-prio .cp-text.empty { color: var(--ink4); font-weight: 500; }
+.cell-prio::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  width: 8px; height: 8px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' stroke='%2390a1b9' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat center;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.cell-prio select {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+}
+
 /* ============================================================
  * LOGIN, LOADING, SYNC INDICATORS
  * ============================================================ */
