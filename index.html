@@ -2494,6 +2494,150 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 .act-row.step2a-row .cell-hat-wrap select { font-size: 11px; }
 
 /* ============================================================
+ * Availability (Phase C of Step 1) — Calendly-style list
+ * ============================================================ */
+.av2-intro {
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ink6);
+}
+.av2-intro-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.av2-intro-sub {
+  font-size: 12.5px;
+  color: var(--ink3);
+  line-height: 1.55;
+  max-width: 640px;
+}
+.av2-total {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.av2-total-label {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--ink3);
+  margin-left: 4px;
+  letter-spacing: 0;
+}
+
+.av2-list {
+  display: flex;
+  flex-direction: column;
+}
+.av2-day {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ink6);
+  align-items: start;
+}
+.av2-day:last-child { border-bottom: none; }
+.av2-day-hd {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-top: 4px;
+}
+.av2-day-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.av2-day-total {
+  font-size: 11px;
+  color: var(--ink3);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.av2-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+.av2-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+.av2-block.too-short .av2-dur { color: #92400e; }
+.av2-time {
+  font-family: var(--f);
+  font-size: 12.5px;
+  padding: 4px 6px;
+  border: 1px solid var(--ink6);
+  border-radius: var(--rs);
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  min-width: 68px;
+}
+.av2-time:hover { border-color: var(--ink4); background: var(--surface); }
+.av2-time:focus { outline: 2px solid rgba(232,68,58,.18); border-color: var(--red); background: var(--white); }
+.av2-arrow { color: var(--ink4); font-size: 12px; }
+.av2-dur {
+  font-size: 12px;
+  color: var(--ink3);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  min-width: 50px;
+}
+.av2-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px; height: 22px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--ink4);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .12s, color .12s, background .12s;
+}
+.av2-block:hover .av2-remove { opacity: 1; }
+.av2-remove:hover { background: var(--ink6); color: var(--red); opacity: 1; }
+.av2-empty-day {
+  font-size: 12px;
+  color: var(--ink4);
+  font-style: italic;
+  padding: 3px 0;
+}
+.av2-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 0;
+  background: transparent;
+  border: none;
+  font-family: var(--f);
+  font-size: 11.5px;
+  color: var(--ink3);
+  cursor: pointer;
+  transition: color .12s;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+.av2-add-btn:hover { color: var(--red); }
+.av2-add-btn svg { opacity: 0.7; }
+
+/* ============================================================
  * LOGIN, LOADING, SYNC INDICATORS
  * ============================================================ */
 
