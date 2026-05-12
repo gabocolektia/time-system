@@ -3246,10 +3246,10 @@ async function saveActivity(a) {
   }
 }
 
-async function saveConstraints() {
-  // Bulk save all (used after edits in Configuration)
+async function saveConstraints(only = null) {
+  const items = only ? [only] : state.constraints;
   let hadError = false;
-  for (const c of state.constraints) {
+  for (const c of items) {
     const fields = constraintToAirtableFields(c);
     try {
       if (c.recordId) await atUpdate(MAP.constraints.tableId, c.recordId, fields);
@@ -3265,9 +3265,10 @@ async function saveConstraints() {
   if (hadError) toast('Some constraints could not be saved');
 }
 
-async function saveTeams() {
+async function saveTeams(only = null) {
+  const items = only ? [only] : state.teams;
   let hadError = false;
-  for (const t of state.teams) {
+  for (const t of items) {
     const fields = teamToAirtableFields(t);
     try {
       if (t.recordId) await atUpdate(MAP.teams.tableId, t.recordId, fields);
@@ -3308,8 +3309,9 @@ function stageToAirtableFields(s) {
 }
 
 // Persist all Hats to Airtable. Called after edits in Configuration panel.
-async function saveHats() {
-  for (const h of state.hats) {
+async function saveHats(only = null) {
+  const items = only ? [only] : state.hats;
+  for (const h of items) {
     if (!h.recordId) continue; // Hats are seeded — never created from HTML
     try {
       await atUpdate(MAP.hats.tableId, h.recordId, hatToAirtableFields(h));
@@ -3320,9 +3322,10 @@ async function saveHats() {
   }
 }
 
-// Persist all Stages to Airtable. Called after edits in Configuration panel.
-async function saveStages() {
-  for (const s of state.stages) {
+// Persist Stages to Airtable. Pass an item to save just that one.
+async function saveStages(only = null) {
+  const items = only ? [only] : state.stages;
+  for (const s of items) {
     if (!s.recordId) continue;
     try {
       await atUpdate(MAP.stages.tableId, s.recordId, stageToAirtableFields(s));
@@ -4298,22 +4301,6 @@ async function createQuickActivity() {
 function renderConfig() {
   const grid = document.getElementById('cfg-wrap');
 
-  const dataHtml = `
-    <div class="cfg-card">
-      <div class="cfg-card-hd">
-        <div>
-          <div class="cfg-card-title">Data</div>
-          <div class="cfg-card-sub">Download a local backup of your data. Your live data lives in Airtable — manage it there.</div>
-        </div>
-      </div>
-      <div class="cfg-card-body" style="display: flex; gap: 8px; flex-wrap: wrap; padding-top: 12px;">
-        <button class="btn btn-g btn-sm" onclick="exportData()">
-          <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 7l4 4 4-4M2 14h12"/></svg>
-          Export JSON backup
-        </button>
-      </div>
-    </div>`;
-
   const constraintsHtml = `
     <div class="cfg-card">
       <div class="cfg-card-hd">
@@ -4454,7 +4441,7 @@ function renderConfig() {
       </div>
     </div>`;
 
-  grid.innerHTML = dataHtml + constraintsHtml + hatsHtml + teamsHtml + stagesHtml;
+  grid.innerHTML = constraintsHtml + hatsHtml + teamsHtml + stagesHtml;
 }
 
 function renderHatField(idx, field, label, rows, value) {
@@ -4471,82 +4458,57 @@ function toggleHat(i) { document.getElementById('hat-card-' + i).classList.toggl
 
 async function updateConstraint(i, field, value) {
   const visible = state.constraints.filter(c => !c.archived);
-  const realIdx = state.constraints.indexOf(visible[i]);
-  state.constraints[realIdx][field] = value;
-  await saveConstraints();
+  const c = visible[i];
+  c[field] = value;
+  await saveConstraints(c);
 }
 async function addConstraint() {
   const nextNum = state.constraints.filter(c => !c.archived).length + 1;
-  state.constraints.push({ code: 'C' + nextNum, name: 'New constraint', description: '', defaultHat: 'Architect', archived: false });
-  await saveConstraints();
+  const c = { code: 'C' + nextNum, name: 'New constraint', description: '', defaultHat: 'Architect', archived: false };
+  state.constraints.push(c);
+  await saveConstraints(c);
   renderConfig();
 }
 async function archiveConstraint(i) {
   if (!confirm('Archive this constraint?')) return;
   const visible = state.constraints.filter(c => !c.archived);
-  const realIdx = state.constraints.indexOf(visible[i]);
-  state.constraints[realIdx].archived = true;
-  await saveConstraints();
+  const c = visible[i];
+  c.archived = true;
+  await saveConstraints(c);
   renderConfig();
 }
 async function updateHat(i, field, value) {
-  state.hats[i][field] = value;
-  await saveHats();
+  const h = state.hats[i];
+  h[field] = value;
+  await saveHats(h);
 }
 async function updateTeam(i, field, value) {
   const visible = state.teams.filter(t => !t.archived);
-  const realIdx = state.teams.indexOf(visible[i]);
-  state.teams[realIdx][field] = value;
-  await saveTeams();
+  const t = visible[i];
+  t[field] = value;
+  await saveTeams(t);
   if (field === 'name' || field === 'color') renderConfig();
 }
 async function addTeam() {
   const id = 'team-' + Math.random().toString(36).slice(2,6);
-  state.teams.push({ id, name: 'New team', role: '', color: '#62748e', archived: false });
-  await saveTeams();
+  const t = { id, name: 'New team', role: '', color: '#62748e', archived: false };
+  state.teams.push(t);
+  await saveTeams(t);
   renderConfig();
 }
 async function archiveTeam(i) {
   if (!confirm('Archive this team?')) return;
   const visible = state.teams.filter(t => !t.archived);
-  const realIdx = state.teams.indexOf(visible[i]);
-  state.teams[realIdx].archived = true;
-  await saveTeams();
+  const t = visible[i];
+  t.archived = true;
+  await saveTeams(t);
   renderConfig();
 }
 async function updateStage(i, field, value) {
-  state.stages[i][field] = value;
-  await saveStages();
+  const s = state.stages[i];
+  s[field] = value;
+  await saveStages(s);
 }
-
-/* ============================================================
- * 7. DATA EXPORT (local backup)
- * ============================================================ */
-
-function exportData() {
-  const payload = {
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    constraints: state.constraints,
-    hats: state.hats,
-    teams: state.teams,
-    stages: state.stages,
-    activities: state.activities
-  };
-  const json = JSON.stringify(payload, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const today = new Date().toISOString().slice(0, 10);
-  a.href = url;
-  a.download = `ceo-time-system-backup-${today}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  toast('Data exported');
-}
-
 
 /* ============================================================
  * 8. MODAL & TOAST
