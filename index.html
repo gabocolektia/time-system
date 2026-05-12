@@ -2930,6 +2930,7 @@ async function atList(tableId, filterFormula = null) {
     if (filterFormula) params.set('filterByFormula', filterFormula);
     if (offset) params.set('offset', offset);
     params.set('pageSize', '100');
+    params.set('returnFieldsByFieldId', 'true');
     const r = await atFetch(`/${tableId}?${params.toString()}`);
     records = records.concat(r.records);
     offset = r.offset;
@@ -2938,14 +2939,14 @@ async function atList(tableId, filterFormula = null) {
 }
 
 async function atCreate(tableId, fields) {
-  return atFetch(`/${tableId}`, {
+  return atFetch(`/${tableId}?returnFieldsByFieldId=true`, {
     method: 'POST',
     body: JSON.stringify({ fields, typecast: false })
   });
 }
 
 async function atUpdate(tableId, recordId, fields) {
-  return atFetch(`/${tableId}/${recordId}`, {
+  return atFetch(`/${tableId}/${recordId}?returnFieldsByFieldId=true`, {
     method: 'PATCH',
     body: JSON.stringify({ fields, typecast: false })
   });
