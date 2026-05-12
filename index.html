@@ -4989,7 +4989,7 @@ async function selectWizardWeek(weekId) {
  * Generic wizard step shell — stepper + body + footer
  * ---------------------------------------------------------- */
 const STEP_META = [
-  { n: 1, name: 'Sync calendar', desc: 'Sync calendar, review last week, complete missing fields' },
+  { n: 1, name: 'Sync calendar', desc: '' },
   { n: 2, name: 'Prioritize', desc: 'Pick your 5–10 activities for the week, in order' },
   { n: 3, name: 'Close week', desc: 'Confirm and send everything to your Google Calendar' }
 ];
@@ -5085,7 +5085,7 @@ function renderWizardStep(container, weekId, step) {
       <div class="wz-step-hd">
         <div class="wz-step-num">Step ${step} of 3</div>
         <div class="wz-step-title">${meta.name}</div>
-        <div class="wz-step-desc">${meta.desc}</div>
+        ${meta.desc ? `<div class="wz-step-desc">${meta.desc}</div>` : ''}
       </div>
 
       <div class="wz-body">${body}</div>
@@ -5317,7 +5317,7 @@ function formatTwoWeekRangeEN(weekId) {
 
 function renderStep1PhaseA(weekId) {
   const range = formatTwoWeekRangeEN(weekId);
-  const command = `Sync my calendar from ${range} (last week and this week)`;
+  const command = `Sync my calendar from ${range}`;
   return `
     <div class="step0-wrap">
       <div class="step0-icon">
@@ -5349,9 +5349,6 @@ function renderStep1PhaseA(weekId) {
             </svg>
             <span>Copy</span>
           </button>
-        </div>
-        <div class="step0-cmd-hint">
-          Claude will pull events from your calendar into Airtable. It usually takes a few seconds.
         </div>
       </div>
 
