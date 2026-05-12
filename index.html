@@ -3562,7 +3562,7 @@ function groupActivities(list) {
 
 function renderActivities() {
   const all = state.activities;
-  document.getElementById('cnt-mydesk').textContent = all.filter(a => !a.delegated && a.stage !== 'Live').length;
+  document.getElementById('cnt-mydesk').textContent = all.filter(a => !a.delegated && a.stage !== 'Live' && (!a.completed || recentlyCompleted.has(a.id))).length;
   document.getElementById('cnt-delegated').textContent = all.filter(a => a.delegated && a.stage !== 'Live').length;
   document.getElementById('cnt-live').textContent = all.filter(a => a.stage === 'Live').length;
   document.getElementById('cnt-all').textContent = all.length;
