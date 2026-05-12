@@ -6801,20 +6801,41 @@ async function commitStep3Order() {
 
   // Walk through every free-block in DOM order and assign priorities
   // to the activities inside each one (skipping scheduled items).
+  // Each item's scheduled date = block's date at (block start + cumulative
+  // duration of prior items in the same block).
+  const blocksForWeek = state.wizard.availability[weekId] || [];
   let priorityIdx = 0;
   const freeBlocks = weekZone.querySelectorAll('.free-block');
   freeBlocks.forEach(block => {
     const blockId = block.dataset.blockId;
+    const blockMeta = blocksForWeek.find(b => b.id === blockId);
+    let cursor = blockMeta ? hhmmToMin(blockMeta.startHHMM) : 0;
     const items = block.querySelectorAll('.dl-item:not(.scheduled)');
     items.forEach(it => {
       const a = state.activities.find(x => x.id === it.dataset.id);
       if (!a) return;
       priorityIdx++;
       const newPrio = priorityIdx;
-      if (a.priority !== newPrio || a.priority_week !== weekId || a.priority_block !== blockId) {
+
+      let newDate = a.date;
+      if (blockMeta && blockMeta.date) {
+        const [y, m, d] = blockMeta.date.split('-').map(Number);
+        const h = Math.floor(cursor / 60);
+        const min = cursor % 60;
+        newDate = new Date(y, m - 1, d, h, min).toISOString();
+      }
+      cursor += (a.duration_minutes || 0);
+
+      if (
+        a.priority !== newPrio ||
+        a.priority_week !== weekId ||
+        a.priority_block !== blockId ||
+        a.date !== newDate
+      ) {
         a.priority = newPrio;
         a.priority_week = weekId;
         a.priority_block = blockId;
+        a.date = newDate;
         markActivityDirty(a.id);
       }
     });
@@ -6832,7 +6853,9 @@ async function commitStep3Order() {
     }
   });
 
-  // Backlog items: remove priority + priority_block
+  // Backlog items: remove priority + priority_block, and clear the date
+  // we set when it was previously placed in a slot (so it doesn't keep a
+  // stale scheduled time).
   const backlogItems = Array.from(backlogZone.querySelectorAll('.dl-item'));
   backlogItems.forEach(it => {
     const a = state.activities.find(x => x.id === it.dataset.id);
@@ -6841,6 +6864,7 @@ async function commitStep3Order() {
       a.priority = null;
       a.priority_week = null;
       a.priority_block = null;
+      a.date = null;
       markActivityDirty(a.id);
     }
   });
