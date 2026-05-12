@@ -5435,6 +5435,7 @@ async function wizardPrevStep() {
   if (ritual.step === 2) {
     if (phase2 === 'C') {
       ritual.decisions.step2_phase = 'B';
+      await resetManualActivityPriorities();
       markRitualDirty(state.wizard.activeWeekId);
       await saveWizardRituals();
       await reloadWizardData();
@@ -5504,6 +5505,7 @@ async function wizardNextStep() {
     ritual.step = 2;
     const incomplete = step2BacklogIncomplete(state.wizard.activeWeekId);
     ritual.decisions.step2_phase = incomplete.length === 0 ? 'B' : 'A';
+    if (ritual.decisions.step2_phase === 'B') await resetManualActivityPriorities();
     markRitualDirty(state.wizard.activeWeekId);
     await saveWizardRituals();
     await reloadWizardData();
@@ -5520,6 +5522,7 @@ async function wizardNextStep() {
         return;
       }
       ritual.decisions.step2_phase = 'B';
+      await resetManualActivityPriorities();
       markRitualDirty(state.wizard.activeWeekId);
       await saveWizardRituals();
       await reloadWizardData();
@@ -5564,6 +5567,7 @@ async function goToStep(n) {
     const incomplete = step2BacklogIncomplete(state.wizard.activeWeekId);
     ritual.decisions.step2_phase = incomplete.length === 0 ? 'B' : 'A';
     ritual._step2aOrder = null;
+    if (ritual.decisions.step2_phase === 'B') await resetManualActivityPriorities();
   }
   markRitualDirty(state.wizard.activeWeekId);
   await saveWizardRituals();
@@ -5572,6 +5576,26 @@ async function goToStep(n) {
 function goBackToWeekPicker() {
   state.wizard.activeWeekId = null;
   renderWizard();
+}
+
+// Wipe the priority assignment + scheduled date from every Manual, active
+// activity, so Claude can re-prioritize from a clean slate. Called every
+// time the wizard enters Step 2 Phase B.
+async function resetManualActivityPriorities() {
+  let touched = 0;
+  state.activities.forEach(a => {
+    if (a.archived || a.completed || a.source !== 'Manual') return;
+    if (a.priority == null && !a.priority_week && !a.priority_block && !a.date) return;
+    a.priority = null;
+    a.priority_week = null;
+    a.priority_block = null;
+    a.date = null;
+    markActivityDirty(a.id);
+    touched++;
+  });
+  if (touched > 0) {
+    try { await saveActivities(); } catch (e) { console.error('Reset priorities save error', e); }
+  }
 }
 
 // Re-read all tables from Airtable, then re-render the wizard. Called on
@@ -6281,6 +6305,7 @@ async function onStep2PhaseAChange(event, activityId, field) {
   if (weekId && step2BacklogIncomplete(weekId).length === 0) {
     const ritual = getRitual(weekId);
     ritual.decisions.step2_phase = 'B';
+    await resetManualActivityPriorities();
     markRitualDirty(weekId);
     await saveWizardRituals();
   }
