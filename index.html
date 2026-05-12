@@ -4170,7 +4170,12 @@ async function saveNameFromInput() {
 async function deleteActivityModal() {
   const a = state.activities.find(x => x.id === state.editingId);
   if (!a) return;
-  if (!confirm(`Delete "${a.name}"? This cannot be undone.`)) return;
+  const ok = await confirmModal({
+    title: 'Delete activity',
+    desc: `Delete "${a.name}"? This cannot be undone.`,
+    confirmLabel: 'Delete'
+  });
+  if (!ok) return;
   try {
     if (a._recordId) await atDelete(MAP.activities.tableId, a._recordId);
   } catch (e) {
@@ -4397,7 +4402,12 @@ async function addConstraint() {
   renderConfig();
 }
 async function archiveConstraint(i) {
-  if (!confirm('Archive this constraint?')) return;
+  const ok = await confirmModal({
+    title: 'Archive constraint',
+    desc: 'Archive this constraint? You can still see it in Airtable.',
+    confirmLabel: 'Archive'
+  });
+  if (!ok) return;
   const visible = state.constraints.filter(c => !c.archived);
   const c = visible[i];
   c.archived = true;
@@ -4419,7 +4429,12 @@ async function addTeam() {
   renderConfig();
 }
 async function archiveTeam(i) {
-  if (!confirm('Archive this team?')) return;
+  const ok = await confirmModal({
+    title: 'Archive team',
+    desc: 'Archive this team? You can still see it in Airtable.',
+    confirmLabel: 'Archive'
+  });
+  if (!ok) return;
   const visible = state.teams.filter(t => !t.archived);
   const t = visible[i];
   t.archived = true;
@@ -4446,6 +4461,20 @@ function showModal({ title, desc, customBody, actions }) {
   wrap.classList.add('open');
 }
 function closeModal() { document.getElementById('modal-wrap').classList.remove('open'); }
+
+// Promise-based replacement for native confirm() — keeps the app's modal styling.
+function confirmModal({ title, desc, confirmLabel = 'Confirm', danger = true }) {
+  return new Promise(resolve => {
+    showModal({
+      title,
+      desc,
+      actions: [
+        { label: 'Cancel', primary: false, action: () => { closeModal(); resolve(false); } },
+        { label: confirmLabel, primary: danger, action: () => { closeModal(); resolve(true); } }
+      ]
+    });
+  });
+}
 
 function toast(msg) {
   const stack = document.getElementById('toast-stack');
@@ -5377,7 +5406,12 @@ async function doLogin() {
 }
 
 async function doLogout() {
-  if (!confirm('Disconnect? Your data stays safe in Airtable.')) return;
+  const ok = await confirmModal({
+    title: 'Disconnect',
+    desc: 'Disconnect this Airtable base? Your data stays safe in Airtable.',
+    confirmLabel: 'Disconnect'
+  });
+  if (!ok) return;
   await storeDel('airtable:config');
   state.airtable.config = null;
   showLoginScreen();
