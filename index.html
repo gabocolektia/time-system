@@ -3911,8 +3911,9 @@ async function saveAvailability() {
   dirtyAvailabilityIds.clear();
 }
 
-async function archiveAvailabilityBlock(blockId) {
-  // Soft delete: drop from in-memory map and flip Archived in Airtable.
+async function deleteAvailabilityBlock(blockId) {
+  // Hard delete: drop from in-memory map and remove the Airtable row.
+  // Availability is ephemeral — no need to keep archived rows around.
   let target = null;
   for (const weekId in state.wizard.availability) {
     const idx = state.wizard.availability[weekId].findIndex(b => b.id === blockId);
@@ -3924,10 +3925,10 @@ async function archiveAvailabilityBlock(blockId) {
   }
   if (!target || !target._recordId) return;
   try {
-    await atUpdate(MAP.availability.tableId, target._recordId, { [MAP.availability.fields.archived]: true });
+    await atDelete(MAP.availability.tableId, target._recordId);
   } catch (e) {
-    console.error('Availability archive error', e);
-    toast('Could not archive block');
+    console.error('Availability delete error', e);
+    toast('Could not delete block');
   }
 }
 
@@ -5743,8 +5744,8 @@ async function addAvailabilityBlock(weekId, day) {
 }
 
 async function removeAvailabilityBlock(weekId, id) {
-  renderWizard(); // visual update happens after archive resolves below
-  await archiveAvailabilityBlock(id);
+  renderWizard();
+  await deleteAvailabilityBlock(id);
   renderWizard();
 }
 
