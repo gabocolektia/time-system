@@ -3544,11 +3544,19 @@ function groupActivities(list) {
       return { key: k, label: team ? team.name : 'No team', items: sortByPriority(groups[k]) };
     });
   } else {
+    const stageNames = new Set(state.stages.map(s => s.name));
     const groups = {};
-    list.forEach(a => { (groups[a.stage] = groups[a.stage] || []).push(a); });
-    return state.stages.map(s => ({
+    list.forEach(a => {
+      const k = a.stage && stageNames.has(a.stage) ? a.stage : '__nostage__';
+      (groups[k] = groups[k] || []).push(a);
+    });
+    const ordered = state.stages.map(s => ({
       key: s.name, label: s.name, items: sortByPriority(groups[s.name] || [])
     })).filter(g => g.items.length);
+    if (groups.__nostage__) {
+      ordered.push({ key: '__nostage__', label: 'Sin etapa', items: sortByPriority(groups.__nostage__) });
+    }
+    return ordered;
   }
 }
 
