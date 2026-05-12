@@ -5417,14 +5417,14 @@ async function wizardPrevStep() {
       ritual.decisions.step1_phase = 'B';
       markRitualDirty(state.wizard.activeWeekId);
       await saveWizardRituals();
-      renderWizard();
+      await reloadWizardData();
       return;
     }
     if (phase1 === 'B') {
       ritual.decisions.step1_phase = 'A';
       markRitualDirty(state.wizard.activeWeekId);
       await saveWizardRituals();
-      renderWizard();
+      await reloadWizardData();
       return;
     }
     // Phase A: nothing to go back to
@@ -5437,14 +5437,14 @@ async function wizardPrevStep() {
       ritual.decisions.step2_phase = 'B';
       markRitualDirty(state.wizard.activeWeekId);
       await saveWizardRituals();
-      renderWizard();
+      await reloadWizardData();
       return;
     }
     if (phase2 === 'B') {
       ritual.decisions.step2_phase = 'A';
       markRitualDirty(state.wizard.activeWeekId);
       await saveWizardRituals();
-      renderWizard();
+      await reloadWizardData();
       return;
     }
     // Phase A → go to Step 1 Phase C
@@ -5452,7 +5452,7 @@ async function wizardPrevStep() {
     ritual.decisions.step1_phase = 'C';
     markRitualDirty(state.wizard.activeWeekId);
     await saveWizardRituals();
-    renderWizard();
+    await reloadWizardData();
     return;
   }
 
@@ -5468,7 +5468,7 @@ async function wizardPrevStep() {
     }
     markRitualDirty(state.wizard.activeWeekId);
     await saveWizardRituals();
-    renderWizard();
+    await reloadWizardData();
   }
 }
 async function wizardNextStep() {
@@ -5497,7 +5497,7 @@ async function wizardNextStep() {
       ritual.decisions.step1_phase = 'C';
       markRitualDirty(state.wizard.activeWeekId);
       await saveWizardRituals();
-      renderWizard();
+      await reloadWizardData();
       return;
     }
     // Phase C → Step 2 (Phase A, or skip to B if everything is filled)
@@ -5506,7 +5506,7 @@ async function wizardNextStep() {
     ritual.decisions.step2_phase = incomplete.length === 0 ? 'B' : 'A';
     markRitualDirty(state.wizard.activeWeekId);
     await saveWizardRituals();
-    renderWizard();
+    await reloadWizardData();
     return;
   }
 
@@ -5522,7 +5522,7 @@ async function wizardNextStep() {
       ritual.decisions.step2_phase = 'B';
       markRitualDirty(state.wizard.activeWeekId);
       await saveWizardRituals();
-      renderWizard();
+      await reloadWizardData();
       return;
     }
     if (phase2 === 'B') {
@@ -5541,7 +5541,7 @@ async function wizardNextStep() {
     ritual.step++;
     markRitualDirty(state.wizard.activeWeekId);
     await saveWizardRituals();
-    renderWizard();
+    await reloadWizardData();
   } else {
     // Finalize ritual — close week, return to week picker, no confirmation
     ritual.closedAt = new Date().toISOString();
@@ -5567,10 +5567,23 @@ async function goToStep(n) {
   }
   markRitualDirty(state.wizard.activeWeekId);
   await saveWizardRituals();
-  renderWizard();
+  await reloadWizardData();
 }
 function goBackToWeekPicker() {
   state.wizard.activeWeekId = null;
+  renderWizard();
+}
+
+// Re-read all tables from Airtable, then re-render the wizard. Called on
+// every step/phase transition so the user always sees fresh data even if
+// they changed records directly in Airtable mid-ritual.
+async function reloadWizardData() {
+  try {
+    await loadAllFromAirtable();
+  } catch (e) {
+    console.error('Reload error', e);
+    toast('Sync failed: ' + e.message);
+  }
   renderWizard();
 }
 
