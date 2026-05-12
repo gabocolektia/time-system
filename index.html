@@ -2757,7 +2757,11 @@ const MAP = {
       lastSyncedAt: 'Last Synced At',
       description: 'Description',
       archived: 'Archived',
-      log: 'Log'
+      log: 'Log',
+      goalHorizon: 'Goal Horizon',
+      blocksTeam: 'Blocks Team',
+      costOfNotDoing: 'Cost of Not Doing',
+      priorityBlock: 'Priority Block'
     }
   },
 
@@ -2777,6 +2781,18 @@ const MAP = {
     fields: {
       key: 'Key',
       value: 'Value'
+    }
+  },
+
+  availability: {
+    tableId: 'Availability Blocks',
+    fields: {
+      blockId: 'Block ID',
+      weekId: 'Week ID',
+      day: 'Day',
+      startHHMM: 'Start HHMM',
+      endHHMM: 'End HHMM',
+      archived: 'Archived'
     }
   }
 };
