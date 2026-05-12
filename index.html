@@ -2770,7 +2770,7 @@ const state = {
  * Architecture:
  *   - Each user has their OWN Airtable base (multi-tenant via base isolation).
  *   - No Users table, no Owner field — each base is private.
- *   - Credentials (baseId + token) live in window.storage under
+ *   - Credentials (baseId + token) live in localStorage under
  *     'airtable:config'. The base name is fetched once via the metadata
  *     API and cached in the same config. Nothing ever leaves the browser
  *     other than direct calls to api.airtable.com.
@@ -2888,15 +2888,15 @@ const MAP = {
 
 // ---- Local storage helpers (only for Airtable credentials) ----
 async function storeGet(key) {
-  try { const r = await window.storage.get(key); return r ? r.value : null; }
+  try { return localStorage.getItem(key); }
   catch { return null; }
 }
 async function storeSet(key, value) {
-  try { await window.storage.set(key, JSON.stringify(value)); return true; }
+  try { localStorage.setItem(key, JSON.stringify(value)); return true; }
   catch { return false; }
 }
 async function storeDel(key) {
-  try { await window.storage.delete(key); return true; }
+  try { localStorage.removeItem(key); return true; }
   catch { return false; }
 }
 
