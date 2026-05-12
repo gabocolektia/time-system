@@ -6591,20 +6591,13 @@ function renderStep2PhaseC(weekId) {
   };
 
   // Build per-day groups: each day has availability blocks (free) and scheduled (fixed)
-  // Sort all "slots" (free blocks + scheduled events) chronologically per day
+  // Per-day availability slots from the Availability Blocks table. Calendar-
+  // scheduled activities are intentionally excluded from this view — Phase B
+  // is about dragging manual activities into free time blocks.
   const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  const daysMap = new Map(); // day (0..6) → { freeBlocks: [], scheduledItems: [] }
-  for (let d = 0; d < 7; d++) {
-    daysMap.set(d, { freeBlocks: [], scheduledItems: [] });
-  }
-  availBlocks.forEach(b => {
-    daysMap.get(b.day).freeBlocks.push(b);
-  });
-  scheduled.forEach(a => {
-    const d = new Date(a.date);
-    const day = (d.getDay() + 6) % 7; // Mon=0...Sun=6
-    daysMap.get(day).scheduledItems.push(a);
-  });
+  const daysMap = new Map(); // day (0..6) → freeBlocks[]
+  for (let d = 0; d < 7; d++) daysMap.set(d, []);
+  availBlocks.forEach(b => { daysMap.get(b.day).push(b); });
 
   // Assign priorities for "This Week" — for now: scheduled items get sequential priority
   // (in real app, priority is set by drag&drop or by Claude's response)
@@ -6627,103 +6620,71 @@ function renderStep2PhaseC(weekId) {
   // Build day rows for This Week
   const dayRows = [];
   for (let d = 0; d < 7; d++) {
-    const { freeBlocks, scheduledItems } = daysMap.get(d);
-    // Skip days with nothing
-    if (freeBlocks.length === 0 && scheduledItems.length === 0) continue;
+    const freeBlocks = daysMap.get(d);
+    if (freeBlocks.length === 0) continue;
 
-    // Combine all slots and sort by start time
-    const slots = [
-      ...freeBlocks.map(b => ({
-        type: 'free',
+    const slots = freeBlocks
+      .map(b => ({
         startMin: hhmmToMin(b.startHHMM),
         endMin: hhmmToMin(b.endHHMM),
         block: b
-      })),
-      ...scheduledItems.map(a => {
-        const d = new Date(a.date);
-        const start = d.getHours() * 60 + d.getMinutes();
-        return {
-          type: 'scheduled',
-          startMin: start,
-          endMin: start + (a.duration_minutes || 60),
-          activity: a
-        };
-      })
-    ].sort((a, b) => a.startMin - b.startMin);
+      }))
+      .sort((a, b) => a.startMin - b.startMin);
 
     const date = new Date(monday);
     date.setDate(monday.getDate() + d);
     const dayLabel = `${dayNames[d]} ${date.getDate()}`;
 
     const slotsHtml = slots.map(s => {
-      if (s.type === 'free') {
-        // Free block — drop target, can contain prioritized activities
-        const startLabel = s.block.startHHMM;
-        const endLabel = s.block.endHHMM;
-        const totalMin = s.endMin - s.startMin;
-        // Items inside this block — activities prioritized with priority_block === block.id
-        const itemsInBlock = prioritized.filter(a => a.priority_block === s.block.id);
-        const usedMin = itemsInBlock.reduce((sum, a) => sum + (a.duration_minutes || 0), 0);
-        const freeMin = Math.max(0, totalMin - usedMin);
-        const overflow = usedMin > totalMin;
+      const startLabel = s.block.startHHMM;
+      const endLabel = s.block.endHHMM;
+      const totalMin = s.endMin - s.startMin;
+      // Items inside this block — activities prioritized with priority_block === block.id
+      const itemsInBlock = prioritized.filter(a => a.priority_block === s.block.id);
+      const usedMin = itemsInBlock.reduce((sum, a) => sum + (a.duration_minutes || 0), 0);
+      const freeMin = Math.max(0, totalMin - usedMin);
+      const overflow = usedMin > totalMin;
 
-        let cursor = s.startMin;
-        const itemHtml = itemsInBlock.map(a => {
-          const startStr = minToHHMM(cursor);
-          const html = renderActivityCard(a, idToGlobal.get(a.id) || '?', { inSlot: true, startHHMM: startStr });
-          cursor += (a.duration_minutes || 0);
-          return html;
-        }).join('');
+      // Chain dropped activities sequentially: each starts where the previous ended.
+      let cursor = s.startMin;
+      const itemHtml = itemsInBlock.map(a => {
+        const startStr = minToHHMM(cursor);
+        const html = renderActivityCard(a, idToGlobal.get(a.id) || '?', { inSlot: true, startHHMM: startStr });
+        cursor += (a.duration_minutes || 0);
+        return html;
+      }).join('');
 
-        // Slot meta — color logic:
-        //   green check  → exactly full (0m free, no overflow)
-        //   green text   → has free time
-        //   red text     → overbooked (shows excess minutes)
-        let metaHtml, metaClass;
-        if (overflow) {
-          const excess = usedMin - totalMin;
-          metaHtml = `Overbooked · ${formatDuration(excess)} over`;
-          metaClass = 'overflow';
-        } else if (freeMin === 0 && usedMin > 0) {
-          // Exactly filled — show check icon
-          metaHtml = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 6-7"/></svg>`;
-          metaClass = 'full-check';
-        } else if (freeMin === 0) {
-          metaHtml = '0m free';
-          metaClass = '';
-        } else {
-          metaHtml = `${formatDuration(freeMin)} free`;
-          metaClass = 'free';
-        }
-
-        return `
-          <div class="slot free-block" data-zone="block" data-block-id="${s.block.id}">
-            <div class="slot-hd">
-              <span class="slot-time">${startLabel} – ${endLabel}</span>
-              <span class="slot-meta ${metaClass}">${metaHtml}</span>
-            </div>
-            <div class="slot-body">
-              ${itemsInBlock.length === 0 ? '<div class="slot-empty">Drop here</div>' : itemHtml}
-            </div>
-          </div>
-        `;
+      // Slot meta — color logic:
+      //   green check  → exactly full (0m free, no overflow)
+      //   green text   → has free time
+      //   red text     → overbooked (shows excess minutes)
+      let metaHtml, metaClass;
+      if (overflow) {
+        const excess = usedMin - totalMin;
+        metaHtml = `Overbooked · ${formatDuration(excess)} over`;
+        metaClass = 'overflow';
+      } else if (freeMin === 0 && usedMin > 0) {
+        metaHtml = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 6-7"/></svg>`;
+        metaClass = 'full-check';
+      } else if (freeMin === 0) {
+        metaHtml = '0m free';
+        metaClass = '';
       } else {
-        // Scheduled item — fixed, not editable, single-line
-        const a = s.activity;
-        const startStr = minToHHMM(s.startMin);
-        const endStr = minToHHMM(s.endMin);
-        return `
-          <div class="slot scheduled-slot">
-            <div class="slot-hd">
-              <span class="slot-time">${startStr} – ${endStr}</span>
-              <span class="slot-meta scheduled-tag">Scheduled</span>
-            </div>
-            <div class="slot-body">
-              ${renderActivityCard(a, idToGlobal.get(a.id) || '?', { inSlot: true, scheduled: true, startHHMM: startStr })}
-            </div>
-          </div>
-        `;
+        metaHtml = `${formatDuration(freeMin)} free`;
+        metaClass = 'free';
       }
+
+      return `
+        <div class="slot free-block" data-zone="block" data-block-id="${s.block.id}">
+          <div class="slot-hd">
+            <span class="slot-time">${startLabel} – ${endLabel}</span>
+            <span class="slot-meta ${metaClass}">${metaHtml}</span>
+          </div>
+          <div class="slot-body">
+            ${itemsInBlock.length === 0 ? '<div class="slot-empty">Drop here</div>' : itemHtml}
+          </div>
+        </div>
+      `;
     }).join('');
 
     dayRows.push(`
