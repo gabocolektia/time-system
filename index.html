@@ -6528,11 +6528,18 @@ function renderStep2PhaseC(weekId) {
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   // Backlog: Manual + not archived + not completed, and not already scheduled.
+  // Sort by this-week priority so the user's chosen order is preserved
+  // (items pulled out of a slot fill the gaps and keep moving in sequence).
   const scheduledIds = new Set(scheduled.map(a => a.id));
   const backlog = state.activities
     .filter(a => !a.archived && !a.completed && a.source === 'Manual')
     .filter(a => !scheduledIds.has(a.id))
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => {
+      const ap = (a.priority_week === weekId && a.priority != null) ? a.priority : Infinity;
+      const bp = (b.priority_week === weekId && b.priority != null) ? b.priority : Infinity;
+      if (ap !== bp) return ap - bp;
+      return (a.name || '').localeCompare(b.name || '');
+    });
 
   // Global numbering
   const weekCount = prioritized.length;
@@ -6840,29 +6847,23 @@ async function commitStep3Order() {
       }
     });
   });
-  // Scheduled items: assign priorities continuing after free blocks
-  const scheduledItems = weekZone.querySelectorAll('.dl-item.scheduled');
-  scheduledItems.forEach(it => {
-    const a = state.activities.find(x => x.id === it.dataset.id);
-    if (!a) return;
-    priorityIdx++;
-    if (a.priority !== priorityIdx || a.priority_week !== weekId) {
-      a.priority = priorityIdx;
-      a.priority_week = weekId;
-      markActivityDirty(a.id);
-    }
-  });
-
-  // Backlog items: remove priority + priority_block, and clear the date
-  // we set when it was previously placed in a slot (so it doesn't keep a
-  // stale scheduled time).
+  // Backlog items: continue priorities from where slot items left off
+  // (N+1, N+2, ...) in DOM order. They keep priority_week so the relative
+  // order survives across sessions, but priority_block and date are cleared
+  // — they aren't scheduled to any specific time anymore.
   const backlogItems = Array.from(backlogZone.querySelectorAll('.dl-item'));
   backlogItems.forEach(it => {
     const a = state.activities.find(x => x.id === it.dataset.id);
     if (!a) return;
-    if (a.priority_week === weekId) {
-      a.priority = null;
-      a.priority_week = null;
+    priorityIdx++;
+    if (
+      a.priority !== priorityIdx ||
+      a.priority_week !== weekId ||
+      a.priority_block !== null ||
+      a.date !== null
+    ) {
+      a.priority = priorityIdx;
+      a.priority_week = weekId;
       a.priority_block = null;
       a.date = null;
       markActivityDirty(a.id);
