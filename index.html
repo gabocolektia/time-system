@@ -839,6 +839,7 @@ input.finput::placeholder { color: var(--ink4); }
   cursor: pointer;
   transition: background .1s;
 }
+.act-row.no-prio { grid-template-columns: 1fr 70px 100px 130px 32px; }
 .act-row:last-child { border-bottom: none; }
 .act-row:hover { background: var(--hover-bg); }
 
@@ -3805,10 +3806,14 @@ function renderActivityRow(a) {
   // Only apply "completed" styling in tabs where it's meaningful (mydesk, all).
   // In delegated and live, the completed flag is personal — don't strike through.
   const showCompletedStyle = a.completed && (state.currentTab === 'mydesk' || state.currentTab === 'all');
-  const rowClass = showCompletedStyle ? 'act-row completed' : 'act-row';
+  // Priority only matters in mydesk/all; delegated and live drop the column.
+  const showPrio = state.currentTab === 'mydesk' || state.currentTab === 'all';
+  const classes = ['act-row'];
+  if (showCompletedStyle) classes.push('completed');
+  if (!showPrio) classes.push('no-prio');
   return `
-    <div class="${rowClass}" onclick="rowClick(event, '${a.id}')">
-      ${prio}
+    <div class="${classes.join(' ')}" onclick="rowClick(event, '${a.id}')">
+      ${showPrio ? prio : ''}
       <div class="act-name">${escapeHtml(a.name)}</div>
       ${constraintCell}
       ${hatCell}
