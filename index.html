@@ -6140,7 +6140,8 @@ const STEP2_DURATION_OPTIONS = [
 function step2BacklogPending(weekId) {
   const monday = mondayFromWeekId(weekId);
   return state.activities
-    .filter(a => !a.archived && a.stage !== 'Live')
+    .filter(a => !a.archived && !a.completed && a.stage !== 'Live')
+    .filter(a => a.source !== 'Calendar')
     .filter(a => !(a.priority != null && a.priority_week === weekId))
     // Exclude activities scheduled in past weeks (Last Week / Sync calendar items)
     .filter(a => !a.date || new Date(a.date) >= monday);
