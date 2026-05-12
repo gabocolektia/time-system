@@ -6816,7 +6816,7 @@ async function commitStep3Order() {
   freeBlocks.forEach(block => {
     const blockId = block.dataset.blockId;
     const blockMeta = blocksForWeek.find(b => b.id === blockId);
-    let cursor = blockMeta ? hhmmToMin(blockMeta.startHHMM) : 0;
+    let cursor = blockMeta ? hhmmToMinutes(blockMeta.startHHMM) : 0;
     const items = block.querySelectorAll('.dl-item:not(.scheduled)');
     items.forEach(it => {
       const a = state.activities.find(x => x.id === it.dataset.id);
