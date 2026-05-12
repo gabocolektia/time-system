@@ -146,17 +146,16 @@ input, select, textarea { outline: none; }
   flex-shrink: 0;
 }
 .sb-brand {
-  padding: 18px 14px 14px;
+  padding: 16px 14px;
   border-bottom: 1px solid var(--ink5);
-  height: 65px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   overflow: hidden;
 }
 .sb-logo {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   white-space: nowrap;
 }
 .sb-logo-mark {
@@ -169,6 +168,11 @@ input, select, textarea { outline: none; }
   letter-spacing: -0.02em;
   flex-shrink: 0;
 }
+.sb-logo-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
 .sb-logo-text {
   font-size: 13px;
   font-weight: 600;
@@ -178,8 +182,6 @@ input, select, textarea { outline: none; }
 .sb-tag {
   font-size: 10px;
   color: var(--ink4);
-  margin-top: 4px;
-  margin-left: 37px;
   white-space: nowrap;
 }
 
@@ -2446,9 +2448,11 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
     <div class="sb-brand">
       <div class="sb-logo">
         <div class="sb-logo-mark">C</div>
-        <div class="sb-logo-text">Colektia</div>
+        <div class="sb-logo-meta">
+          <div class="sb-logo-text">Colektia</div>
+          <div class="sb-tag">CEO Time System</div>
+        </div>
       </div>
-      <div class="sb-tag">CEO Time System</div>
     </div>
 
     <nav class="sb-nav">
