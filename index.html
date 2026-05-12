@@ -1392,7 +1392,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 }
 .wz-hero-title {
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ink);
   letter-spacing: -0.01em;
   margin-bottom: 6px;
@@ -1407,7 +1407,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 /* Step 0 — Week picker */
 .wp-section-lbl {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ink4);
   text-transform: uppercase;
   letter-spacing: .1em;
@@ -1435,7 +1435,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 }
 .wp-card-label {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ink);
   margin-bottom: 4px;
 }
@@ -1450,7 +1450,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   margin-top: 12px;
   padding: 4px 10px;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .08em;
   border-radius: 99px;
@@ -1534,6 +1534,21 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   transition: transform .12s;
 }
 .wz-step-item:hover { transform: translateY(-1px); }
+.wz-step-item:hover .wz-step-dot {
+  border-color: var(--ink4);
+  background: var(--white);
+  color: var(--ink2);
+}
+.wz-step-item.active:hover .wz-step-dot {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+}
+.wz-step-item.completed:hover .wz-step-dot {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
 .wz-step-dot {
   width: 28px; height: 28px;
   border-radius: 50%;
@@ -1541,7 +1556,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   background: var(--surface2);
   color: var(--ink4);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   border: 2px solid var(--surface2);
   transition: all .15s;
 }
@@ -1580,7 +1595,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 }
 .wz-step-num {
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--red);
   text-transform: uppercase;
   letter-spacing: .1em;
@@ -1588,7 +1603,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 }
 .wz-step-title {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ink);
   letter-spacing: -0.01em;
   margin-bottom: 4px;
@@ -1621,6 +1636,139 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   border: 1px solid var(--ink6);
 }
 
+/* Step 0 — Sync calendar (pre-flight) */
+.step0-wrap {
+  max-width: 580px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 16px 0;
+}
+.step0-icon {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--red);
+  border: 1px solid var(--ink6);
+}
+.step0-intro {
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.55;
+  margin-bottom: 24px;
+}
+.step0-intro strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.step0-cmd-card {
+  background: var(--white);
+  border: 1px solid var(--ink6);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  text-align: left;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.step0-cmd-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 8px;
+}
+.step0-cmd-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border-radius: var(--rs);
+  border: 1px solid var(--ink6);
+}
+.step0-cmd-text {
+  flex: 1;
+  font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  color: var(--ink);
+  background: transparent;
+  user-select: all;
+}
+.step0-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  background: var(--white);
+  border: 1px solid var(--ink6);
+  border-radius: var(--rs);
+  font-family: var(--f);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .12s;
+}
+.step0-copy-btn:hover {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--ink5);
+}
+.step0-copy-btn.copied {
+  background: var(--green-bg);
+  color: var(--green);
+  border-color: var(--green);
+}
+.step0-cmd-hint {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--ink4);
+  line-height: 1.5;
+}
+
+.step0-status {
+  background: var(--surface);
+  border-radius: var(--rs);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+.step0-status-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 6px;
+}
+.step0-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+}
+.step0-status-row.ok { color: var(--green); }
+.step0-status-row.ok strong { color: var(--green); font-weight: 600; }
+.step0-status-row.pending { color: var(--ink3); }
+.step0-status-row.pending svg { color: var(--amber); }
+
+.step0-next-hint {
+  font-size: 12px;
+  color: var(--ink3);
+  padding-top: 4px;
+}
+.step0-next-hint strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
 /* Empty state inside step */
 .wz-empty {
   padding: 56px 24px;
@@ -1639,7 +1787,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   margin-bottom: 14px;
 }
 .wz-empty-icon svg { width: 22px; height: 22px; }
-.wz-empty-title { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.wz-empty-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
 .wz-empty-desc { font-size: 12px; color: var(--ink3); max-width: 360px; margin: 0 auto; line-height: 1.55; }
 
 /* Wizard footer */
@@ -1669,7 +1817,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 .wz-row:last-child { border-bottom: none; }
 .wz-row-prio {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ink3);
 }
 .wz-row-name {
@@ -1699,7 +1847,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 }
 .wz-group-hd {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ink3);
   text-transform: uppercase;
   letter-spacing: .08em;
@@ -1758,18 +1906,15 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   min-height: 420px;
 }
 .dl-col {
-  background: var(--surface);
+  background: var(--white);
   border: 1px solid var(--ink6);
   border-radius: var(--r);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
-.dl-col.primary {
-  background: var(--white);
-  border: 1px solid var(--red-bd);
-}
-.dl-col-hd {
+.dl-col-hd,
+.dl-col-hd.plain {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1777,23 +1922,18 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   border-bottom: 1px solid var(--ink6);
   background: var(--white);
 }
-.dl-col.primary .dl-col-hd {
-  background: var(--red-bg);
-  border-bottom-color: var(--red-bd);
-}
 .dl-col-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink2);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink3);
   text-transform: uppercase;
   letter-spacing: .08em;
 }
-.dl-col.primary .dl-col-title { color: var(--red); }
 .dl-col-cnt {
   font-size: 11px;
   font-weight: 600;
   color: var(--ink4);
-  background: var(--surface2);
+  background: var(--surface);
   padding: 2px 8px;
   border-radius: 99px;
 }
@@ -1807,9 +1947,11 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   flex-direction: column;
   gap: 6px;
   transition: background .15s;
+  background: var(--white);
 }
+.dl-col-body.white { background: var(--white); }
 .dl-col-body.drag-over {
-  background: rgba(232,68,58,.04);
+  background: rgba(0,0,0,.02);
 }
 .dl-empty {
   padding: 40px 18px;
@@ -1838,21 +1980,33 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   opacity: .4;
   cursor: grabbing;
 }
+.dl-item.scheduled {
+  cursor: default;
+  background: var(--surface);
+  border-style: dashed;
+  border-color: var(--ink6);
+}
+.dl-item.scheduled:hover { box-shadow: none; }
 .dl-handle {
   color: var(--ink4);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -2px;
   cursor: grab;
 }
 .dl-prio {
   font-size: 11px;
-  font-weight: 600;
-  color: var(--red);
-  background: var(--red-bg);
+  font-weight: 700;
+  color: var(--ink3);
+  background: var(--surface);
   padding: 3px 8px;
   border-radius: var(--rxs);
   flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.dl-prio.neutral {
+  color: var(--ink3);
+  background: var(--surface);
 }
 .dl-meta { flex: 1; min-width: 0; }
 .dl-name {
@@ -1890,6 +2044,161 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 }
 .dl-sub.delegated { color: var(--green); font-weight: 600; font-style: normal; }
 
+/* This Week — bare layout (no card wrapper, no column header) */
+.this-week-bare {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Day groups inside "This week" — each day has multiple slots, collapsible */
+.day-group + .day-group { margin-top: 10px; }
+.day-group-hd {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink2);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  padding: 6px 2px;
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid var(--ink6);
+  margin-bottom: 6px;
+  cursor: pointer;
+  font-family: var(--f);
+  text-align: left;
+}
+.day-group-hd:hover { color: var(--ink); }
+.day-toggle-icon {
+  color: var(--ink4);
+  transition: transform .15s ease;
+  flex-shrink: 0;
+}
+.day-group.collapsed .day-toggle-icon { transform: rotate(-90deg); }
+.day-group.collapsed .day-group-body { display: none; }
+
+.day-group-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Slot — a free block or a scheduled item */
+.slot {
+  background: var(--white);
+  border: 1px solid var(--ink6);
+  border-radius: var(--rs);
+  overflow: hidden;
+  transition: border-color .12s;
+}
+.slot.free-block.drag-over {
+  border-color: var(--ink4);
+  background: rgba(0,0,0,.02);
+}
+.slot-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px;
+  background: var(--white);
+  border-bottom: 1px solid var(--ink6);
+}
+.slot-time {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.slot-meta {
+  font-size: 10.5px;
+  color: var(--ink3);
+  font-variant-numeric: tabular-nums;
+}
+.slot-meta.free {
+  color: var(--green);
+  font-weight: 600;
+}
+.slot-meta.full-check {
+  color: var(--green);
+  display: inline-flex;
+  align-items: center;
+}
+.slot-meta.overflow {
+  color: var(--red);
+  font-weight: 600;
+}
+.slot-meta.scheduled-tag {
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--ink4);
+}
+.slot-body {
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 28px;
+}
+.slot-empty {
+  padding: 8px;
+  text-align: center;
+  color: var(--ink4);
+  font-size: 11px;
+  font-style: italic;
+  border: 1px dashed var(--ink6);
+  border-radius: var(--rxs);
+}
+.scheduled-slot .slot-hd { background: var(--white); }
+
+/* Compact single-line activity (used in slots and backlog) */
+.dl-item.dl-row {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 5px 8px;
+  background: var(--white);
+  border: 1px solid var(--ink6);
+  border-radius: var(--rxs);
+  font-size: 11.5px;
+}
+.dl-item.dl-row:hover {
+  border-color: var(--ink5);
+}
+.dl-item.dl-row.scheduled {
+  background: var(--surface);
+  border-style: dashed;
+  cursor: default;
+}
+.dl-item.dl-row.scheduled:hover { box-shadow: none; }
+.dl-row-name {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.dl-row-time {
+  font-size: 11px;
+  color: var(--ink4);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.dl-row-dur {
+  font-size: 11px;
+  color: var(--ink4);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
 /* Step 4 — Calendar */
 .cal-info-box {
   padding: 10px 14px;
@@ -1918,7 +2227,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   padding: 11px 14px;
   border-bottom: 1px solid var(--ink6);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ink2);
   text-transform: uppercase;
   letter-spacing: .08em;
@@ -1949,7 +2258,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 .cal-day-hd {
   padding: 8px 4px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ink2);
   text-align: center;
   border-left: 1px solid var(--ink6);
@@ -2009,7 +2318,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 .cal-event:hover { background: rgba(232,68,58,.12); transform: scale(0.98); }
 .cal-event-prio {
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--red);
   margin-bottom: 1px;
 }
@@ -2068,7 +2377,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 }
 .sync-item-prio {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--red);
   background: var(--red-bg);
   padding: 2px 6px;
@@ -2079,125 +2388,6 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 }
 .sync-item-name { font-size: 13px; font-weight: 600; color: var(--ink); }
 .sync-item-date { font-size: 11px; color: var(--ink3); font-weight: 500; text-align: right; }
-
-/* ============================================================
- * Asana-style completion check
- * ============================================================ */
-.asana-check {
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  border: 1.5px solid var(--ink5);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all .15s;
-  background: var(--white);
-  color: transparent;
-}
-.asana-check:hover {
-  border-color: var(--green);
-  color: var(--green-bd);
-}
-.asana-check.checked {
-  background: var(--green);
-  border-color: var(--green);
-  color: #fff;
-}
-.asana-check.checked:hover {
-  opacity: .85;
-}
-.asana-check svg {
-  width: 13px; height: 13px;
-}
-
-/* Title strike-through when completed (modal) */
-.am-title.completed {
-  color: var(--ink4);
-  text-decoration: line-through;
-}
-
-/* Step 1 — checklist row */
-.wz-row-check {
-  display: grid;
-  grid-template-columns: 40px 50px 1fr 130px;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  background: var(--white);
-  border-bottom: 1px solid var(--ink6);
-  transition: opacity .15s;
-}
-.wz-row-check:last-child { border-bottom: none; }
-.wz-row-check.completed .wz-row-name {
-  color: var(--ink4);
-  text-decoration: line-through;
-}
-.wz-row-check.completed .wz-row-prio {
-  opacity: .5;
-}
-
-.wz-status-tag {
-  display: inline-block;
-  padding: 3px 9px;
-  font-size: 10px;
-  font-weight: 600;
-  border-radius: var(--rxs);
-  text-transform: uppercase;
-  letter-spacing: .05em;
-}
-.wz-status-tag.completed { background: var(--green-bg); color: var(--green); }
-.wz-status-tag.pending { background: var(--surface2); color: var(--ink3); }
-
-/* Summary pills above the list */
-.wz-summary-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-.wz-summary-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 12px;
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: 99px;
-  letter-spacing: 0;
-}
-.wz-summary-pill.done { background: var(--green-bg); color: var(--green); }
-.wz-summary-pill.pending { background: var(--surface2); color: var(--ink3); }
-
-/* "Show completed" toggle in filter bar */
-.show-completed-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 10px;
-  height: 30px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--ink3);
-  cursor: pointer;
-  border-radius: var(--rs);
-  user-select: none;
-  transition: color .12s, background .12s;
-}
-.show-completed-toggle:hover {
-  color: var(--ink);
-  background: var(--surface);
-}
-.show-completed-toggle input[type="checkbox"] {
-  width: 14px; height: 14px;
-  margin: 0;
-  accent-color: var(--green);
-  cursor: pointer;
-}
-.show-completed-toggle .sct-text {
-  font-weight: 500;
-}
-
-/* Row completed look — relies on the green check; no strike-through or dimming. */
 
 /* ============================================================
  * LOGIN, LOADING, SYNC INDICATORS
@@ -2623,7 +2813,7 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
  *   6. CONFIG RENDER          — constraints, teams, hats, stages
  *   7. DATA EXPORT            — local JSON backup
  *   8. MODAL & TOAST          — generic UI primitives
- *   9. WIZARD                 — 5-step weekly ritual
+ *   9. WIZARD                 — 3-step weekly ritual
  *  10. INIT / LOGIN / LOGOUT  — entry point
  * ----------------------------------------------------------
  */
@@ -4658,7 +4848,7 @@ function toast(msg) {
 }
 
 /* ============================================================
- * 9. WIZARD — 5-step weekly ritual
+ * 9. WIZARD — 3-step weekly ritual
  * ============================================================ */
 
 // Get or create ritual entry for a weekId
@@ -4669,9 +4859,17 @@ function getRitual(weekId) {
       startedAt: null,
       closedAt: null,
       decisions: {
-        step1_lastWeek: {},   // activityId -> 'done' | 'moved' | 'skipped' | 'paused'
-        step2_inventory: {},  // activityId -> 'keep' | 'archive'
-        step5_synced: false
+        // Step 1 has 3 phases (resets to 'A' every entry):
+        //   A = Sync calendar (show command card)
+        //   B = Look back (review last week + needs info)
+        //   C = Availability (review and adjust time blocks)
+        step1_phase: 'A',
+        // Step 2 has 3 phases (resets to 'A' every entry):
+        //   A = Methodology fields (fill in metadata for each activity)
+        //   B = Sync command (Claude prioritizes via agent)
+        //   C = Prioritize (drag & drop visualization)
+        step2_phase: 'A',
+        step1_lastWeek: {}    // activityId -> 'done' | 'moved' | 'skipped' | 'paused'
       }
     };
   }
@@ -4683,7 +4881,7 @@ function renderWizard() {
   const container = document.getElementById('wizard-container');
   const activeWeekId = state.wizard.activeWeekId;
 
-  // No active week selected → show week picker (Paso 0)
+  // No active week selected → show week picker
   if (!activeWeekId) {
     renderWizardWeekPicker(container);
     return;
@@ -4691,14 +4889,8 @@ function renderWizard() {
 
   const ritual = getRitual(activeWeekId);
 
-  // If ritual closed and just entering, default to read-only summary view
-  if (ritual.closedAt && ritual.step === 5) {
-    renderWizardClosedSummary(container, activeWeekId, ritual);
-    return;
-  }
-
-  // Otherwise render whatever step
-  const currentStep = Math.max(1, ritual.step || 1);
+  // Otherwise render whatever step. Starts at 1 (Sync calendar).
+  const currentStep = ritual.step >= 1 ? ritual.step : 1;
   renderWizardStep(container, activeWeekId, currentStep);
 }
 
@@ -4719,7 +4911,7 @@ function renderWizardWeekPicker(container) {
         const dStr = dt.getDate() + '/' + (dt.getMonth() + 1);
         badge = `<div class="wp-card-badge closed">Closed on ${dStr}</div>`;
       } else if (ritual.step > 0) {
-        badge = `<div class="wp-card-badge in-progress">In progress · step ${ritual.step} of 5</div>`;
+        badge = `<div class="wp-card-badge in-progress">In progress · step ${ritual.step} of 3</div>`;
       }
     }
     return `
@@ -4757,6 +4949,12 @@ async function selectWizardWeek(weekId) {
     ritual.step = 1;
     await saveWizardRituals();
   }
+  // Reset Phase A of Step 1 every time the user re-enters the wizard.
+  // (Step 2 phase resets when user navigates into it; auto-skip handled there.)
+  ritual.decisions.step1_phase = 'A';
+  ritual.decisions.step2_phase = 'A';
+  // Reset Step 2 Phase A row order so it recalculates on next render
+  ritual._step2aOrder = null;
   renderWizard();
 }
 
@@ -4764,16 +4962,14 @@ async function selectWizardWeek(weekId) {
  * Generic wizard step shell — stepper + body + footer
  * ---------------------------------------------------------- */
 const STEP_META = [
-  { n: 1, name: 'Look back', desc: 'Review what happened last week' },
-  { n: 2, name: 'Refresh inventory', desc: 'Clean up the backlog before prioritizing' },
-  { n: 3, name: 'Prioritize', desc: 'Pick your 5–10 activities for the week, in order' },
-  { n: 4, name: 'Distribute', desc: 'Assign day and time to the ones you execute' },
-  { n: 5, name: 'Sync', desc: 'Confirm and send everything to your Google Calendar' }
+  { n: 1, name: 'Sync calendar', desc: 'Sync calendar, review last week, complete missing fields' },
+  { n: 2, name: 'Prioritize', desc: 'Pick your 5–10 activities for the week, in order' },
+  { n: 3, name: 'Close week', desc: 'Confirm and send everything to your Google Calendar' }
 ];
 
 function renderWizardStep(container, weekId, step) {
   const ritual = getRitual(weekId);
-  const meta = STEP_META[step - 1];
+  const meta = STEP_META.find(s => s.n === step);
 
   // Build stepper
   const stepperHtml = STEP_META.map((s, i) => {
@@ -4789,12 +4985,12 @@ function renderWizardStep(container, weekId, step) {
   }).join('');
 
   // Body per step
+  // Internal function names reflect the original 5-step layout; the wizard
+  // now has 3 steps (Refresh inventory and Distribute were removed) so we re-map.
   let body = '';
   if (step === 1) body = renderStep1Body(weekId, ritual);
-  else if (step === 2) body = renderStep2Body(weekId, ritual);
-  else if (step === 3) body = renderStep3Body(weekId, ritual);
-  else if (step === 4) body = renderStep4Body(weekId, ritual);
-  else if (step === 5) body = renderStep5Body(weekId, ritual);
+  else if (step === 2) body = renderStep3Body(weekId, ritual);  // Prioritize
+  else if (step === 3) body = renderStep5Body(weekId, ritual);  // Close week
 
   // Closed indicator
   let closedBadge = '';
@@ -4806,8 +5002,44 @@ function renderWizardStep(container, weekId, step) {
 
   // Footer buttons
   const prevDisabled = step <= 1;
-  const isLastStep = step >= 5;
-  const nextLabel = isLastStep ? 'Finish ritual' : 'Next';
+  const isLastStep = step >= 3;
+
+  // Step 1 has three phases:
+  //   A = Sync calendar          → button "I ran the command"
+  //   B = Look back (review)     → button "I completed my review", with validation
+  //   C = Availability           → button "Next →"
+  const step1Phase = step === 1 ? (ritual.decisions.step1_phase || 'A') : null;
+
+  // Step 2 has three phases:
+  //   A = Methodology fields     → button "Continue →", with validation (all fields filled)
+  //   B = Sync command           → button "I ran the command"
+  //   C = Prioritize (drag&drop) → button "Next →"
+  const step2Phase = step === 2 ? (ritual.decisions.step2_phase || 'A') : null;
+
+  let nextLabel;
+  if (step1Phase === 'A') nextLabel = 'I ran the command';
+  else if (step1Phase === 'B') nextLabel = 'I completed my review';
+  else if (step2Phase === 'A') nextLabel = 'Continue';
+  else if (step2Phase === 'B') nextLabel = 'I ran the command';
+  else if (isLastStep) nextLabel = 'Finish ritual';
+  else nextLabel = 'Next';
+
+  // Step-specific Next button validation
+  let nextDisabled = false;
+  let nextTooltip = '';
+  if (step1Phase === 'B') {
+    const v = validateStep1(weekId);
+    if (!v.ok) {
+      nextDisabled = true;
+      nextTooltip = v.tooltip;
+    }
+  } else if (step2Phase === 'A') {
+    const v = validateStep2PhaseA(weekId);
+    if (!v.ok) {
+      nextDisabled = true;
+      nextTooltip = v.tooltip;
+    }
+  }
 
   container.innerHTML = `
     <div class="wz-wrap">
@@ -4824,7 +5056,7 @@ function renderWizardStep(container, weekId, step) {
       <div class="wz-stepper">${stepperHtml}</div>
 
       <div class="wz-step-hd">
-        <div class="wz-step-num">Step ${step} of 5</div>
+        <div class="wz-step-num">Step ${step} of 3</div>
         <div class="wz-step-title">${meta.name}</div>
         <div class="wz-step-desc">${meta.desc}</div>
       </div>
@@ -4835,8 +5067,10 @@ function renderWizardStep(container, weekId, step) {
         <button class="btn btn-g btn-sm" onclick="wizardPrevStep()" ${prevDisabled ? 'disabled' : ''}>
           ← Previous
         </button>
-        <button class="btn btn-subtle btn-sm" onclick="wizardSkipStep()">Skip this step</button>
-        <button class="btn btn-p btn-sm" onclick="wizardNextStep()" style="margin-left: auto;">
+        <button class="btn btn-p btn-sm" onclick="wizardNextStep()" style="margin-left: auto;"
+          id="wz-next-btn"
+          ${nextDisabled ? 'disabled' : ''}
+          ${nextTooltip ? `data-tooltip="${nextTooltip}"` : ''}>
           ${nextLabel} →
         </button>
       </div>
@@ -4844,14 +5078,70 @@ function renderWizardStep(container, weekId, step) {
   `;
 
   // Initialize step-specific JS (e.g. drag-and-drop)
-  if (step === 3) initStep3DragDrop();
-  if (step === 4) initStep4DragDrop();
+  // step 2 → Prioritize (Phase C only)
+  if (step === 2 && (ritual.decisions.step2_phase || 'A') === 'C') initStep3DragDrop();
 }
 
 async function wizardPrevStep() {
   const ritual = getRitual(state.wizard.activeWeekId);
+  const phase1 = ritual.decisions.step1_phase || 'A';
+  const phase2 = ritual.decisions.step2_phase || 'A';
+
+  // Step 1 — navigate through phases (C → B → A)
+  if (ritual.step === 1) {
+    if (phase1 === 'C') {
+      ritual.decisions.step1_phase = 'B';
+      markRitualDirty(state.wizard.activeWeekId);
+      await saveWizardRituals();
+      renderWizard();
+      return;
+    }
+    if (phase1 === 'B') {
+      ritual.decisions.step1_phase = 'A';
+      markRitualDirty(state.wizard.activeWeekId);
+      await saveWizardRituals();
+      renderWizard();
+      return;
+    }
+    // Phase A: nothing to go back to
+    return;
+  }
+
+  // Step 2 — navigate through phases (C → B → A)
+  if (ritual.step === 2) {
+    if (phase2 === 'C') {
+      ritual.decisions.step2_phase = 'B';
+      markRitualDirty(state.wizard.activeWeekId);
+      await saveWizardRituals();
+      renderWizard();
+      return;
+    }
+    if (phase2 === 'B') {
+      ritual.decisions.step2_phase = 'A';
+      markRitualDirty(state.wizard.activeWeekId);
+      await saveWizardRituals();
+      renderWizard();
+      return;
+    }
+    // Phase A → go to Step 1 Phase C
+    ritual.step = 1;
+    ritual.decisions.step1_phase = 'C';
+    markRitualDirty(state.wizard.activeWeekId);
+    await saveWizardRituals();
+    renderWizard();
+    return;
+  }
+
   if (ritual.step > 1) {
     ritual.step--;
+    // Going back to Step 2 lands on Phase C (the last phase)
+    if (ritual.step === 2) {
+      ritual.decisions.step2_phase = 'C';
+    }
+    // Going back to Step 1 lands on Phase C (the last phase)
+    if (ritual.step === 1) {
+      ritual.decisions.step1_phase = 'C';
+    }
     markRitualDirty(state.wizard.activeWeekId);
     await saveWizardRituals();
     renderWizard();
@@ -4859,28 +5149,98 @@ async function wizardPrevStep() {
 }
 async function wizardNextStep() {
   const ritual = getRitual(state.wizard.activeWeekId);
-  if (ritual.step < 5) {
+  const phase1 = ritual.decisions.step1_phase || 'A';
+  const phase2 = ritual.decisions.step2_phase || 'A';
+
+  // Step 1 — navigate through phases (A → B → C)
+  if (ritual.step === 1) {
+    if (phase1 === 'A') {
+      // User confirms they've run the sync command in Claude
+      ritual.decisions.step1_phase = 'B';
+      markRitualDirty(state.wizard.activeWeekId);
+      await saveWizardRituals();
+      await syncFromAirtable();
+      renderWizard();
+      return;
+    }
+    if (phase1 === 'B') {
+      // Validate completeness before moving to Availability
+      const v = validateStep1(state.wizard.activeWeekId);
+      if (!v.ok) {
+        toast(v.tooltip);
+        return;
+      }
+      ritual.decisions.step1_phase = 'C';
+      markRitualDirty(state.wizard.activeWeekId);
+      await saveWizardRituals();
+      renderWizard();
+      return;
+    }
+    // Phase C → Step 2 (Phase A, or skip to B if everything is filled)
+    ritual.step = 2;
+    const incomplete = step2BacklogIncomplete(state.wizard.activeWeekId);
+    ritual.decisions.step2_phase = incomplete.length === 0 ? 'B' : 'A';
+    markRitualDirty(state.wizard.activeWeekId);
+    await saveWizardRituals();
+    renderWizard();
+    return;
+  }
+
+  // Step 2 — navigate through phases (A → B → C)
+  if (ritual.step === 2) {
+    if (phase2 === 'A') {
+      // Validate all methodology fields filled
+      const v = validateStep2PhaseA(state.wizard.activeWeekId);
+      if (!v.ok) {
+        toast(v.tooltip);
+        return;
+      }
+      ritual.decisions.step2_phase = 'B';
+      markRitualDirty(state.wizard.activeWeekId);
+      await saveWizardRituals();
+      renderWizard();
+      return;
+    }
+    if (phase2 === 'B') {
+      // User confirms they've run the prioritize command in Claude
+      ritual.decisions.step2_phase = 'C';
+      markRitualDirty(state.wizard.activeWeekId);
+      await saveWizardRituals();
+      await syncFromAirtable();
+      renderWizard();
+      return;
+    }
+    // Phase C → Step 3
+  }
+
+  if (ritual.step < 3) {
     ritual.step++;
     markRitualDirty(state.wizard.activeWeekId);
     await saveWizardRituals();
     renderWizard();
   } else {
-    // Finalize ritual
+    // Finalize ritual — close week, return to week picker, no confirmation
     ritual.closedAt = new Date().toISOString();
     markRitualDirty(state.wizard.activeWeekId);
     await saveWizardRituals();
+    state.wizard.activeWeekId = null;
     renderWizard();
-    toast('Ritual completed · Week closed');
   }
-}
-async function wizardSkipStep() {
-  await wizardNextStep();
 }
 async function goToStep(n) {
   const ritual = getRitual(state.wizard.activeWeekId);
-  // Only allow going to steps already reached (no jumping forward)
+  if (n < 1 || n > 3) return;
+  // Production: can't jump ahead — only revisit steps already reached.
   if (n > Math.max(ritual.step, 1)) return;
   ritual.step = n;
+  // Re-entering Step 1 always resets to Phase A (sync card visible)
+  if (n === 1) ritual.decisions.step1_phase = 'A';
+  // Re-entering Step 2: skip Phase A if all methodology fields are filled
+  if (n === 2) {
+    const incomplete = step2BacklogIncomplete(state.wizard.activeWeekId);
+    ritual.decisions.step2_phase = incomplete.length === 0 ? 'B' : 'A';
+    ritual._step2aOrder = null;
+  }
   markRitualDirty(state.wizard.activeWeekId);
   await saveWizardRituals();
   renderWizard();
@@ -4891,69 +5251,554 @@ function goBackToWeekPicker() {
 }
 
 /* ----------------------------------------------------------
- * Step 1 — Look back
+ * Step 1 — Look back (Phase A: sync command, Phase B: tables)
  * ---------------------------------------------------------- */
-function renderStep1Body(weekId, ritual) {
-  // Find activities that had priority OR were dated to the previous week
-  const lastWeek = lastWeekIdRelativeTo(weekId);
-  const lastWeekMonday = mondayFromWeekId(lastWeek);
-  const lastWeekSunday = new Date(lastWeekMonday);
-  lastWeekSunday.setDate(lastWeekMonday.getDate() + 6);
-  lastWeekSunday.setHours(23, 59, 59, 999);
 
-  const candidates = state.activities.filter(a => {
-    if (a.priority_week === lastWeek) return true;
-    if (a.date) {
-      const d = new Date(a.date);
-      if (d >= lastWeekMonday && d <= lastWeekSunday) return true;
+// Phase A — show the sync command, ask user to run it
+// Helper — formats a weekId as "May 11–17, 2026" (English month names).
+// Used to pre-fill date ranges in command cards.
+function formatWeekRangeEN(weekId) {
+  const monday = mondayFromWeekId(weekId);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const monthsEN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const mD = monday.getDate();
+  const sD = sunday.getDate();
+  const mM = monthsEN[monday.getMonth()];
+  const sM = monthsEN[sunday.getMonth()];
+  const yr = sunday.getFullYear();
+  if (mM === sM) return `${mM} ${mD}–${sD}, ${yr}`;
+  return `${mM} ${mD} – ${sM} ${sD}, ${yr}`;
+}
+
+// Helper — formats a range from last Monday to this Sunday as "May 4–17, 2026"
+function formatTwoWeekRangeEN(weekId) {
+  const thisMonday = mondayFromWeekId(weekId);
+  const lastMonday = new Date(thisMonday);
+  lastMonday.setDate(thisMonday.getDate() - 7);
+  const thisSunday = new Date(thisMonday);
+  thisSunday.setDate(thisMonday.getDate() + 6);
+  const monthsEN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const mD = lastMonday.getDate();
+  const sD = thisSunday.getDate();
+  const mM = monthsEN[lastMonday.getMonth()];
+  const sM = monthsEN[thisSunday.getMonth()];
+  const yr = thisSunday.getFullYear();
+  if (mM === sM) return `${mM} ${mD}–${sD}, ${yr}`;
+  return `${mM} ${mD} – ${sM} ${sD}, ${yr}`;
+}
+
+function renderStep1PhaseA(weekId) {
+  const range = formatTwoWeekRangeEN(weekId);
+  const command = `Sync my calendar from ${range} (last week and this week)`;
+  return `
+    <div class="step0-wrap">
+      <div class="step0-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="17" rx="2"/>
+          <path d="M3 9h18M8 2v4M16 2v4"/>
+          <circle cx="8" cy="14" r="0.5" fill="currentColor"/>
+          <circle cx="12" cy="14" r="0.5" fill="currentColor"/>
+          <circle cx="16" cy="14" r="0.5" fill="currentColor"/>
+          <circle cx="8" cy="18" r="0.5" fill="currentColor"/>
+          <circle cx="12" cy="18" r="0.5" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <div class="step0-intro">
+        Before reviewing, let Claude pull your calendar events for
+        <strong>last week</strong> (to review) and <strong>this week</strong>
+        (so you can see existing time blocks).
+      </div>
+
+      <div class="step0-cmd-card">
+        <div class="step0-cmd-label">Run this in your Claude Project</div>
+        <div class="step0-cmd-row">
+          <code class="step0-cmd-text" id="step1-cmd-text">${command}</code>
+          <button class="step0-copy-btn" onclick="copyStep1Command()" data-tooltip="Copy to clipboard">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="9" height="10" rx="1"/>
+              <path d="M3 11V2h9"/>
+            </svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="step0-cmd-hint">
+          Claude will pull events from your calendar into Airtable. It usually takes a few seconds.
+        </div>
+      </div>
+
+      <div class="step0-next-hint">
+        When Claude finishes, click <strong>I ran the command</strong> below to load the events.
+      </div>
+    </div>
+  `;
+}
+
+async function copyStep1Command() {
+  const text = document.getElementById('step1-cmd-text').textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    toast('Command copied to clipboard');
+    const btn = document.querySelector('.step0-copy-btn');
+    if (btn) {
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8l4 4 6-7"/></svg><span>Copied</span>';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = originalHtml;
+        btn.classList.remove('copied');
+      }, 1600);
     }
-    return false;
-  }).sort((a, b) => {
-    const pa = a.priority != null ? a.priority : 999;
-    const pb = b.priority != null ? b.priority : 999;
-    return pa - pb;
+  } catch (e) {
+    toast('Could not copy. Copy manually.');
+  }
+}
+
+/* ----------------------------------------------------------
+ * Availability — blocks of free time computed from the calendar.
+ *
+ * Each block: { id, day (0..6 starting Monday), startHHMM, endHHMM }
+ * In prototype, blocks are seeded with dummy values on first access.
+ * In production, blocks come from a backend computation (or a tabla
+ * Availability in Airtable) using the user's workday hours from
+ * Settings minus the calendar events for that week.
+ * ---------------------------------------------------------- */
+
+const WORKDAY_DEFAULT = { startHHMM: '09:00', endHHMM: '18:00', weekdays: [0, 1, 2, 3, 4] }; // Mon-Fri
+const MIN_BLOCK_MIN = 30;
+
+function getAvailability(weekId) {
+  if (!state.wizard.availability[weekId]) state.wizard.availability[weekId] = [];
+  return state.wizard.availability[weekId];
+}
+
+function hhmmToMinutes(s) {
+  const [h, m] = s.split(':').map(Number);
+  return h * 60 + m;
+}
+function minutesToHHMM(min) {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+}
+function blockDurationMin(b) {
+  return hhmmToMinutes(b.endHHMM) - hhmmToMinutes(b.startHHMM);
+}
+function formatDuration(min) {
+  if (min < 60) return `${min}m`;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return m === 0 ? `${h}h` : `${h}h ${m}m`;
+}
+
+// Generate time options in 15-min steps (00:00 → 23:45)
+function getTimeOptions() {
+  const opts = [];
+  for (let h = 0; h < 24; h++) {
+    for (let m = 0; m < 60; m += 15) {
+      opts.push(minutesToHHMM(h * 60 + m));
+    }
+  }
+  return opts;
+}
+
+function dayLabelFromWeekIdAndOffset(weekId, dayOffset) {
+  const monday = mondayFromWeekId(weekId);
+  const d = new Date(monday);
+  d.setDate(monday.getDate() + dayOffset);
+  const names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  return `${names[dayOffset]} ${d.getDate()}`;
+}
+
+async function addAvailabilityBlock(weekId, day) {
+  const blocks = getAvailability(weekId);
+  const id = 'av_' + weekId + '_' + day + '_' + Date.now().toString(36);
+  const block = { id, weekId, day, startHHMM: '09:00', endHHMM: '10:00', archived: false };
+  blocks.push(block);
+  markAvailabilityDirty(id);
+  renderWizard();
+  saveAvailability().catch(e => console.error('availability save error', e));
+}
+
+async function removeAvailabilityBlock(weekId, id) {
+  renderWizard(); // visual update happens after archive resolves below
+  await archiveAvailabilityBlock(id);
+  renderWizard();
+}
+
+function onAvailabilityChange(event, weekId, id, field) {
+  event.stopPropagation();
+  const blocks = getAvailability(weekId);
+  const b = blocks.find(x => x.id === id);
+  if (!b) return;
+  const value = event.target.value;
+  if (field === 'startHHMM' && hhmmToMinutes(value) >= hhmmToMinutes(b.endHHMM)) {
+    toast('Start time must be before end time');
+    renderWizard();
+    return;
+  }
+  if (field === 'endHHMM' && hhmmToMinutes(value) <= hhmmToMinutes(b.startHHMM)) {
+    toast('End time must be after start time');
+    renderWizard();
+    return;
+  }
+  b[field] = value;
+  markAvailabilityDirty(id);
+  renderWizard();
+  saveAvailability().catch(e => console.error('availability save error', e));
+}
+
+/* ----------------------------------------------------------
+ * Step 1 — Look back (legacy alias removed)
+ * ---------------------------------------------------------- */
+// Returns activities with `date` inside last week (Mon-Sun).
+// Used by Step 1 Section A — "Last week"
+function activitiesForLastWeek(weekId) {
+  const lastWeek = lastWeekIdRelativeTo(weekId);
+  const lastMon = mondayFromWeekId(lastWeek);
+  const lastSun = new Date(lastMon);
+  lastSun.setDate(lastMon.getDate() + 6);
+  lastSun.setHours(23, 59, 59, 999);
+
+  return state.activities
+    .filter(a => !a.archived && a.date && new Date(a.date) >= lastMon && new Date(a.date) <= lastSun)
+    .sort((a, b) => {
+      const da = new Date(a.date).getTime();
+      const db = new Date(b.date).getTime();
+      if (da !== db) return da - db;
+      return (a.name || '').localeCompare(b.name || '');
+    });
+}
+
+// Returns activities that are missing required info AND are not already
+// shown in Section A (Last week). Used by Step 1 Section B — "Needs info"
+function activitiesNeedingInfo(weekId) {
+  const lastWeekIds = new Set(activitiesForLastWeek(weekId).map(a => a.id));
+  return state.activities
+    .filter(a => !a.archived)
+    .filter(a => !lastWeekIds.has(a.id))     // skip ones already in Last week
+    .filter(isStep1RowIncomplete)
+    .sort((a, b) => {
+      // Dated first (earliest), then undated by name
+      const da = a.date ? new Date(a.date).getTime() : Infinity;
+      const db = b.date ? new Date(b.date).getTime() : Infinity;
+      if (da !== db) return da - db;
+      return (a.name || '').localeCompare(b.name || '');
+    });
+}
+
+// Backwards-compat alias used in a few places
+function activitiesForStep1(weekId) {
+  return activitiesForLastWeek(weekId);
+}
+
+// Whether a row in Step 1 still needs info
+function isStep1RowIncomplete(a) {
+  if (!a.hat) return true;
+  if (!a.constraint) return true;
+  if (a.hat === 'Architect') {
+    if (!a.team) return true;
+    if (!a.stage) return true;
+  }
+  return false;
+}
+
+// Validation for Step 1 — all activities in BOTH sections must have required fields
+function validateStep1(weekId) {
+  const lastWeek = activitiesForLastWeek(weekId);
+  const needsInfo = activitiesNeedingInfo(weekId);
+  const all = [...lastWeek, ...needsInfo];
+  if (all.length === 0) return { ok: true, tooltip: '' };
+
+  let missingHat = 0, missingConstraint = 0, missingTeam = 0, missingStage = 0;
+  all.forEach(a => {
+    if (!a.hat) missingHat++;
+    if (!a.constraint) missingConstraint++;
+    if (a.hat === 'Architect') {
+      if (!a.team) missingTeam++;
+      if (!a.stage) missingStage++;
+    }
   });
 
-  if (candidates.length === 0) {
-    return `
-      <div class="wz-empty">
-        <div class="wz-empty-icon">${iconCheck()}</div>
-        <div class="wz-empty-title">Nothing to review</div>
-        <div class="wz-empty-desc">You had no prioritized or scheduled activities last week. Go to the next step.</div>
-      </div>
-    `;
+  const issues = [];
+  if (missingHat) issues.push(`${missingHat} without Hat`);
+  if (missingConstraint) issues.push(`${missingConstraint} without Constraint`);
+  if (missingTeam) issues.push(`${missingTeam} Architect without Team`);
+  if (missingStage) issues.push(`${missingStage} Architect without Stage`);
+
+  if (issues.length === 0) return { ok: true, tooltip: '' };
+  return {
+    ok: false,
+    tooltip: 'Complete required fields before continuing: ' + issues.join(', ')
+  };
+}
+
+function renderStep1Body(weekId, ritual) {
+  const phase = ritual.decisions.step1_phase || 'A';
+
+  // Phase A — Sync calendar
+  if (phase === 'A') {
+    return renderStep1PhaseA(weekId);
   }
 
-  const completedCount = candidates.filter(a => a.completed).length;
-  const pendingCount = candidates.length - completedCount;
+  // Phase B — Look back (review last week + needs info)
+  if (phase === 'B') {
+    const lastWeekActs = activitiesForLastWeek(weekId);
+    const needsInfoActs = activitiesNeedingInfo(weekId);
 
-  const rowsHtml = candidates.map(a => {
-    return `
-      <div class="wz-row-check ${a.completed ? 'completed' : ''}">
-        <div class="asana-check ${a.completed ? 'checked' : ''}" onclick="toggleCompletedFromStep1('${a.id}')">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 6-7"/></svg>
+    const sectionA = lastWeekActs.length === 0 ? '' : `
+      <div class="step1-section">
+        <div class="step1-section-hd">
+          <div class="step1-section-title">Last week</div>
+          <div class="step1-section-sub">Activities scheduled last week. Check off the ones you completed.</div>
         </div>
-        <div class="wz-row-prio">${a.priority != null ? '#' + a.priority : '—'}</div>
-        <div class="wz-row-name">${escapeHtml(a.name)}</div>
-        <div class="wz-row-status">
-          ${a.completed
-            ? '<span class="wz-status-tag completed">Completed</span>'
-            : '<span class="wz-status-tag pending">To backlog</span>'}
+        <div class="act-card step1-card">
+          ${lastWeekActs.map(a => renderStep1Row(a, { showWhen: true })).join('')}
         </div>
       </div>
     `;
-  }).join('');
+
+    const sectionB = needsInfoActs.length === 0 ? '' : `
+      <div class="step1-section">
+        <div class="step1-section-hd">
+          <div class="step1-section-title">Needs info</div>
+          <div class="step1-section-sub">Activities in your backlog with missing fields. Complete them before continuing.</div>
+        </div>
+        <div class="act-card step1-card">
+          ${needsInfoActs.map(a => renderStep1Row(a, { showWhen: false })).join('')}
+        </div>
+      </div>
+    `;
+
+    if (!sectionA && !sectionB) {
+      return `
+        <div class="wz-empty">
+          <div class="wz-empty-icon">${iconCheck()}</div>
+          <div class="wz-empty-title">All clear</div>
+          <div class="wz-empty-desc">Nothing to review or complete. Continue to the next phase.</div>
+        </div>
+      `;
+    }
+
+    return sectionA + sectionB;
+  }
+
+  // Phase C — Availability
+  return renderAvailabilitySection(weekId);
+}
+
+function renderAvailabilitySection(weekId) {
+  const blocks = getAvailability(weekId);
+
+  // Group by day (0..6)
+  const byDay = {};
+  blocks.forEach(b => {
+    if (!byDay[b.day]) byDay[b.day] = [];
+    byDay[b.day].push(b);
+  });
+  Object.values(byDay).forEach(arr => arr.sort((a, b) => hhmmToMinutes(a.startHHMM) - hhmmToMinutes(b.startHHMM)));
+
+  // Total free time across all days
+  const grandTotalMin = blocks.reduce((sum, b) => sum + blockDurationMin(b), 0);
+
+  // Render days Mon → Sun (always 7 days)
+  const dayRows = [];
+  for (let day = 0; day < 7; day++) {
+    const dayBlocks = byDay[day] || [];
+    const totalMin = dayBlocks.reduce((sum, b) => sum + blockDurationMin(b), 0);
+    const totalLabel = totalMin > 0 ? formatDuration(totalMin) : '';
+
+    const blocksHtml = dayBlocks.length === 0
+      ? `<div class="av2-empty-day">No availability set</div>`
+      : dayBlocks.map(b => renderAvailabilityBlockListItem(weekId, b)).join('');
+
+    dayRows.push(`
+      <div class="av2-day">
+        <div class="av2-day-hd">
+          <div class="av2-day-name">${dayLabelFromWeekIdAndOffset(weekId, day)}</div>
+          <div class="av2-day-total">${totalLabel}</div>
+        </div>
+        <div class="av2-blocks">
+          ${blocksHtml}
+        </div>
+        <button class="av2-add-btn" onclick="addAvailabilityBlock('${weekId}', ${day})">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+          <span>Add block</span>
+        </button>
+      </div>
+    `);
+  }
 
   return `
-    <div class="wz-intro">
-      You had ${candidates.length} ${candidates.length === 1 ? 'activity' : 'activities'} prioritized or scheduled the week of ${formatWeekShort(lastWeek)}. Check off the ones you completed; the rest go back to the backlog to be reprioritized in step 3.
+    <div class="av2-intro">
+      <div class="av2-intro-title">Your availability for this week</div>
+      <div class="av2-intro-sub">These are your free time blocks. Adjust hours or remove blocks to reflect your real availability. You'll use this to plan your activities in the next step.</div>
+      <div class="av2-total">${formatDuration(grandTotalMin)} <span class="av2-total-label">of free time this week</span></div>
     </div>
-    <div class="wz-summary-row">
-      <div class="wz-summary-pill done">${completedCount} completed</div>
-      <div class="wz-summary-pill pending">${pendingCount} to backlog</div>
-    </div>
-    <div class="wz-list">${rowsHtml}</div>
+    <div class="av2-list">${dayRows.join('')}</div>
   `;
+}
+
+function renderAvailabilityBlockListItem(weekId, b) {
+  const opts = getTimeOptions();
+  const startSel = opts.map(t =>
+    `<option value="${t}" ${t === b.startHHMM ? 'selected' : ''}>${t}</option>`
+  ).join('');
+  const endSel = opts.map(t =>
+    `<option value="${t}" ${t === b.endHHMM ? 'selected' : ''}>${t}</option>`
+  ).join('');
+  const dur = blockDurationMin(b);
+  const tooShort = dur < MIN_BLOCK_MIN;
+  return `
+    <div class="av2-block ${tooShort ? 'too-short' : ''}">
+      <select class="av2-time" onchange="onAvailabilityChange(event, '${weekId}', '${b.id}', 'startHHMM')">
+        ${startSel}
+      </select>
+      <span class="av2-arrow">→</span>
+      <select class="av2-time" onchange="onAvailabilityChange(event, '${weekId}', '${b.id}', 'endHHMM')">
+        ${endSel}
+      </select>
+      <span class="av2-dur">${formatDuration(dur)}</span>
+      <button class="av2-remove" onclick="removeAvailabilityBlock('${weekId}', '${b.id}')" data-tooltip="Remove block">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 3l10 10M13 3L3 13"/></svg>
+      </button>
+    </div>
+  `;
+}
+
+
+function renderStep1Row(a, opts = {}) {
+  const showWhen = opts.showWhen !== false;
+  const isArchitect = a.hat === 'Architect';
+  const needsHat = !a.hat;
+  const needsConstraint = !a.constraint;
+  const needsTeam = isArchitect && !a.team;
+  const needsStage = isArchitect && !a.stage;
+
+  // Subtle warning icon (small, inline)
+  const warnSvg = `<svg class="cell-warn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-tooltip="Required"><path d="M8 1.5L1 14h14L8 1.5z"/><path d="M8 6v3.5M8 11.5v.5"/></svg>`;
+
+  // Check (replaces priority cell)
+  const checkCell = `
+    <div class="cell-prio" onclick="event.stopPropagation()">
+      <div class="asana-check ${a.completed ? 'checked' : ''}" onclick="toggleCompletedFromStep1('${a.id}')" data-tooltip="${a.completed ? 'Mark as not completed' : 'Mark as completed'}">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 6-7"/></svg>
+      </div>
+    </div>`;
+
+  // Constraint — same component as main table
+  const cOpts = '<option value="">—</option>' +
+    state.constraints.filter(c => !c.archived).map(c =>
+      `<option value="${c.code}" ${a.constraint === c.code ? 'selected' : ''}>${c.code} · ${c.name}</option>`
+    ).join('');
+  const cDisplay = a.constraint
+    ? `<span class="cc-text">${a.constraint}</span>`
+    : `<span class="cc-text empty">—</span>`;
+  const constraintCell = `<div class="cell-constraint" onclick="event.stopPropagation()">
+    ${cDisplay}${needsConstraint ? warnSvg : ''}
+    <select onchange="onStep1Change(event, '${a.id}', 'constraint')" onclick="event.stopPropagation()">${cOpts}</select>
+  </div>`;
+
+  // Hat — same component as main table
+  const hOpts = '<option value="">—</option>' +
+    state.hats.map(h =>
+      `<option value="${h.id}" ${a.hat === h.id ? 'selected' : ''}>${h.id}</option>`
+    ).join('');
+  const hatCell = `<div class="cell-hat-wrap">
+    <select class="cell-select ${a.hat ? '' : 'empty'}"
+      onchange="onStep1Change(event, '${a.id}', 'hat')"
+      onclick="event.stopPropagation()">${hOpts}</select>
+    ${needsHat ? warnSvg : ''}
+  </div>`;
+
+  // Team — only for Architect
+  let teamCell;
+  if (isArchitect) {
+    const tOpts = '<option value="">—</option>' +
+      state.teams.filter(t => !t.archived).map(t =>
+        `<option value="${t.id}" ${a.team === t.id ? 'selected' : ''}>${t.name}</option>`
+      ).join('');
+    let teamInner;
+    if (a.team) {
+      const t = teamById(a.team);
+      if (t) {
+        teamInner = `<span class="team-av" style="background:${t.color}">${teamInitial(t.name)}</span><span class="team-name">${escapeHtml(t.name)}</span>`;
+      } else {
+        teamInner = `<span class="team-av empty"></span>`;
+      }
+    } else {
+      teamInner = `<span class="team-av empty"></span>`;
+    }
+    teamCell = `<div class="cell-team" onclick="event.stopPropagation()">
+      ${teamInner}${needsTeam ? warnSvg : ''}
+      <select onchange="onStep1Change(event, '${a.id}', 'team')" onclick="event.stopPropagation()">${tOpts}</select>
+    </div>`;
+  } else {
+    teamCell = `<div class="cell-team disabled" onclick="event.stopPropagation()"><span class="team-av empty"></span></div>`;
+  }
+
+  // Stage — only for Architect
+  let stageCell;
+  if (isArchitect) {
+    const sOpts = '<option value="">—</option>' +
+      state.stages.map(s =>
+        `<option value="${s.name}" ${a.stage === s.name ? 'selected' : ''}>${s.name}</option>`
+      ).join('');
+    stageCell = `<div class="cell-hat-wrap">
+      <select class="cell-select ${a.stage ? '' : 'empty'}"
+        onchange="onStep1Change(event, '${a.id}', 'stage')"
+        onclick="event.stopPropagation()">${sOpts}</select>
+      ${needsStage ? warnSvg : ''}
+    </div>`;
+  } else {
+    stageCell = `<span class="cell-disabled-dash">—</span>`;
+  }
+
+  // When — readonly, day + time (only if activity has a date)
+  let whenCell = '';
+  if (showWhen) {
+    if (a.date) {
+      const d = new Date(a.date);
+      const dayShort = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+      const hh = d.getHours().toString().padStart(2, '0');
+      const mm = d.getMinutes().toString().padStart(2, '0');
+      whenCell = `<span class="step1-when">${dayShort} ${hh}:${mm}</span>`;
+    } else {
+      whenCell = `<span class="step1-when empty">—</span>`;
+    }
+  }
+
+  // Same .act-row class as main table — visual consistency
+  const rowClass = a.completed ? 'act-row step1-row completed' : 'act-row step1-row';
+  const rowClassWithVariant = showWhen ? rowClass : (rowClass + ' no-when');
+  return `
+    <div class="${rowClassWithVariant}">
+      ${checkCell}
+      <div class="act-name">${escapeHtml(a.name)}</div>
+      ${constraintCell}
+      ${hatCell}
+      ${teamCell}
+      ${stageCell}
+      ${showWhen ? whenCell : ''}
+    </div>`;
+}
+
+// Handler for inline edits in Step 1 — same as the main table but re-renders Step 1
+async function onStep1Change(event, activityId, field) {
+  event.stopPropagation();
+  const a = state.activities.find(x => x.id === activityId);
+  if (!a) return;
+  const value = event.target.value || null;
+  const oldValue = a[field];
+  if (oldValue === value) return;
+  a[field] = value;
+  a.log = a.log || [];
+  const display = (v) => v == null || v === '' ? '—' : v;
+  a.log.push({ ts: new Date().toISOString(), text: `${field}: ${display(oldValue)} → ${display(value)} (Step 1 ritual)` });
+  markActivityDirty(a.id);
+  await saveActivities();
+  renderWizard();
 }
 
 async function toggleCompletedFromStep1(activityId) {
@@ -4962,6 +5807,7 @@ async function toggleCompletedFromStep1(activityId) {
   const wasCompleted = a.completed;
   const affectedWeek = a.priority_week;
   a.completed = !a.completed;
+  a.log = a.log || [];
   if (a.completed) {
     a.log.push({ ts: new Date().toISOString(), text: 'Marked as completed (weekly ritual)' });
   } else {
@@ -4995,145 +5841,592 @@ function mondayFromWeekId(weekId) {
 /* ----------------------------------------------------------
  * Step 2 — Refresh inventory
  * ---------------------------------------------------------- */
-function renderStep2Body(weekId, ritual) {
-  const backlog = state.activities.filter(a => !a.archived && a.priority == null && !a.date && a.stage !== 'Live');
-  if (backlog.length === 0) {
-    return `
-      <div class="wz-empty">
-        <div class="wz-empty-icon">${iconCheck()}</div>
-        <div class="wz-empty-title">Empty backlog</div>
-        <div class="wz-empty-desc">You have no activities in backlog. Go to the next step to prioritize what you do have.</div>
-      </div>
-    `;
-  }
-  // Group by constraint
-  const groups = {};
-  backlog.forEach(a => {
-    const k = a.constraint || '__none__';
-    (groups[k] = groups[k] || []).push(a);
-  });
-  const groupOrder = Object.keys(groups).sort();
-  const groupsHtml = groupOrder.map(k => {
-    const c = k === '__none__' ? null : state.constraints.find(x => x.code === k);
-    const label = c ? `${c.code} · ${c.name}` : 'No constraint';
-    const items = groups[k].sort((a, b) => a.name.localeCompare(b.name));
-    return `
-      <div class="wz-group">
-        <div class="wz-group-hd">${escapeHtml(label)} <span class="wz-group-cnt">${items.length}</span></div>
-        ${items.map(a => {
-          const decision = ritual.decisions.step2_inventory[a.id] || 'keep';
-          return `
-            <div class="wz-inv-row ${decision === 'archive' ? 'archived' : ''}">
-              <div class="wz-inv-name">${escapeHtml(a.name)}</div>
-              <div class="wz-inv-actions">
-                <button class="wz-inv-btn ${decision === 'keep' ? 'active' : ''}" onclick="setStep2Decision('${a.id}', 'keep')">
-                  ${iconCheck()} Keep
-                </button>
-                <button class="wz-inv-btn danger ${decision === 'archive' ? 'active' : ''}" onclick="setStep2Decision('${a.id}', 'archive')">
-                  ✗ Archive
-                </button>
-              </div>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    `;
-  }).join('');
-  return `
-    <div class="wz-intro">
-      You have ${backlog.length} activities in backlog. Decide what's still relevant before prioritizing.
-    </div>
-    ${groupsHtml}
-  `;
+/* ----------------------------------------------------------
+ * Step 2 — Prioritize (renderStep3Body kept for internal mapping)
+ * 3 phases:
+ *   A = Methodology fields table
+ *   B = Sync command card
+ *   C = Drag & drop prioritization
+ * ---------------------------------------------------------- */
+
+// Duration options for Step 2 Phase A dropdown
+const STEP2_DURATION_OPTIONS = [
+  { value: 15,  label: '15 min' },
+  { value: 30,  label: '30 min' },
+  { value: 45,  label: '45 min' },
+  { value: 60,  label: '1h' },
+  { value: 90,  label: '1h 30min' },
+  { value: 120, label: '2h' },
+  { value: 150, label: '2h 30min' }
+];
+
+// Returns activities pending in the backlog (not archived, not Live,
+// not yet scheduled for this week, not from a past week). Used by Step 2.
+function step2BacklogPending(weekId) {
+  const monday = mondayFromWeekId(weekId);
+  return state.activities
+    .filter(a => !a.archived && a.stage !== 'Live')
+    .filter(a => !(a.priority != null && a.priority_week === weekId))
+    // Exclude activities scheduled in past weeks (Last Week / Sync calendar items)
+    .filter(a => !a.date || new Date(a.date) >= monday);
 }
-async function setStep2Decision(activityId, decision) {
-  const ritual = getRitual(state.wizard.activeWeekId);
-  ritual.decisions.step2_inventory[activityId] = decision;
+
+// Returns only the activities from the backlog that have at least one
+// methodology field missing. Used to render the Step 2 Phase A table.
+function step2BacklogIncomplete(weekId) {
+  return step2BacklogPending(weekId).filter(a => step2MissingCount(a) > 0);
+}
+
+// Validation for Step 2 Phase A — every backlog pending activity must
+// have all 4 methodology fields filled.
+function validateStep2PhaseA(weekId) {
+  const pending = step2BacklogPending(weekId);
+  if (pending.length === 0) return { ok: true, tooltip: '' };
+
+  let missingDuration = 0, missingHorizon = 0, missingBlocks = 0, missingCost = 0;
+  pending.forEach(a => {
+    if (a.duration_minutes == null) missingDuration++;
+    if (a.obj_horizon == null) missingHorizon++;
+    if (a.blocks_team == null) missingBlocks++;
+    if (a.cost_of_not_doing == null) missingCost++;
+  });
+
+  const issues = [];
+  if (missingDuration) issues.push(`${missingDuration} missing duration`);
+  if (missingHorizon) issues.push(`${missingHorizon} missing goal`);
+  if (missingBlocks) issues.push(`${missingBlocks} missing team blocking`);
+  if (missingCost) issues.push(`${missingCost} missing cost of not doing`);
+
+  if (issues.length === 0) return { ok: true, tooltip: '' };
+  return {
+    ok: false,
+    tooltip: 'Complete all fields before continuing: ' + issues.join(', ')
+  };
+}
+
+// Field update handler for Step 2 Phase A
+async function onStep2PhaseAChange(event, activityId, field) {
+  event.stopPropagation();
   const a = state.activities.find(x => x.id === activityId);
-  if (a) {
-    if (decision === 'archive') {
-      a.archived = true;
-      a.log.push({ ts: new Date().toISOString(), text: 'Archived (weekly ritual)' });
-    } else {
-      a.archived = false;
-    }
-    markActivityDirty(a.id);
-    await saveActivities();
+  if (!a) return;
+  const raw = event.target.value;
+
+  if (field === 'duration_minutes') {
+    a.duration_minutes = raw ? parseInt(raw, 10) : null;
+    a.estimated_hours = a.duration_minutes ? a.duration_minutes / 60 : null;
+  } else if (field === 'blocks_team') {
+    // Stored as 'yes' | 'no' | null (mapper converts to/from Airtable's Yes/No).
+    a.blocks_team = raw === '' ? null : (raw === 'true' ? 'yes' : 'no');
+  } else {
+    // obj_horizon, cost_of_not_doing — internal codes (mapper handles labels).
+    a[field] = raw || null;
   }
-  markRitualDirty(state.wizard.activeWeekId);
-  await saveWizardRituals();
+  markActivityDirty(a.id);
+  saveActivities().catch(e => console.error('save error', e));
+
+  // Auto-skip to Phase B if everything is now filled in
+  const weekId = state.wizard.activeWeekId;
+  if (weekId && step2BacklogIncomplete(weekId).length === 0) {
+    const ritual = getRitual(weekId);
+    ritual.decisions.step2_phase = 'B';
+    markRitualDirty(weekId);
+    await saveWizardRituals();
+  }
   renderWizard();
 }
 
-/* ----------------------------------------------------------
- * Step 3 — Prioritize (drag and drop)
- * ---------------------------------------------------------- */
 function renderStep3Body(weekId, ritual) {
-  // Backlog: activities not archived, not Live, no priority for THIS week (or no priority at all)
+  const phase = ritual.decisions.step2_phase || 'A';
+  if (phase === 'A') return renderStep2PhaseA(weekId);
+  if (phase === 'B') return renderStep2PhaseB(weekId);
+  return renderStep2PhaseC(weekId);
+}
+
+// Phase A — Methodology fields table (same visual pattern as Step 1 rows)
+// Only shows activities with at least one methodology field missing.
+function renderStep2PhaseA(weekId) {
+  const incomplete = step2BacklogIncomplete(weekId);
+
+  if (incomplete.length === 0) {
+    // No incomplete activities — nothing to do here.
+    // The wizard router will auto-skip to Phase B when this is true.
+    return `
+      <div class="wz-empty">
+        <div class="wz-empty-icon">${iconCheck()}</div>
+        <div class="wz-empty-title">Everything's filled in</div>
+        <div class="wz-empty-desc">All your activities have methodology fields complete. Click Continue to proceed.</div>
+      </div>
+    `;
+  }
+
+  // Initial order: incomplete first (by missing field count desc), then alphabetical.
+  // Sort is computed only on first render — stored on ritual so rows don't
+  // jump around while the user fills fields.
+  const ritual = getRitual(weekId);
+  if (!ritual._step2aOrder || !Array.isArray(ritual._step2aOrder)) {
+    const sorted = [...incomplete].sort((a, b) => {
+      const missA = step2MissingCount(a);
+      const missB = step2MissingCount(b);
+      if (missA !== missB) return missB - missA;
+      return a.name.localeCompare(b.name);
+    });
+    ritual._step2aOrder = sorted.map(a => a.id);
+  }
+
+  // Build a stable array: ids in saved order, then any new ids at the end.
+  // Activities that were in the order but are now complete stay in their
+  // position (they just no longer render warnings).
+  const idIndex = new Map(ritual._step2aOrder.map((id, i) => [id, i]));
+  // Include both still-incomplete and already-completed-during-session
+  // so the user sees the row stay where it was (with values filled in).
+  const allInOrder = state.activities.filter(a => idIndex.has(a.id));
+  const ordered = allInOrder.sort((a, b) => idIndex.get(a.id) - idIndex.get(b.id));
+
+  const rows = ordered.map(a => renderStep2PhaseARow(a)).join('');
+
+  // Header row with the same grid as data rows — so columns line up exactly
+  const headerRow = `
+    <div class="act-row step2a-row step2a-head">
+      <div class="step2a-th name">Activity</div>
+      <div class="step2a-th">Duration</div>
+      <div class="step2a-th">Needed for</div>
+      <div class="step2a-th">Blocks team</div>
+      <div class="step2a-th">Cost of not doing</div>
+    </div>
+  `;
+
+  return `
+    <div class="step1-section">
+      <div class="step1-section-hd">
+        <div class="step1-section-title">Methodology fields</div>
+        <div class="step1-section-sub">Fill in the fields for each activity. This info is passed to Claude to prioritize better.</div>
+      </div>
+      <div class="act-card step1-card">
+        ${headerRow}
+        ${rows}
+      </div>
+    </div>
+  `;
+}
+
+function step2MissingCount(a) {
+  let m = 0;
+  if (a.duration_minutes == null) m++;
+  if (a.obj_horizon == null) m++;
+  if (a.blocks_team == null) m++;
+  if (a.cost_of_not_doing == null) m++;
+  return m;
+}
+
+function renderStep2PhaseARow(a) {
+  const needsDur = a.duration_minutes == null;
+  const needsHoriz = a.obj_horizon == null;
+  const needsBlocks = a.blocks_team == null;
+  const needsCost = a.cost_of_not_doing == null;
+
+  // Same warning SVG as Step 1
+  const warnSvg = `<svg class="cell-warn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-tooltip="Required"><path d="M8 1.5L1 14h14L8 1.5z"/><path d="M8 6v3.5M8 11.5v.5"/></svg>`;
+
+  // Duration cell — same pattern as Hat/Stage in Step 1
+  const durOpts = '<option value="">—</option>' +
+    STEP2_DURATION_OPTIONS.map(o =>
+      `<option value="${o.value}" ${o.value === a.duration_minutes ? 'selected' : ''}>${o.label}</option>`
+    ).join('');
+  const durCell = `<div class="cell-hat-wrap">
+    <select class="cell-select ${a.duration_minutes != null ? '' : 'empty'}"
+      onchange="onStep2PhaseAChange(event, '${a.id}', 'duration_minutes')"
+      onclick="event.stopPropagation()">${durOpts}</select>
+    ${needsDur ? warnSvg : ''}
+  </div>`;
+
+  // Horizon cell
+  const horizOpts = `
+    <option value="">—</option>
+    <option value="month" ${a.obj_horizon === 'month' ? 'selected' : ''}>Monthly goal</option>
+    <option value="quarter" ${a.obj_horizon === 'quarter' ? 'selected' : ''}>Quarterly goal</option>
+    <option value="none" ${a.obj_horizon === 'none' ? 'selected' : ''}>No</option>
+  `;
+  const horizCell = `<div class="cell-hat-wrap">
+    <select class="cell-select ${a.obj_horizon ? '' : 'empty'}"
+      onchange="onStep2PhaseAChange(event, '${a.id}', 'obj_horizon')"
+      onclick="event.stopPropagation()">${horizOpts}</select>
+    ${needsHoriz ? warnSvg : ''}
+  </div>`;
+
+  // Blocks team cell (Yes/No). Stored as 'yes' | 'no' | null in state.
+  const blocksValue = a.blocks_team == null ? '' : (a.blocks_team === 'yes' ? 'true' : 'false');
+  const blocksOpts = `
+    <option value="">—</option>
+    <option value="true" ${a.blocks_team === 'yes' ? 'selected' : ''}>Yes</option>
+    <option value="false" ${a.blocks_team === 'no' ? 'selected' : ''}>No</option>
+  `;
+  const blocksCell = `<div class="cell-hat-wrap">
+    <select class="cell-select ${blocksValue ? '' : 'empty'}"
+      onchange="onStep2PhaseAChange(event, '${a.id}', 'blocks_team')"
+      onclick="event.stopPropagation()">${blocksOpts}</select>
+    ${needsBlocks ? warnSvg : ''}
+  </div>`;
+
+  // Cost cell
+  const costOpts = `
+    <option value="">—</option>
+    <option value="none" ${a.cost_of_not_doing === 'none' ? 'selected' : ''}>Nothing serious</option>
+    <option value="delay" ${a.cost_of_not_doing === 'delay' ? 'selected' : ''}>Delays it</option>
+    <option value="problem" ${a.cost_of_not_doing === 'problem' ? 'selected' : ''}>Creates a problem</option>
+  `;
+  const costCell = `<div class="cell-hat-wrap">
+    <select class="cell-select ${a.cost_of_not_doing ? '' : 'empty'}"
+      onchange="onStep2PhaseAChange(event, '${a.id}', 'cost_of_not_doing')"
+      onclick="event.stopPropagation()">${costOpts}</select>
+    ${needsCost ? warnSvg : ''}
+  </div>`;
+
+  return `
+    <div class="act-row step2a-row">
+      <div class="act-name">${escapeHtml(a.name)}</div>
+      ${durCell}
+      ${horizCell}
+      ${blocksCell}
+      ${costCell}
+    </div>`;
+}
+
+// Phase B — Sync command card
+function renderStep2PhaseB(weekId) {
+  const range = formatWeekRangeEN(weekId);
+  const command = `Prioritize my activities for the week of ${range}, including start and end dates`;
+  return `
+    <div class="step0-wrap">
+      <div class="step0-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 7v5l3 2"/>
+        </svg>
+      </div>
+
+      <div class="step0-intro">
+        Now let Claude prioritize your activities for the week
+        using the methodology fields you just completed.
+      </div>
+
+      <div class="step0-cmd-card">
+        <div class="step0-cmd-label">Run this in your Claude Project</div>
+        <div class="step0-cmd-row">
+          <code class="step0-cmd-text" id="step2-cmd-text">${command}</code>
+          <button class="step0-copy-btn" onclick="copyStep2Command()" data-tooltip="Copy to clipboard">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="9" height="10" rx="1"/>
+              <path d="M3 11V2h9"/>
+            </svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="step0-cmd-hint">
+          Claude will analyze the methodology fields and propose a priority order. It usually takes a few seconds.
+        </div>
+      </div>
+
+      <div class="step0-next-hint">
+        When Claude finishes, click <strong>I ran the command</strong> below to see the proposed priorities.
+      </div>
+    </div>
+  `;
+}
+
+async function copyStep2Command() {
+  const text = document.getElementById('step2-cmd-text').textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    toast('Command copied to clipboard');
+    const btn = document.querySelector('.step0-copy-btn');
+    if (btn) {
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8l4 4 6-7"/></svg><span>Copied</span>';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = originalHtml;
+        btn.classList.remove('copied');
+      }, 1600);
+    }
+  } catch (e) {
+    toast('Could not copy. Copy manually.');
+  }
+}
+
+// Phase C — Prioritize (drag and drop)
+function renderStep2PhaseC(weekId) {
+  // Get availability blocks for this week (from Step 1 Phase C)
+  const availBlocks = getAvailability(weekId);
+
+  // Activities prioritized for this week
   const prioritized = state.activities
     .filter(a => a.priority != null && a.priority_week === weekId)
     .sort((a, b) => a.priority - b.priority);
 
+  // Pre-scheduled activities (have date, are in this week range, not in availability blocks)
+  // These come from the calendar sync — meetings, fixed events
+  const monday = mondayFromWeekId(weekId);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  sunday.setHours(23, 59, 59, 999);
+
+  const scheduled = state.activities
+    .filter(a => a.date && new Date(a.date) >= monday && new Date(a.date) <= sunday)
+    .filter(a => !a.archived && a.stage !== 'Live')
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  // Backlog: not archived, not Live, no priority for this week, not pre-scheduled
+  const scheduledIds = new Set(scheduled.map(a => a.id));
   const backlog = state.activities
-    .filter(a => !a.archived && a.stage !== 'Live' && !(a.priority != null && a.priority_week === weekId))
+    .filter(a => !a.archived && a.stage !== 'Live')
+    .filter(a => !(a.priority != null && a.priority_week === weekId))
+    .filter(a => !scheduledIds.has(a.id))
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  const renderItem = (a, inWeek) => {
-    const t = a.team ? teamById(a.team) : null;
-    const teamLabel = t ? `<span class="dl-team" style="background:${t.color}"></span>` : '';
-    const isDelegatable = a.hat === 'Architect' && a.delegated;
-    const subLabel = isDelegatable
-      ? '<span class="dl-sub delegated">Delegated · no time required</span>'
-      : '<span class="dl-sub">You execute</span>';
-    return `
-      <div class="dl-item" draggable="true" data-id="${a.id}" data-in-week="${inWeek ? 1 : 0}">
-        <div class="dl-handle">⋮⋮</div>
-        ${inWeek ? `<div class="dl-prio">#${a.priority}</div>` : ''}
-        <div class="dl-meta">
-          <div class="dl-name">${escapeHtml(a.name)}</div>
-          <div class="dl-tags">
-            ${a.constraint ? `<span class="dl-tag">${a.constraint}</span>` : ''}
-            ${a.hat ? `<span class="dl-tag">${a.hat}</span>` : ''}
-            ${teamLabel}
-            ${subLabel}
-          </div>
+  // Global numbering
+  const weekCount = prioritized.length;
+
+  const formatDuration = (min) => {
+    if (min == null) return '—';
+    if (min < 60) return `${min}m`;
+    const h = Math.floor(min/60), m = min % 60;
+    return m === 0 ? `${h}h` : `${h}h ${m}m`;
+  };
+
+  const hhmmToMin = (s) => {
+    const [h, m] = s.split(':').map(Number);
+    return h * 60 + m;
+  };
+  const minToHHMM = (min) => {
+    const h = Math.floor(min/60), m = min % 60;
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  };
+
+  // Render an activity card — single-line compact layout for everything
+  // (slots in This Week and backlog items). No priority badge — order is
+  // implicit by the position in the list.
+  const renderActivityCard = (a, globalIdx, opts = {}) => {
+    const dur = formatDuration(a.duration_minutes);
+    const startHHMM = opts.startHHMM || null;
+    const inSlot = opts.inSlot === true;
+
+    if (inSlot) {
+      // Slot: handle + name + time range (no priority, no duration)
+      let timeStr = '';
+      if (startHHMM != null && a.duration_minutes != null) {
+        const endMin = hhmmToMin(startHHMM) + a.duration_minutes;
+        timeStr = `${startHHMM} → ${minToHHMM(endMin)}`;
+      }
+      const draggable = opts.scheduled ? '' : 'draggable="true"';
+      const classes = `dl-item dl-row ${opts.scheduled ? 'scheduled' : ''}`;
+      const handle = opts.scheduled ? '' : '<div class="dl-handle">⋮⋮</div>';
+      return `
+        <div class="${classes}" ${draggable} data-id="${a.id}" data-in-week="1">
+          ${handle}
+          <div class="dl-row-name">${escapeHtml(a.name)}</div>
+          ${timeStr ? `<div class="dl-row-time">${timeStr}</div>` : ''}
         </div>
+      `;
+    }
+
+    // Backlog: same single-line layout but with duration instead of time range
+    return `
+      <div class="dl-item dl-row" draggable="true" data-id="${a.id}" data-in-week="0">
+        <div class="dl-handle">⋮⋮</div>
+        <div class="dl-row-name">${escapeHtml(a.name)}</div>
+        <div class="dl-row-dur">${dur}</div>
       </div>
     `;
   };
 
+  // Build per-day groups: each day has availability blocks (free) and scheduled (fixed)
+  // Sort all "slots" (free blocks + scheduled events) chronologically per day
+  const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const daysMap = new Map(); // day (0..6) → { freeBlocks: [], scheduledItems: [] }
+  for (let d = 0; d < 7; d++) {
+    daysMap.set(d, { freeBlocks: [], scheduledItems: [] });
+  }
+  availBlocks.forEach(b => {
+    daysMap.get(b.day).freeBlocks.push(b);
+  });
+  scheduled.forEach(a => {
+    const d = new Date(a.date);
+    const day = (d.getDay() + 6) % 7; // Mon=0...Sun=6
+    daysMap.get(day).scheduledItems.push(a);
+  });
+
+  // Assign priorities for "This Week" — for now: scheduled items get sequential priority
+  // (in real app, priority is set by drag&drop or by Claude's response)
+  let priorityIdx = 0;
+  const idToGlobal = new Map();
+  // First: prioritized array → #1, #2...
+  prioritized.forEach((a, i) => {
+    idToGlobal.set(a.id, i + 1);
+    priorityIdx = i + 1;
+  });
+  // Then: scheduled items not in prioritized → continue numbering
+  scheduled.forEach(a => {
+    if (!idToGlobal.has(a.id)) {
+      priorityIdx++;
+      idToGlobal.set(a.id, priorityIdx);
+    }
+  });
+  const totalWeekCount = priorityIdx;
+
+  // Build day rows for This Week
+  const dayRows = [];
+  for (let d = 0; d < 7; d++) {
+    const { freeBlocks, scheduledItems } = daysMap.get(d);
+    // Skip days with nothing
+    if (freeBlocks.length === 0 && scheduledItems.length === 0) continue;
+
+    // Combine all slots and sort by start time
+    const slots = [
+      ...freeBlocks.map(b => ({
+        type: 'free',
+        startMin: hhmmToMin(b.startHHMM),
+        endMin: hhmmToMin(b.endHHMM),
+        block: b
+      })),
+      ...scheduledItems.map(a => {
+        const d = new Date(a.date);
+        const start = d.getHours() * 60 + d.getMinutes();
+        return {
+          type: 'scheduled',
+          startMin: start,
+          endMin: start + (a.duration_minutes || 60),
+          activity: a
+        };
+      })
+    ].sort((a, b) => a.startMin - b.startMin);
+
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + d);
+    const dayLabel = `${dayNames[d]} ${date.getDate()}`;
+
+    const slotsHtml = slots.map(s => {
+      if (s.type === 'free') {
+        // Free block — drop target, can contain prioritized activities
+        const startLabel = s.block.startHHMM;
+        const endLabel = s.block.endHHMM;
+        const totalMin = s.endMin - s.startMin;
+        // Items inside this block — activities prioritized with priority_block === block.id
+        const itemsInBlock = prioritized.filter(a => a.priority_block === s.block.id);
+        const usedMin = itemsInBlock.reduce((sum, a) => sum + (a.duration_minutes || 0), 0);
+        const freeMin = Math.max(0, totalMin - usedMin);
+        const overflow = usedMin > totalMin;
+
+        let cursor = s.startMin;
+        const itemHtml = itemsInBlock.map(a => {
+          const startStr = minToHHMM(cursor);
+          const html = renderActivityCard(a, idToGlobal.get(a.id) || '?', { inSlot: true, startHHMM: startStr });
+          cursor += (a.duration_minutes || 0);
+          return html;
+        }).join('');
+
+        // Slot meta — color logic:
+        //   green check  → exactly full (0m free, no overflow)
+        //   green text   → has free time
+        //   red text     → overbooked (shows excess minutes)
+        let metaHtml, metaClass;
+        if (overflow) {
+          const excess = usedMin - totalMin;
+          metaHtml = `Overbooked · ${formatDuration(excess)} over`;
+          metaClass = 'overflow';
+        } else if (freeMin === 0 && usedMin > 0) {
+          // Exactly filled — show check icon
+          metaHtml = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 6-7"/></svg>`;
+          metaClass = 'full-check';
+        } else if (freeMin === 0) {
+          metaHtml = '0m free';
+          metaClass = '';
+        } else {
+          metaHtml = `${formatDuration(freeMin)} free`;
+          metaClass = 'free';
+        }
+
+        return `
+          <div class="slot free-block" data-zone="block" data-block-id="${s.block.id}">
+            <div class="slot-hd">
+              <span class="slot-time">${startLabel} – ${endLabel}</span>
+              <span class="slot-meta ${metaClass}">${metaHtml}</span>
+            </div>
+            <div class="slot-body">
+              ${itemsInBlock.length === 0 ? '<div class="slot-empty">Drop here</div>' : itemHtml}
+            </div>
+          </div>
+        `;
+      } else {
+        // Scheduled item — fixed, not editable, single-line
+        const a = s.activity;
+        const startStr = minToHHMM(s.startMin);
+        const endStr = minToHHMM(s.endMin);
+        return `
+          <div class="slot scheduled-slot">
+            <div class="slot-hd">
+              <span class="slot-time">${startStr} – ${endStr}</span>
+              <span class="slot-meta scheduled-tag">Scheduled</span>
+            </div>
+            <div class="slot-body">
+              ${renderActivityCard(a, idToGlobal.get(a.id) || '?', { inSlot: true, scheduled: true, startHHMM: startStr })}
+            </div>
+          </div>
+        `;
+      }
+    }).join('');
+
+    dayRows.push(`
+      <div class="day-group" data-day="${d}">
+        <button class="day-group-hd" onclick="toggleDayGroup(this)" type="button">
+          <svg class="day-toggle-icon" width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+          <span>${dayLabel}</span>
+        </button>
+        <div class="day-group-body">${slotsHtml}</div>
+      </div>
+    `);
+  }
+
+  // Backlog items
+  const backlogItems = backlog.map((a, i) => renderActivityCard(a, totalWeekCount + i + 1, {})).join('');
+
   return `
-    <div class="wz-intro">
-      Drag activities from the backlog to "This week". The #1 is the most important. Between 5 and 10 is recommended.
-    </div>
     <div class="dl-cols">
       <div class="dl-col">
-        <div class="dl-col-hd">
+        <div class="dl-col-hd plain">
           <div class="dl-col-title">Backlog</div>
           <div class="dl-col-cnt">${backlog.length}</div>
         </div>
-        <div class="dl-col-body" data-zone="backlog" id="dl-backlog">
-          ${backlog.length === 0 ? '<div class="dl-empty">Empty backlog</div>' : backlog.map(a => renderItem(a, false)).join('')}
+        <div class="dl-col-body white" data-zone="backlog" id="dl-backlog">
+          ${backlog.length === 0 ? '<div class="dl-empty">Empty backlog</div>' : backlogItems}
         </div>
       </div>
-      <div class="dl-col primary">
-        <div class="dl-col-hd">
-          <div class="dl-col-title">This week</div>
-          <div class="dl-col-cnt ${prioritized.length >= 5 && prioritized.length <= 10 ? 'good' : ''}">${prioritized.length} / 5–10</div>
-        </div>
-        <div class="dl-col-body" data-zone="week" id="dl-week">
-          ${prioritized.length === 0 ? '<div class="dl-empty">Drag activities here</div>' : prioritized.map(a => renderItem(a, true)).join('')}
-        </div>
+      <div class="this-week-bare" id="dl-week">
+        ${dayRows.length === 0
+          ? '<div class="dl-empty">No availability blocks. Go back to Step 1 to add some.</div>'
+          : dayRows.join('')
+        }
       </div>
     </div>
   `;
 }
 
+// Toggle collapse/expand for a day-group
+function toggleDayGroup(headerBtn) {
+  const group = headerBtn.closest('.day-group');
+  if (!group) return;
+  group.classList.toggle('collapsed');
+}
+
 function initStep3DragDrop() {
   const items = document.querySelectorAll('.dl-item');
-  const zones = document.querySelectorAll('.dl-col-body');
+  // Zones: backlog + every free-block (NOT scheduled-slot)
+  const backlogZone = document.getElementById('dl-backlog');
+  const blockZones = document.querySelectorAll('.free-block');
 
   items.forEach(item => {
+    // Scheduled items are not draggable
+    if (item.classList.contains('scheduled')) return;
+    item.setAttribute('draggable', 'true');
     item.addEventListener('dragstart', (e) => {
       item.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
@@ -5141,25 +6434,26 @@ function initStep3DragDrop() {
     });
     item.addEventListener('dragend', () => {
       item.classList.remove('dragging');
-      document.querySelectorAll('.dl-col-body').forEach(z => z.classList.remove('drag-over'));
+      document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
     });
   });
 
-  zones.forEach(zone => {
+  const setupZone = (zone, targetBody) => {
+    if (!zone || !targetBody) return;
     zone.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
       zone.classList.add('drag-over');
-
-      // Find insertion point
-      const afterElement = getDragAfterElement(zone, e.clientY);
+      const afterElement = getDragAfterElement(targetBody, e.clientY);
       const dragging = document.querySelector('.dl-item.dragging');
       if (!dragging) return;
-      if (afterElement == null) zone.appendChild(dragging);
-      else zone.insertBefore(dragging, afterElement);
+      // Remove "drop here" empty placeholder if present
+      const empty = targetBody.querySelector('.slot-empty');
+      if (empty) empty.remove();
+      if (afterElement == null) targetBody.appendChild(dragging);
+      else targetBody.insertBefore(dragging, afterElement);
     });
     zone.addEventListener('dragleave', (e) => {
-      // Only remove if leaving the zone entirely
       if (!zone.contains(e.relatedTarget)) zone.classList.remove('drag-over');
     });
     zone.addEventListener('drop', async (e) => {
@@ -5167,6 +6461,14 @@ function initStep3DragDrop() {
       zone.classList.remove('drag-over');
       await commitStep3Order();
     });
+  };
+
+  // Backlog: drop directly into the col body
+  setupZone(backlogZone, backlogZone);
+  // Each free block: drop into its .slot-body child
+  blockZones.forEach(block => {
+    const body = block.querySelector('.slot-body');
+    setupZone(block, body);
   });
 }
 
@@ -5182,23 +6484,43 @@ function getDragAfterElement(container, y) {
 
 async function commitStep3Order() {
   const weekId = state.wizard.activeWeekId;
-  const weekZone = document.getElementById('dl-week');
   const backlogZone = document.getElementById('dl-backlog');
+  const weekZone = document.getElementById('dl-week');
 
-  // Items in "This week" → assign priorities 1..N
-  const weekItems = Array.from(weekZone.querySelectorAll('.dl-item'));
-  weekItems.forEach((it, idx) => {
+  // Walk through every free-block in DOM order and assign priorities
+  // to the activities inside each one (skipping scheduled items).
+  let priorityIdx = 0;
+  const freeBlocks = weekZone.querySelectorAll('.free-block');
+  freeBlocks.forEach(block => {
+    const blockId = block.dataset.blockId;
+    const items = block.querySelectorAll('.dl-item:not(.scheduled)');
+    items.forEach(it => {
+      const a = state.activities.find(x => x.id === it.dataset.id);
+      if (!a) return;
+      priorityIdx++;
+      const newPrio = priorityIdx;
+      if (a.priority !== newPrio || a.priority_week !== weekId || a.priority_block !== blockId) {
+        a.priority = newPrio;
+        a.priority_week = weekId;
+        a.priority_block = blockId;
+        markActivityDirty(a.id);
+      }
+    });
+  });
+  // Scheduled items: assign priorities continuing after free blocks
+  const scheduledItems = weekZone.querySelectorAll('.dl-item.scheduled');
+  scheduledItems.forEach(it => {
     const a = state.activities.find(x => x.id === it.dataset.id);
     if (!a) return;
-    const newPrio = idx + 1;
-    if (a.priority !== newPrio || a.priority_week !== weekId) {
-      a.priority = newPrio;
+    priorityIdx++;
+    if (a.priority !== priorityIdx || a.priority_week !== weekId) {
+      a.priority = priorityIdx;
       a.priority_week = weekId;
       markActivityDirty(a.id);
     }
   });
 
-  // Items in "Backlog" → remove priority for this week
+  // Backlog items: remove priority + priority_block
   const backlogItems = Array.from(backlogZone.querySelectorAll('.dl-item'));
   backlogItems.forEach(it => {
     const a = state.activities.find(x => x.id === it.dataset.id);
@@ -5206,183 +6528,11 @@ async function commitStep3Order() {
     if (a.priority_week === weekId) {
       a.priority = null;
       a.priority_week = null;
+      a.priority_block = null;
       markActivityDirty(a.id);
     }
   });
 
-  await saveActivities();
-  // Re-render to refresh priority numbers
-  renderWizard();
-}
-
-/* ----------------------------------------------------------
- * Step 4 — Distribute (weekly calendar)
- * ---------------------------------------------------------- */
-function renderStep4Body(weekId, ritual) {
-  // Get prioritized activities for this week that need a slot (not delegated)
-  const prioritized = state.activities
-    .filter(a => a.priority_week === weekId && a.priority != null)
-    .sort((a, b) => a.priority - b.priority);
-
-  const needsSlot = prioritized.filter(a => !(a.hat === 'Architect' && a.delegated));
-  const unscheduled = needsSlot.filter(a => !a.date || !isDateInWeek(a.date, weekId));
-  const scheduledInWeek = needsSlot.filter(a => a.date && isDateInWeek(a.date, weekId));
-
-  // Build calendar grid: 5 days × hours 8-19
-  const monday = mondayFromWeekId(weekId);
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-  const dayDates = [];
-  for (let i = 0; i < 5; i++) {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    dayDates.push(d);
-  }
-  const HOURS_START = 8, HOURS_END = 19;
-
-  // Map scheduled activities to grid cells
-  const scheduledMap = {}; // "dayIdx-hour" -> activity
-  scheduledInWeek.forEach(a => {
-    const d = new Date(a.date);
-    const dayIdx = (d.getDay() === 0 ? 6 : d.getDay() - 1); // Mon=0
-    const hour = d.getHours();
-    if (dayIdx >= 0 && dayIdx < 5 && hour >= HOURS_START && hour <= HOURS_END) {
-      scheduledMap[dayIdx + '-' + hour] = a;
-    }
-  });
-
-  // Render unscheduled list
-  const unschedHtml = unscheduled.length === 0
-    ? '<div class="dl-empty">Todas las prioridades tienen slot asignado</div>'
-    : unscheduled.map(a => `
-        <div class="dl-item draggable-time" draggable="true" data-id="${a.id}">
-          <div class="dl-handle">⋮⋮</div>
-          <div class="dl-prio">#${a.priority}</div>
-          <div class="dl-meta">
-            <div class="dl-name">${escapeHtml(a.name)}</div>
-            <div class="dl-tags">
-              <span class="dl-tag">${a.duration_minutes || 60} min</span>
-              ${a.hat ? `<span class="dl-tag">${a.hat}</span>` : ''}
-            </div>
-          </div>
-        </div>
-      `).join('');
-
-  // Render delegated list (informational)
-  const delegated = prioritized.filter(a => a.hat === 'Architect' && a.delegated);
-  const delegatedHtml = delegated.length === 0 ? '' : `
-    <div class="cal-info-box">
-      <strong>${delegated.length} delegated activities</strong> · No personal slot needed because the team executes them.
-    </div>
-  `;
-
-  // Render calendar grid
-  const headerCols = days.map((d, i) => `<div class="cal-day-hd">${d}<span class="cal-day-num">${dayDates[i].getDate()}</span></div>`).join('');
-  let gridRows = '';
-  for (let h = HOURS_START; h <= HOURS_END; h++) {
-    let row = `<div class="cal-time-lbl">${h.toString().padStart(2, '0')}:00</div>`;
-    for (let dIdx = 0; dIdx < 5; dIdx++) {
-      const key = dIdx + '-' + h;
-      const a = scheduledMap[key];
-      if (a) {
-        row += `
-          <div class="cal-cell occupied" data-day="${dIdx}" data-hour="${h}">
-            <div class="cal-event" data-id="${a.id}" onclick="removeFromCalendar('${a.id}')" data-tooltip="Click to remove from slot">
-              <div class="cal-event-prio">#${a.priority}</div>
-              <div class="cal-event-name">${escapeHtml(a.name)}</div>
-            </div>
-          </div>
-        `;
-      } else {
-        row += `<div class="cal-cell" data-day="${dIdx}" data-hour="${h}" data-zone="cal"></div>`;
-      }
-    }
-    gridRows += `<div class="cal-row">${row}</div>`;
-  }
-
-  return `
-    <div class="wz-intro">
-      Drag the unscheduled priorities to the calendar. Click on a scheduled activity to remove it.
-    </div>
-    ${delegatedHtml}
-    <div class="cal-layout">
-      <div class="cal-side">
-        <div class="cal-side-hd">Unscheduled (${unscheduled.length})</div>
-        <div class="cal-side-body" id="cal-unsched">${unschedHtml}</div>
-      </div>
-      <div class="cal-grid">
-        <div class="cal-header">
-          <div class="cal-time-lbl"></div>
-          ${headerCols}
-        </div>
-        <div class="cal-body">${gridRows}</div>
-      </div>
-    </div>
-    <div class="wz-tip">💡 Tip: leave at least 30% of your time free for unexpected things.</div>
-  `;
-}
-
-function isDateInWeek(dateStr, weekId) {
-  if (!dateStr) return false;
-  const monday = mondayFromWeekId(weekId);
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
-  sunday.setHours(23, 59, 59, 999);
-  const d = new Date(dateStr);
-  return d >= monday && d <= sunday;
-}
-
-function initStep4DragDrop() {
-  const items = document.querySelectorAll('.draggable-time');
-  const cells = document.querySelectorAll('.cal-cell:not(.occupied)');
-
-  items.forEach(item => {
-    item.addEventListener('dragstart', (e) => {
-      item.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', item.dataset.id);
-    });
-    item.addEventListener('dragend', () => {
-      item.classList.remove('dragging');
-      document.querySelectorAll('.cal-cell').forEach(c => c.classList.remove('drag-over'));
-    });
-  });
-
-  cells.forEach(cell => {
-    cell.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      cell.classList.add('drag-over');
-    });
-    cell.addEventListener('dragleave', () => cell.classList.remove('drag-over'));
-    cell.addEventListener('drop', async (e) => {
-      e.preventDefault();
-      cell.classList.remove('drag-over');
-      const id = e.dataTransfer.getData('text/plain');
-      await assignActivityToSlot(id, parseInt(cell.dataset.day), parseInt(cell.dataset.hour));
-    });
-  });
-}
-
-async function assignActivityToSlot(activityId, dayIdx, hour) {
-  const a = state.activities.find(x => x.id === activityId);
-  if (!a) return;
-  const monday = mondayFromWeekId(state.wizard.activeWeekId);
-  const date = new Date(monday);
-  date.setDate(monday.getDate() + dayIdx);
-  date.setHours(hour, 0, 0, 0);
-  a.date = date.toISOString();
-  if (a.sync_status === 'Synced') a.sync_status = 'Out of sync';
-  a.log.push({ ts: new Date().toISOString(), text: `Scheduled to slot ${date.toISOString()}` });
-  markActivityDirty(a.id);
-  await saveActivities();
-  renderWizard();
-}
-
-async function removeFromCalendar(activityId) {
-  const a = state.activities.find(x => x.id === activityId);
-  if (!a) return;
-  a.date = null;
-  a.log.push({ ts: new Date().toISOString(), text: 'Removed from slot' });
-  markActivityDirty(a.id);
   await saveActivities();
   renderWizard();
 }
@@ -5391,108 +6541,70 @@ async function removeFromCalendar(activityId) {
  * Step 5 — Sync
  * ---------------------------------------------------------- */
 function renderStep5Body(weekId, ritual) {
-  const prioritized = state.activities.filter(a => a.priority_week === weekId && a.priority != null);
-  const scheduled = prioritized.filter(a => a.date && isDateInWeek(a.date, weekId));
-  const delegated = prioritized.filter(a => a.hat === 'Architect' && a.delegated);
-  const pending = scheduled.filter(a => a.sync_status !== 'Synced');
-
-  const summaryItems = [
-    { icon: iconCheck(), text: `${prioritized.length} prioritized activities` },
-    { icon: iconCheck(), text: `${scheduled.length} activities scheduled in calendar` },
-    { icon: iconCheck(), text: `${delegated.length} delegated activities (no personal slot)` }
-  ];
-
-  const scheduledList = scheduled.length === 0
-    ? '<div class="dl-empty">No activities scheduled yet</div>'
-    : scheduled.sort((a, b) => new Date(a.date) - new Date(b.date)).map(a => {
-        const d = new Date(a.date);
-        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const dStr = `${days[d.getDay()]} ${d.getDate()} · ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-        return `
-          <div class="sync-item">
-            <div class="sync-item-prio">#${a.priority}</div>
-            <div class="sync-item-name">${escapeHtml(a.name)}</div>
-            <div class="sync-item-date">${dStr}</div>
-          </div>
-        `;
-      }).join('');
-
-  const syncMsg = pending.length > 0
-    ? `"Sync the week of ${formatWeekShort(weekId)} to my Google Calendar, ${pending.length} new events."`
-    : null;
-
+  const range = formatWeekRangeEN(weekId);
+  const command = `Create calendar events for all activities scheduled in ${range}`;
   return `
-    <div class="wz-intro">
-      Review your week and send everything to your calendar.
-    </div>
-    <div class="sync-summary">
-      ${summaryItems.map(i => `
-        <div class="sync-summary-item">
-          <span class="sync-summary-icon">${i.icon}</span>
-          <span>${i.text}</span>
+    <div class="step0-wrap">
+      <div class="step0-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="17" rx="2"/>
+          <path d="M3 9h18M8 2v4M16 2v4"/>
+          <path d="M9 14l2 2 4-4"/>
+        </svg>
+      </div>
+
+      <div class="step0-intro">
+        Everything is planned. Let Claude push all your prioritized
+        activities to your Google Calendar.
+      </div>
+
+      <div class="step0-cmd-card">
+        <div class="step0-cmd-label">Run this in your Claude Project</div>
+        <div class="step0-cmd-row">
+          <code class="step0-cmd-text" id="step5-cmd-text">${command}</code>
+          <button class="step0-copy-btn" onclick="copyStep5Command()" data-tooltip="Copy to clipboard">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="9" height="10" rx="1"/>
+              <path d="M3 11V2h9"/>
+            </svg>
+            <span>Copy</span>
+          </button>
         </div>
-      `).join('')}
-    </div>
-    <div class="am-section">
-      <div class="am-section-lbl">Events to create in calendar</div>
-      <div class="sync-list">${scheduledList}</div>
-    </div>
-    ${syncMsg ? `
-      <div class="am-section">
-        <div class="am-section-lbl">How to sync</div>
-        <div class="am-info-card">
-          <div class="am-info-icon">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M8 5.5v3M8 10.5v.5"/></svg>
-          </div>
-          <div class="am-info-text">
-            <div class="am-info-title">Copy this message to the chat with me</div>
-            <div class="am-info-desc"><strong>${escapeHtml(syncMsg)}</strong></div>
-            <div class="am-info-desc" style="margin-top:6px;">I read the app, create the events in your Google Calendar, and mark the activities as synced.</div>
-          </div>
+        <div class="step0-cmd-hint">
+          Claude will create the events in your Google Calendar. It usually takes a few seconds.
         </div>
       </div>
-    ` : ''}
+
+      <div class="step0-next-hint">
+        When Claude finishes, click <strong>Finish ritual</strong> to close the week.
+      </div>
+    </div>
   `;
+}
+
+async function copyStep5Command() {
+  const text = document.getElementById('step5-cmd-text').textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    toast('Command copied to clipboard');
+    const btn = document.querySelector('.step0-copy-btn');
+    if (btn) {
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8l4 4 6-7"/></svg><span>Copied</span>';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = originalHtml;
+        btn.classList.remove('copied');
+      }, 1600);
+    }
+  } catch (e) {
+    toast('Could not copy. Copy manually.');
+  }
 }
 
 /* ----------------------------------------------------------
  * Closed summary (read-only view after ritual completion)
  * ---------------------------------------------------------- */
-function renderWizardClosedSummary(container, weekId, ritual) {
-  // Just render step 5 in read mode + buttons to reopen
-  const dt = new Date(ritual.closedAt);
-  const dStr = `${dt.getDate()}/${dt.getMonth() + 1}/${dt.getFullYear()}`;
-  // Reuse step5 body
-  const body = renderStep5Body(weekId, ritual);
-  container.innerHTML = `
-    <div class="wz-wrap">
-      <div class="wz-header">
-        <div class="wz-back" onclick="goBackToWeekPicker()">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3l-5 5 5 5"/></svg>
-          Change week
-        </div>
-        <div class="wz-week-label">Week of ${formatWeekRange(weekId)}</div>
-      </div>
-      <div class="wz-closed-banner">${iconCheck()} Ritual closed on ${dStr}</div>
-      <div class="wz-body">${body}</div>
-      <div class="wz-footer">
-        <button class="btn btn-g btn-sm" onclick="reopenRitual()">Reopen ritual</button>
-        <button class="btn btn-p btn-sm" onclick="goBackToWeekPicker()" style="margin-left: auto;">Close</button>
-      </div>
-    </div>
-  `;
-}
-
-async function reopenRitual() {
-  const ritual = getRitual(state.wizard.activeWeekId);
-  ritual.closedAt = null;
-  ritual.step = 5;
-  markRitualDirty(state.wizard.activeWeekId);
-  await saveWizardRituals();
-  renderWizard();
-}
-
-
 /* ============================================================
  * 10. INIT / LOGIN / LOGOUT — entry point
  * ============================================================ */
