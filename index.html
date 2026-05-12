@@ -495,6 +495,30 @@ input.finput::placeholder { color: var(--ink4); }
   width: 100%;
   height: 26px;
 }
+
+/* Inline completion check (My desk) */
+.cell-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  cursor: pointer;
+}
+.cell-check .check-ring {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink5);
+  background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  color: transparent;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.cell-check:hover .check-ring { border-color: var(--ink3); }
+.cell-check.checked .check-ring {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
 .cell-prio-ro .cp-text {
   font-size: 12px;
   font-weight: 600;
@@ -3115,6 +3139,12 @@ async function loadAllFromAirtable() {
 const dirtyActivityIds = new Set();
 const dirtyRitualWeekIds = new Set();
 
+// Activities just checked off — kept visible in My desk for a grace period
+// so an accidental click can be undone before the row disappears.
+const recentlyCompleted = new Set();
+const completionTimers = {};
+const UNDO_COMPLETION_MS = 5000;
+
 function markActivityDirty(activityId) {
   if (activityId) dirtyActivityIds.add(activityId);
 }
@@ -3355,9 +3385,20 @@ function formatDateChip(dateStr) {
   return `${dayName} ${day} · ${hh}:${mm}`;
 }
 const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DAYS_ES = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 function monthLabelEs(yyyymm) {
   const [y, m] = yyyymm.split('-');
   return `${MONTHS_ES[parseInt(m, 10) - 1]} ${y}`;
+}
+function dayLabelEs(yyyymmdd) {
+  const [y, m, d] = yyyymmdd.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff = Math.round((date - today) / 86400000);
+  if (diff === 0) return 'Hoy';
+  if (diff === -1) return 'Ayer';
+  if (diff === 1) return 'Mañana';
+  return `${DAYS_ES[date.getDay()]} ${d} ${MONTHS_ES[m - 1].toLowerCase()}`;
 }
 
 function formatDateInput(dateStr) {
@@ -3436,9 +3477,10 @@ function filterActivities() {
   else if (state.currentTab === 'delegated') list = list.filter(a => a.delegated && a.stage !== 'Live');
   else if (state.currentTab === 'live') list = list.filter(a => a.stage === 'Live');
 
-  // Hide completed activities in My desk only — All tab shows them
+  // Hide completed activities in My desk, but keep the ones inside the
+  // undo window so users can uncheck after an accidental click.
   if (state.currentTab === 'mydesk') {
-    list = list.filter(a => !a.completed);
+    list = list.filter(a => !a.completed || recentlyCompleted.has(a.id));
   }
 
   const fc = document.getElementById('f-constraint').value;
@@ -3468,7 +3510,22 @@ function sortByPriority(arr) {
 // For mydesk/live we now return a flat list (single group) sorted by priority.
 function groupActivities(list) {
   if (state.currentTab === 'mydesk') {
-    return [{ key: 'flat', label: null, items: sortByPriority(list) }];
+    // Group by planning date, oldest day on top, undated at the bottom.
+    const groups = {};
+    list.forEach(a => {
+      const k = a.date ? a.date.slice(0, 10) : '__nodate__';
+      (groups[k] = groups[k] || []).push(a);
+    });
+    const keys = Object.keys(groups).sort((a, b) => {
+      if (a === '__nodate__') return 1;
+      if (b === '__nodate__') return -1;
+      return a.localeCompare(b);
+    });
+    return keys.map(k => ({
+      key: k,
+      label: k === '__nodate__' ? 'Sin fecha' : dayLabelEs(k),
+      items: groups[k].sort((x, y) => x.name.localeCompare(y.name))
+    }));
   } else if (state.currentTab === 'live') {
     // Group by month of the activity date. Newest month first, undated at the bottom.
     const groups = {};
@@ -3586,10 +3643,21 @@ function renderKpis() {
 }
 
 function renderActivityRow(a) {
-  // Priority is read-only here — set it from the Prioritization section.
-  const prio = a.priority != null
-    ? `<div class="cell-prio-ro"><span class="cp-text">${a.priority}</span></div>`
-    : `<div class="cell-prio-ro"><span class="cp-text empty">—</span></div>`;
+  // First column varies by tab: check in My desk, priority (read-only) in All,
+  // and nothing for Delegated / Live.
+  const tab = state.currentTab;
+  let firstCell = '';
+  if (tab === 'mydesk') {
+    firstCell = `<div class="cell-check ${a.completed ? 'checked' : ''}" onclick="event.stopPropagation(); toggleCompletedInline('${a.id}')">
+      <span class="check-ring">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-6"/></svg>
+      </span>
+    </div>`;
+  } else if (tab === 'all') {
+    firstCell = a.priority != null
+      ? `<div class="cell-prio-ro"><span class="cp-text">${a.priority}</span></div>`
+      : `<div class="cell-prio-ro"><span class="cp-text empty">—</span></div>`;
+  }
 
   // Status — unified icon at the end (calendar = scheduled, clipboard gray = backlog)
   let statusCell;
@@ -3643,18 +3711,16 @@ function renderActivityRow(a) {
     <select onchange="onCellChange(event, '${a.id}', 'team')" onclick="event.stopPropagation()">${tOpts}</select>
   </div>`;
 
-  // Columns: Priority, Name, Constraint, Hat, Team, Status (unified)
   // Only apply "completed" styling in tabs where it's meaningful (mydesk, all).
   // In delegated and live, the completed flag is personal — don't strike through.
-  const showCompletedStyle = a.completed && (state.currentTab === 'mydesk' || state.currentTab === 'all');
-  // Priority only matters in mydesk/all; delegated and live drop the column.
-  const showPrio = state.currentTab === 'mydesk' || state.currentTab === 'all';
+  const showCompletedStyle = a.completed && (tab === 'mydesk' || tab === 'all');
+  const hasFirstCol = tab === 'mydesk' || tab === 'all';
   const classes = ['act-row'];
   if (showCompletedStyle) classes.push('completed');
-  if (!showPrio) classes.push('no-prio');
+  if (!hasFirstCol) classes.push('no-prio');
   return `
     <div class="${classes.join(' ')}" data-act-id="${a.id}" onclick="rowClick(event, '${a.id}')">
-      ${showPrio ? prio : ''}
+      ${firstCell}
       <div class="act-name">${escapeHtml(a.name)}</div>
       ${constraintCell}
       ${hatCell}
@@ -3683,6 +3749,37 @@ function rowClick(event, id) {
     return;
   }
   openActivity(id);
+}
+
+async function toggleCompletedInline(id) {
+  const a = state.activities.find(x => x.id === id);
+  if (!a) return;
+
+  if (a.completed) {
+    // Unchecking — cancel the pending hide if we're still inside the window.
+    a.completed = false;
+    if (completionTimers[id]) {
+      clearTimeout(completionTimers[id]);
+      delete completionTimers[id];
+    }
+    recentlyCompleted.delete(id);
+    a.log.push({ ts: new Date().toISOString(), text: 'Unmarked as completed' });
+  } else {
+    a.completed = true;
+    recentlyCompleted.add(id);
+    completionTimers[id] = setTimeout(() => {
+      recentlyCompleted.delete(id);
+      delete completionTimers[id];
+      // After the grace window, drop the row from the My desk view.
+      if (state.currentTab === 'mydesk') renderActivities();
+    }, UNDO_COMPLETION_MS);
+    a.log.push({ ts: new Date().toISOString(), text: 'Marked as completed' });
+  }
+
+  markActivityDirty(a.id);
+  const row = document.querySelector(`[data-act-id="${a.id}"]`);
+  if (row) row.outerHTML = renderActivityRow(a);
+  saveActivities().catch(e => console.error('save error', e));
 }
 
 async function commitInlineEdit(id, field, value) {
