@@ -3249,7 +3249,8 @@ const MAP = {
       goalHorizon: 'Goal Horizon',
       blocksTeam: 'Blocks Team',
       costOfNotDoing: 'Cost of Not Doing',
-      priorityBlock: 'Priority Block'
+      priorityBlock: 'Priority Block',
+      prioritizationReasoning: 'Prioritization Reasoning'
     }
   },
 
@@ -3464,6 +3465,7 @@ function mapActivity(rec, hatsById, constraintsById, teamsById, stagesById) {
     priority: f[F.priority] != null ? f[F.priority] : null,
     priority_week: f[F.priorityWeek] || null,
     priority_block: f[F.priorityBlock] || null,
+    prioritization_reasoning: f[F.prioritizationReasoning] || null,
     obj_horizon: GOAL_HORIZON_FROM_AT[f[F.goalHorizon]] || null,
     blocks_team: f[F.blocksTeam] === 'Yes' ? 'yes' : (f[F.blocksTeam] === 'No' ? 'no' : null),
     cost_of_not_doing: COST_FROM_AT[f[F.costOfNotDoing]] || null,
@@ -3584,6 +3586,7 @@ function activityToAirtableFields(a) {
   if (a.priority !== undefined) out[F.priority] = a.priority;
   if (a.priority_week !== undefined) out[F.priorityWeek] = a.priority_week || '';
   if (a.priority_block !== undefined) out[F.priorityBlock] = a.priority_block || '';
+  if (a.prioritization_reasoning !== undefined) out[F.prioritizationReasoning] = a.prioritization_reasoning || '';
   if (a.date !== undefined) out[F.date] = a.date || null;
   if (a.duration_minutes !== undefined) out[F.duration] = a.duration_minutes;
   if (a.obj_horizon !== undefined) out[F.goalHorizon] = a.obj_horizon ? GOAL_HORIZON_TO_AT[a.obj_horizon] : null;
@@ -5585,11 +5588,12 @@ async function resetManualActivityPriorities() {
   let touched = 0;
   state.activities.forEach(a => {
     if (a.archived || a.completed || a.source !== 'Manual') return;
-    if (a.priority == null && !a.priority_week && !a.priority_block && !a.date) return;
+    if (a.priority == null && !a.priority_week && !a.priority_block && !a.date && !a.prioritization_reasoning) return;
     a.priority = null;
     a.priority_week = null;
     a.priority_block = null;
     a.date = null;
+    a.prioritization_reasoning = null;
     markActivityDirty(a.id);
     touched++;
   });
