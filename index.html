@@ -1327,11 +1327,17 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
   border-radius: var(--r);
   background: var(--white);
   overflow: hidden;
+  transition: border-color .12s;
 }
+.hat-card:hover { border-color: var(--ink4); }
+.hat-card.open { border-color: var(--ink4); }
 .hat-hd {
   padding: 11px 14px;
+  cursor: pointer;
   display: flex; align-items: center; gap: 12px;
 }
+.hat-hd:hover { background: var(--surface); }
+.hat-card.open .hat-hd { background: var(--surface); border-bottom: 1px solid var(--ink6); }
 .hat-icon {
   width: 30px; height: 30px;
   border-radius: var(--rs);
@@ -1344,6 +1350,15 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
 .hat-meta { flex: 1; min-width: 0; }
 .hat-name { font-size: 13px; font-weight: 600; color: var(--ink2); }
 .hat-summary { font-size: 11px; color: var(--ink4); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hat-chev { color: var(--ink4); transition: transform .15s; flex-shrink: 0; }
+.hat-card.open .hat-chev { transform: rotate(180deg); }
+.hat-body { display: none; padding: 14px 18px 16px; }
+.hat-card.open .hat-body { display: block; }
+.hat-field { margin-bottom: 12px; }
+.hat-field:last-child { margin-bottom: 0; }
+.hat-field-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink4); margin-bottom: 4px; }
+.hat-field-val { font-size: 12px; color: var(--ink2); line-height: 1.55; white-space: pre-wrap; }
+.hat-field-val.empty { color: var(--ink4); font-style: italic; }
 
 /* ============================================================
  * Coming soon page
@@ -4997,14 +5012,23 @@ function renderConfig() {
       </div>
       <div class="cfg-card-body">
         <div class="hat-list">
-          ${state.hats.map(h => `
-            <div class="hat-card">
-              <div class="hat-hd">
+          ${state.hats.map((h, i) => `
+            <div class="hat-card" id="hat-card-${i}">
+              <div class="hat-hd" onclick="toggleHat(${i})">
                 <div class="hat-icon">${h.id[0]}</div>
                 <div class="hat-meta">
                   <div class="hat-name">${h.id}</div>
                   <div class="hat-summary">${escapeHtml(h.summary)}</div>
                 </div>
+                <svg class="hat-chev" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
+              </div>
+              <div class="hat-body">
+                ${renderHatField('Summary', h.summary)}
+                ${renderHatField('What you do', h.whatYouDo)}
+                ${renderHatField("What you don't do", h.whatYouDont)}
+                ${renderHatField("Signals you're wearing it", h.signals)}
+                ${renderHatField('Examples', h.examples)}
+                ${renderHatField('When to switch', h.whenToSwitch)}
               </div>
             </div>
           `).join('')}
@@ -5082,6 +5106,18 @@ function renderConfig() {
     </div>`;
 
   grid.innerHTML = constraintsHtml + hatsHtml + teamsHtml + stagesHtml;
+}
+
+function renderHatField(label, value) {
+  const v = (value || '').trim();
+  const cls = v ? 'hat-field-val' : 'hat-field-val empty';
+  const display = v ? escapeHtml(v) : '—';
+  return `<div class="hat-field"><div class="hat-field-lbl">${label}</div><div class="${cls}">${display}</div></div>`;
+}
+
+function toggleHat(i) {
+  const el = document.getElementById('hat-card-' + i);
+  if (el) el.classList.toggle('open');
 }
 
 function xIcon() { return '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>'; }
