@@ -3248,7 +3248,6 @@ const MAP = {
       goalHorizon: 'Goal Horizon',
       blocksTeam: 'Blocks Team',
       costOfNotDoing: 'Cost of Not Doing',
-      priorityBlock: 'Priority Block',
       prioritizationReasoning: 'Prioritization Reasoning'
     }
   },
@@ -3462,7 +3461,6 @@ function mapActivity(rec, hatsById, constraintsById, teamsById, stagesById) {
     duration_minutes: f[F.duration] || null,
     estimated_hours: f[F.duration] ? f[F.duration] / 60 : null,
     priority: f[F.priority] != null ? f[F.priority] : null,
-    priority_block: f[F.priorityBlock] || null,
     prioritization_reasoning: f[F.prioritizationReasoning] || null,
     obj_horizon: GOAL_HORIZON_FROM_AT[f[F.goalHorizon]] || null,
     blocks_team: f[F.blocksTeam] === 'Yes' ? 'yes' : (f[F.blocksTeam] === 'No' ? 'no' : null),
@@ -3582,7 +3580,6 @@ function activityToAirtableFields(a) {
   out[F.delegated] = !!a.delegated;
   out[F.completed] = !!a.completed;
   if (a.priority !== undefined) out[F.priority] = a.priority;
-  if (a.priority_block !== undefined) out[F.priorityBlock] = a.priority_block || '';
   if (a.prioritization_reasoning !== undefined) out[F.prioritizationReasoning] = a.prioritization_reasoning || '';
   if (a.date !== undefined) out[F.date] = a.date || null;
   if (a.duration_minutes !== undefined) out[F.duration] = a.duration_minutes;
@@ -5580,9 +5577,8 @@ async function resetManualActivityPriorities() {
   let touched = 0;
   state.activities.forEach(a => {
     if (a.archived || a.completed || a.source !== 'Manual') return;
-    if (a.priority == null && !a.priority_block && !a.date && !a.prioritization_reasoning) return;
+    if (a.priority == null && !a.date && !a.prioritization_reasoning) return;
     a.priority = null;
-    a.priority_block = null;
     a.date = null;
     a.prioritization_reasoning = null;
     markActivityDirty(a.id);
@@ -6665,8 +6661,16 @@ function renderStep2PhaseC(weekId) {
       const startLabel = s.block.startHHMM;
       const endLabel = s.block.endHHMM;
       const totalMin = s.endMin - s.startMin;
-      // Items inside this block — activities prioritized with priority_block === block.id
-      const itemsInBlock = prioritized.filter(a => a.priority_block === s.block.id);
+      // Items inside this block — derive from each activity's date: same
+      // calendar day as the block and start-time within the block's range.
+      const itemsInBlock = prioritized.filter(a => {
+        if (!a.date) return false;
+        const d = new Date(a.date);
+        const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        if (dateStr !== s.block.date) return false;
+        const aMin = d.getHours() * 60 + d.getMinutes();
+        return aMin >= s.startMin && aMin < s.endMin;
+      });
       const usedMin = itemsInBlock.reduce((sum, a) => sum + (a.duration_minutes || 0), 0);
       const freeMin = Math.max(0, totalMin - usedMin);
       const overflow = usedMin > totalMin;
@@ -6852,33 +6856,23 @@ async function commitStep3Order() {
       }
       cursor += (a.duration_minutes || 0);
 
-      if (
-        a.priority !== newPrio ||
-        a.priority_block !== blockId ||
-        a.date !== newDate
-      ) {
+      if (a.priority !== newPrio || a.date !== newDate) {
         a.priority = newPrio;
-        a.priority_block = blockId;
         a.date = newDate;
         markActivityDirty(a.id);
       }
     });
   });
   // Backlog items: continue priorities from where slot items left off
-  // (N+1, N+2, ...) in DOM order. priority_block and date are cleared
-  // since they aren't scheduled to any specific time anymore.
+  // (N+1, N+2, ...) in DOM order. Date is cleared since they aren't
+  // scheduled to any specific time anymore.
   const backlogItems = Array.from(backlogZone.querySelectorAll('.dl-item'));
   backlogItems.forEach(it => {
     const a = state.activities.find(x => x.id === it.dataset.id);
     if (!a) return;
     priorityIdx++;
-    if (
-      a.priority !== priorityIdx ||
-      a.priority_block !== null ||
-      a.date !== null
-    ) {
+    if (a.priority !== priorityIdx || a.date !== null) {
       a.priority = priorityIdx;
-      a.priority_block = null;
       a.date = null;
       markActivityDirty(a.id);
     }
