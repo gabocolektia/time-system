@@ -3050,6 +3050,11 @@ table.cfg-tbl { width: 100%; border-collapse: collapse; }
         <select class="fsel" id="f-team" onchange="renderActivities()">
           <option value="">All teams</option>
         </select>
+        <select class="fsel" id="f-source" onchange="renderActivities()">
+          <option value="">All sources</option>
+          <option value="Manual">Manual</option>
+          <option value="Calendar">Calendar</option>
+        </select>
         <input type="text" class="finput" id="f-search" placeholder="Search…" oninput="renderActivities()">
         <div style="margin-left: auto; display: flex; gap: 8px;">
           <button class="btn btn-p btn-sm" onclick="openNewActivityModal()">
@@ -4152,11 +4157,13 @@ function filterActivities() {
   const fc = document.getElementById('f-constraint').value;
   const fh = document.getElementById('f-hat').value;
   const ft = document.getElementById('f-team').value;
+  const fs = document.getElementById('f-source').value;
   const fSearch = (document.getElementById('f-search').value || '').toLowerCase();
   if (fc) list = list.filter(a => a.constraint === fc);
   if (fh) list = list.filter(a => a.hat === fh);
   if (ft === '__none__') list = list.filter(a => !a.team);
   else if (ft) list = list.filter(a => a.team === ft);
+  if (fs) list = list.filter(a => (a.source || 'Manual') === fs);
   if (fSearch) list = list.filter(a => a.name.toLowerCase().includes(fSearch));
   return list;
 }
