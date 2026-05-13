@@ -4138,7 +4138,7 @@ function renderFilters() {
 }
 
 function filterActivities() {
-  let list = [...state.activities];
+  let list = state.activities.filter(a => !a.archived);
   if (state.currentTab === 'mydesk') list = list.filter(a => !a.delegated && a.stage !== 'Live');
   else if (state.currentTab === 'delegated') list = list.filter(a => a.delegated && a.stage !== 'Live');
   else if (state.currentTab === 'live') list = list.filter(a => a.stage === 'Live');
@@ -4237,7 +4237,7 @@ function groupActivities(list) {
 }
 
 function renderActivities() {
-  const all = state.activities;
+  const all = state.activities.filter(a => !a.archived);
   document.getElementById('cnt-mydesk').textContent = all.filter(a => !a.delegated && a.stage !== 'Live' && (!a.completed || recentlyCompleted.has(a.id))).length;
   document.getElementById('cnt-delegated').textContent = all.filter(a => a.delegated && a.stage !== 'Live').length;
   document.getElementById('cnt-live').textContent = all.filter(a => a.stage === 'Live').length;
@@ -4472,10 +4472,11 @@ async function commitInlineEdit(id, field, value) {
 
 // Returns the list of activities in the same scope (tab) that participate in priority ordering
 function activitiesInScope() {
-  if (state.currentTab === 'mydesk') return state.activities.filter(a => !a.delegated && a.stage !== 'Live');
-  if (state.currentTab === 'delegated') return state.activities.filter(a => a.delegated && a.stage !== 'Live');
-  if (state.currentTab === 'live') return state.activities.filter(a => a.stage === 'Live');
-  return [...state.activities];
+  const base = state.activities.filter(a => !a.archived);
+  if (state.currentTab === 'mydesk') return base.filter(a => !a.delegated && a.stage !== 'Live');
+  if (state.currentTab === 'delegated') return base.filter(a => a.delegated && a.stage !== 'Live');
+  if (state.currentTab === 'live') return base.filter(a => a.stage === 'Live');
+  return base;
 }
 
 // Insert-and-shift logic: when an activity is assigned a new priority,
@@ -6411,7 +6412,7 @@ function renderStep2PhaseA(weekId) {
   const idIndex = new Map(ritual._step2aOrder.map((id, i) => [id, i]));
   // Include both still-incomplete and already-completed-during-session
   // so the user sees the row stay where it was (with values filled in).
-  const allInOrder = state.activities.filter(a => idIndex.has(a.id));
+  const allInOrder = state.activities.filter(a => !a.archived && idIndex.has(a.id));
   const ordered = allInOrder.sort((a, b) => idIndex.get(a.id) - idIndex.get(b.id));
 
   const rows = ordered.map(a => renderStep2PhaseARow(a)).join('');
