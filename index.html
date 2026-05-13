@@ -5316,8 +5316,11 @@ function renderWizardStep(container, weekId, step) {
     closedBadge = `<div class="wz-closed-banner">${iconCheck()} Week closed on ${dStr}</div>`;
   }
 
-  // Footer buttons
-  const prevDisabled = step <= 1;
+  // Footer buttons. Previous is only disabled when we're at the very first
+  // phase of the wizard (Step 1 Phase A) — every other phase has somewhere
+  // to go back to.
+  const phase1 = ritual.decisions.step1_phase || 'A';
+  const prevDisabled = step === 1 && phase1 === 'A';
   const isLastStep = step >= 3;
 
   // Step 1 has three phases:
