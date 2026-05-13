@@ -4205,7 +4205,12 @@ function groupActivities(list) {
     return keys.map(k => ({
       key: k,
       label: k === '__nodate__' ? 'Sin fecha' : dayLabelEs(k),
-      items: groups[k].sort((x, y) => x.name.localeCompare(y.name))
+      items: groups[k].sort((x, y) => {
+        const xd = x.date || '';
+        const yd = y.date || '';
+        if (xd !== yd) return xd.localeCompare(yd);
+        return x.name.localeCompare(y.name);
+      })
     }));
   } else if (state.currentTab === 'live') {
     // Group by month of the activity date. Newest month first, undated at the bottom.
