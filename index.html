@@ -3929,6 +3929,26 @@ async function deleteAvailabilityBlock(blockId) {
   }
 }
 
+// Wipe every Availability Block row (across all weeks) — called on every
+// entry to Step 1 Phase A so each ritual starts with an empty calendar.
+async function deleteAllAvailabilityBlocks() {
+  const recordIds = [];
+  for (const weekId in state.wizard.availability) {
+    state.wizard.availability[weekId].forEach(b => {
+      if (b._recordId) recordIds.push(b._recordId);
+    });
+  }
+  state.wizard.availability = {};
+  if (recordIds.length === 0) return;
+  // Sequential delete to stay under Airtable's 5 req/s rate limit.
+  for (const id of recordIds) {
+    try {
+      await atDelete(MAP.availability.tableId, id);
+    } catch (e) {
+      console.error('Bulk availability delete error', e);
+    }
+  }
+}
 // ---- Manual sync ----
 
 async function syncFromAirtable() {
@@ -5271,6 +5291,7 @@ async function selectWizardWeek(weekId) {
   ritual.decisions.step2_phase = 'A';
   // Reset Step 2 Phase A row order so it recalculates on next render
   ritual._step2aOrder = null;
+  await deleteAllAvailabilityBlocks();
   renderWizard();
 }
 
@@ -5417,6 +5438,7 @@ async function wizardPrevStep() {
     }
     if (phase1 === 'B') {
       ritual.decisions.step1_phase = 'A';
+      await deleteAllAvailabilityBlocks();
       markRitualDirty(state.wizard.activeWeekId);
       await saveWizardRituals();
       await reloadWizardData();
@@ -5555,8 +5577,12 @@ async function goToStep(n) {
   // Production: can't jump ahead — only revisit steps already reached.
   if (n > Math.max(ritual.step, 1)) return;
   ritual.step = n;
-  // Re-entering Step 1 always resets to Phase A (sync card visible)
-  if (n === 1) ritual.decisions.step1_phase = 'A';
+  // Re-entering Step 1 always resets to Phase A (sync card visible) and
+  // wipes the availability table — each ritual gets a clean calendar.
+  if (n === 1) {
+    ritual.decisions.step1_phase = 'A';
+    await deleteAllAvailabilityBlocks();
+  }
   // Re-entering Step 2: skip Phase A if all methodology fields are filled
   if (n === 2) {
     const incomplete = step2BacklogIncomplete(state.wizard.activeWeekId);
