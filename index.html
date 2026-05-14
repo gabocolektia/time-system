@@ -1014,6 +1014,22 @@ input.finput::placeholder { color: var(--ink4); }
   color: var(--ink4);
   margin-bottom: 10px;
 }
+.am-description {
+  width: 100%;
+  min-height: 80px;
+  border: 1px solid var(--ink5);
+  border-radius: var(--rs);
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--white);
+  font-family: var(--f);
+  line-height: 1.55;
+  resize: vertical;
+  transition: border-color .12s;
+}
+.am-description:focus { outline: none; border-color: var(--red); }
+.am-description::placeholder { color: var(--ink4); }
 
 /* Stage progress — Ready → Building → Training → Live */
 .stage-progress {
@@ -4761,6 +4777,15 @@ function renderActivityModal(a) {
     </div>
   `;
 
+  // Description (always visible, editable, multi-line)
+  const descriptionBlock = `
+    <div class="am-section">
+      <div class="am-section-lbl">Description</div>
+      <textarea class="am-description" id="am-description" placeholder="Add notes about this activity…"
+        oninput="markDescriptionDirty()" onblur="saveDescriptionFromInput()">${escapeHtml(a.description || '')}</textarea>
+    </div>
+  `;
+
   content.innerHTML = `
     <div class="am-hd">
       <input type="text" class="am-title" id="am-name" value="${escapeHtml(a.name)}" placeholder="Activity name">
@@ -4771,6 +4796,7 @@ function renderActivityModal(a) {
 
     ${stageBlock}
     ${delegateBlock}
+    ${descriptionBlock}
     ${statusBlock}
 
     <div class="am-footer">
@@ -4803,10 +4829,11 @@ function renderActivityModal(a) {
 }
 
 async function closeActivityModal() {
-  // If activity-edit modal is open, save any pending name change
+  // If activity-edit modal is open, flush any pending name/description edits
   const nameInput = document.getElementById('am-name');
   if (nameInput && state.editingId) {
     await saveNameFromInput();
+    await saveDescriptionFromInput();
   }
   document.getElementById('modal-wrap').classList.remove('open');
   document.getElementById('modal-content').innerHTML = '';
@@ -4820,8 +4847,9 @@ async function onModalWrapClick(event) {
   // Only auto-close if this is the activity-edit modal (has am-name input)
   const nameInput = document.getElementById('am-name');
   if (!nameInput) return; // not an activity-edit modal — do nothing
-  // Save pending name change before closing
+  // Save pending edits before closing
   await saveNameFromInput();
+  await saveDescriptionFromInput();
   closeActivityModal();
 }
 
@@ -4879,6 +4907,28 @@ async function changeStage(stageName) {
   await saveActivities();
   // Re-render the modal so the stepper reflects the new state
   renderActivityModal(a);
+}
+
+let descriptionSaveTimer = null;
+function markDescriptionDirty() {
+  if (descriptionSaveTimer) clearTimeout(descriptionSaveTimer);
+  descriptionSaveTimer = setTimeout(() => {
+    descriptionSaveTimer = null;
+    saveDescriptionFromInput();
+  }, 800);
+}
+
+async function saveDescriptionFromInput() {
+  if (descriptionSaveTimer) { clearTimeout(descriptionSaveTimer); descriptionSaveTimer = null; }
+  const a = state.activities.find(x => x.id === state.editingId);
+  if (!a) return;
+  const input = document.getElementById('am-description');
+  if (!input) return;
+  const newDesc = input.value;
+  if ((a.description || '') === newDesc) return;
+  a.description = newDesc;
+  markActivityDirty(a.id);
+  try { await saveActivities(); } catch (e) { console.error('Description save error', e); }
 }
 
 async function saveNameFromInput() {
