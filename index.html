@@ -4801,6 +4801,7 @@ function renderActivityModal(a) {
 
     <div class="am-footer">
       <button class="btn btn-danger btn-sm" onclick="deleteActivityModal()">Delete</button>
+      <button class="btn btn-g btn-sm" onclick="archiveActivityModal()" style="margin-left: 8px;">Archive</button>
       <div class="am-autosave">
         <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8l4 4 6-7"/></svg>
         Auto-saved
@@ -4970,6 +4971,30 @@ async function deleteActivityModal() {
   closeActivityModal();
   renderActivities();
   toast('Activity deleted');
+}
+
+async function archiveActivityModal() {
+  const a = state.activities.find(x => x.id === state.editingId);
+  if (!a) return;
+  const ok = await confirmModal({
+    title: 'Archive activity',
+    desc: `Archive "${a.name}"? It will be hidden from all lists but kept in Airtable.`,
+    confirmLabel: 'Archive'
+  });
+  if (!ok) return;
+  a.archived = true;
+  a.log = a.log || [];
+  a.log.push({ ts: new Date().toISOString(), text: 'Archived' });
+  markActivityDirty(a.id);
+  try {
+    await saveActivities();
+  } catch (e) {
+    toast('Error archiving: ' + e.message);
+    return;
+  }
+  closeActivityModal();
+  renderActivities();
+  toast('Activity archived');
 }
 
 function openNewActivityModal() {
