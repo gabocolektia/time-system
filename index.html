@@ -4800,8 +4800,10 @@ function renderActivityModal(a) {
     ${statusBlock}
 
     <div class="am-footer">
-      <button class="btn btn-danger btn-sm" onclick="deleteActivityModal()">Delete</button>
-      <button class="btn btn-g btn-sm" onclick="archiveActivityModal()" style="margin-left: 8px;">Archive</button>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-danger btn-sm" onclick="deleteActivityModal()">Delete</button>
+        <button class="btn btn-g btn-sm" onclick="archiveActivityModal()">Archive</button>
+      </div>
       <div class="am-autosave">
         <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8l4 4 6-7"/></svg>
         Auto-saved
