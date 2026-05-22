@@ -5756,6 +5756,14 @@ async function resetManualActivityPriorities() {
 // every step/phase transition so the user always sees fresh data even if
 // they changed records directly in Airtable mid-ritual.
 async function reloadWizardData() {
+  // Flush any pending in-modal edits (name / description debounce) before
+  // overwriting state.activities — otherwise a typing user loses unsaved text.
+  if (state.editingId) {
+    try {
+      await saveNameFromInput();
+      await saveDescriptionFromInput();
+    } catch (e) { console.error('Pre-reload flush error', e); }
+  }
   try {
     await loadAllFromAirtable();
   } catch (e) {
@@ -6274,9 +6282,9 @@ function renderStep1Row(a, opts = {}) {
   if (showWhen) {
     if (a.date) {
       const d = new Date(a.date);
-      const dayShort = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
-      const hh = d.getHours().toString().padStart(2, '0');
-      const mm = d.getMinutes().toString().padStart(2, '0');
+      const dayShort = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getUTCDay()];
+      const hh = d.getUTCHours().toString().padStart(2, '0');
+      const mm = d.getUTCMinutes().toString().padStart(2, '0');
       whenCell = `<span class="step1-when">${dayShort} ${hh}:${mm}</span>`;
     } else {
       whenCell = `<span class="step1-when empty">—</span>`;
@@ -6829,9 +6837,9 @@ function renderStep2PhaseC(weekId) {
       const itemsInBlock = prioritized.filter(a => {
         if (!a.date) return false;
         const d = new Date(a.date);
-        const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        const dateStr = `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
         if (dateStr !== s.block.date) return false;
-        const aMin = d.getHours() * 60 + d.getMinutes();
+        const aMin = d.getUTCHours() * 60 + d.getUTCMinutes();
         return aMin >= s.startMin && aMin < s.endMin;
       });
       const usedMin = itemsInBlock.reduce((sum, a) => sum + (a.duration_minutes || 0), 0);
@@ -6987,7 +6995,27 @@ function getDragAfterElement(container, y) {
   }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
+// Serialize commits: if a commit is already running, mark that another
+// pass is needed and let the current one re-run after it finishes. Without
+// this, fast successive drops can race — the second drop reads stale DOM
+// from before the first drop's renderWizard finishes.
+let _commitInFlight = false;
+let _commitPending = false;
 async function commitStep3Order() {
+  if (_commitInFlight) { _commitPending = true; return; }
+  _commitInFlight = true;
+  try {
+    await _doCommitStep3Order();
+    while (_commitPending) {
+      _commitPending = false;
+      await _doCommitStep3Order();
+    }
+  } finally {
+    _commitInFlight = false;
+  }
+}
+
+async function _doCommitStep3Order() {
   const weekId = state.wizard.activeWeekId;
   const backlogZone = document.getElementById('dl-backlog');
   const weekZone = document.getElementById('dl-week');
@@ -7015,7 +7043,9 @@ async function commitStep3Order() {
         const [y, m, d] = blockMeta.date.split('-').map(Number);
         const h = Math.floor(cursor / 60);
         const min = cursor % 60;
-        newDate = new Date(y, m - 1, d, h, min).toISOString();
+        // Store as UTC-anchored ISO: treat the intended local time as UTC so
+        // hours/minutes survive timezone changes between sessions.
+        newDate = new Date(Date.UTC(y, m - 1, d, h, min)).toISOString();
       }
       cursor += (a.duration_minutes || 0);
 
